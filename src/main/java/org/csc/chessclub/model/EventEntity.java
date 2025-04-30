@@ -1,7 +1,10 @@
 package org.csc.chessclub.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -9,6 +12,9 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "events")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EventEntity {
 
     @Id
@@ -19,7 +25,5 @@ public class EventEntity {
     private LocalDate date;
     private String author;
     private String announcementPDF;
-    @OneToOne()
-    @JoinColumn(name = "tournament_id", referencedColumnName = "id")
-    private TournamentEntity tournament;
+
 }
