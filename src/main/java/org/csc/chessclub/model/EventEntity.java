@@ -18,7 +18,7 @@ import java.util.UUID;
 public class EventEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
     private String title;
     private String description;

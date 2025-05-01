@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
@@ -12,4 +14,11 @@ public class EventServiceImpl implements EventService {
     public EventEntity create(EventEntity event) {
         return eventRepository.save(event);
     }
+
+    @Override
+    public EventEntity getById(UUID uuid) {
+        return eventRepository.findById(uuid)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + uuid));
+    }
 }
+

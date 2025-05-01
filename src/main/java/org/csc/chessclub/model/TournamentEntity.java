@@ -16,10 +16,6 @@ public class TournamentEntity {
     private String firstPlace;
     private String secondPlace;
     private String thirdPlace;
-    @OneToOne()
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
-    private EventEntity event;
-    @OneToMany()
-    private List<GamesEntity> games;
+
 
 }
