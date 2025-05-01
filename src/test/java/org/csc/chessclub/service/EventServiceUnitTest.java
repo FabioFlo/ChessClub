@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -85,6 +86,17 @@ public class EventServiceUnitTest {
         assertNotNull(retrievedEvent, "Event should not be null");
         assertEquals(event, retrievedEvent, "Event should be equal");
         verify(eventRepository, times(1)).findById(event.getUuid());
+    }
+
+    @Test
+    @DisplayName("Get all events")
+    void testGetAllEvents_whenEventsFound_returnAllEvents() {
+        when(eventRepository.findAll()).thenReturn(java.util.List.of(event));
+
+        List<EventEntity> allEvents = eventService.getAll();
+
+        assertNotNull(allEvents);
+        assertEquals(1, allEvents.size());
     }
 
     @Test
