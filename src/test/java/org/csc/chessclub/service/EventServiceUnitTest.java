@@ -5,12 +5,9 @@ import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -31,7 +28,7 @@ public class EventServiceUnitTest {
 
     private EventEntity event;
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
         UUID uuid = UUID.randomUUID();
         String title = "Test Event";
@@ -60,6 +57,21 @@ public class EventServiceUnitTest {
 
         assertNotNull(createdEvent, "Event should not be null");
         assertNotNull(createdEvent.getUuid(), "UUID should not be null");
+        verify(eventRepository, times(1)).save(any(EventEntity.class));
+    }
+
+    @Test
+    @DisplayName("Update Event")
+    public void testUpdateEvent_whenEventDetailsProvided_returnUpdatedEvent() {
+        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
+        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+
+        event.setTitle("Updated Title");
+
+        EventEntity updatedEvent = eventService.update(event);
+
+        assertNotNull(updatedEvent, "Event should not be null");
+        assertEquals(event.getTitle(), updatedEvent.getTitle(), "Title of Event should be equal");
         verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 

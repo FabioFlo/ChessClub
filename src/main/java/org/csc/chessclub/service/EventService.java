@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public interface EventService {
     EventEntity create(EventEntity event);
-
+    EventEntity update(EventEntity event);
     EventEntity getById(UUID uuid);
 }

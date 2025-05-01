@@ -16,6 +16,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public EventEntity update(EventEntity event) {
+        if (eventRepository.existsById(event.getUuid())) {
+            return eventRepository.save(event);
+        }
+        throw new RuntimeException("Event not found with ID: " + event.getUuid());
+    }
+
+    @Override
     public EventEntity getById(UUID uuid) {
         return eventRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + uuid));
