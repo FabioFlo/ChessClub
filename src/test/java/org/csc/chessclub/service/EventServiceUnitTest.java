@@ -45,6 +45,7 @@ public class EventServiceUnitTest {
                 .author(author)
                 .date(date)
                 .title(title)
+                .available(true)
                 .build();
         log.info("setUp UUID: " + uuid);
     }
@@ -97,6 +98,18 @@ public class EventServiceUnitTest {
 
         assertNotNull(allEvents);
         assertEquals(1, allEvents.size());
+    }
+
+    @Test
+    @DisplayName("Delete event")
+    void testDeleteEvent_whenEventFound_availableShouldBeSetToFalse() {
+        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
+        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+
+        event.setAvailable(false);
+
+        assertDoesNotThrow(() -> eventService.delete(event));
+        assertFalse(event.isAvailable());
     }
 
     @Test

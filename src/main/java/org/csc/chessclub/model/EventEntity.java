@@ -25,5 +25,6 @@ public class EventEntity {
     private LocalDate date;
     private String author;
     private String announcementPDF;
+    private boolean available;
 
 }
