@@ -1,6 +1,7 @@
 package org.csc.chessclub.service;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 
@@ -13,6 +14,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventEntity create(EventEntity event) {
+        if (event.getTitle() == null || event.getTitle().isEmpty()) {
+            throw new EventServiceException("Title cannot be null or empty");
+        }
         return eventRepository.save(event);
     }
 

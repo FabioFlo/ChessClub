@@ -1,6 +1,7 @@
 package org.csc.chessclub.service;
 
 import lombok.extern.java.Log;
+import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.*;
@@ -121,4 +122,18 @@ public class EventServiceUnitTest {
 
         assertTrue(exception.getMessage().contains("Event not found"));
     }
+
+    @Test
+    @DisplayName("Empty title throw EventServiceException")
+    void testEventService_whenEmptyTitle_shouldThrowEventServiceException() {
+        event.setTitle("");
+        String aspectMessage = "Title cannot be null or empty";
+
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> {
+            eventService.create(event);
+        });
+
+        assertTrue(exception.getMessage().contains(aspectMessage));
+    }
+
 }
