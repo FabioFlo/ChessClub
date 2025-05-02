@@ -152,4 +152,16 @@ public class EventServiceUnitTest {
         assertTrue(exception.getMessage().contains(aspectMessage));
     }
 
+    @Test
+    @DisplayName("Empty description throw EventServiceException")
+    void testEventService_whenEmptyDescription_shouldThrowEventServiceException() {
+        event.setDescription("");
+        String aspectMessage = "Description cannot be null or empty";
+
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> {
+            eventService.create(event);
+        });
+
+        assertTrue(exception.getMessage().contains(aspectMessage));
+    }
 }
