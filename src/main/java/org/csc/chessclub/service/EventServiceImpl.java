@@ -17,6 +17,9 @@ public class EventServiceImpl implements EventService {
         if (event.getTitle() == null || event.getTitle().isEmpty()) {
             throw new EventServiceException("Title cannot be null or empty");
         }
+        if (event.getAuthor() == null || event.getAuthor().isEmpty()) {
+            throw new EventServiceException("Author cannot be null or empty");
+        }
         return eventRepository.save(event);
     }
 

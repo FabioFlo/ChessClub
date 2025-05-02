@@ -4,7 +4,10 @@ import lombok.extern.java.Log;
 import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -128,6 +131,19 @@ public class EventServiceUnitTest {
     void testEventService_whenEmptyTitle_shouldThrowEventServiceException() {
         event.setTitle("");
         String aspectMessage = "Title cannot be null or empty";
+
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> {
+            eventService.create(event);
+        });
+
+        assertTrue(exception.getMessage().contains(aspectMessage));
+    }
+
+    @Test
+    @DisplayName("Empty author throw EventServiceException")
+    void testEventService_whenEmptyAuthor_shouldThrowEventServiceException() {
+        event.setAuthor("");
+        String aspectMessage = "Author cannot be null or empty";
 
         RuntimeException exception = assertThrows(EventServiceException.class, () -> {
             eventService.create(event);
