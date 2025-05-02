@@ -14,22 +14,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventEntity create(EventEntity event) {
-        if (event.getTitle() == null || event.getTitle().isEmpty()) {
-            throw new EventServiceException("Title cannot be null or empty");
-        }
-        if (event.getAuthor() == null || event.getAuthor().isEmpty()) {
-            throw new EventServiceException("Author cannot be null or empty");
-        }
-        if (event.getDescription() == null || event.getDescription().isEmpty()) {
-            throw new EventServiceException("Description cannot be null or empty");
-        }
-        return eventRepository.save(event);
+        return save(event);
     }
 
     @Override
     public EventEntity update(EventEntity event) {
         if (eventRepository.existsById(event.getUuid())) {
-            return eventRepository.save(event);
+            return save(event);
         }
         throw new RuntimeException("Event not found with ID: " + event.getUuid());
     }
@@ -52,6 +43,19 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventEntity> getAll() {
         return eventRepository.findAll();
+    }
+
+    EventEntity save(EventEntity event) {
+        if (event.getTitle() == null || event.getTitle().isEmpty()) {
+            throw new EventServiceException("Title cannot be null or empty");
+        }
+        if (event.getAuthor() == null || event.getAuthor().isEmpty()) {
+            throw new EventServiceException("Author cannot be null or empty");
+        }
+        if (event.getDescription() == null || event.getDescription().isEmpty()) {
+            throw new EventServiceException("Description cannot be null or empty");
+        }
+        return eventRepository.save(event);
     }
 }
 

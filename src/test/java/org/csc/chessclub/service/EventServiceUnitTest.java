@@ -164,4 +164,18 @@ public class EventServiceUnitTest {
 
         assertTrue(exception.getMessage().contains(aspectMessage));
     }
+
+    @Test
+    @DisplayName("Save if valid Event details")
+    void testSaveEvent_whenValidEventDetailsProvided_returnEvent() {
+        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+
+        EventEntity savedEvent = eventService.save(event);
+
+        assertTrue(event.getTitle() != null && !event.getTitle().isEmpty());
+        assertTrue(event.getAuthor() != null && !event.getAuthor().isEmpty());
+        assertTrue(event.getDescription() != null && !event.getDescription().isEmpty());
+        assertNotNull(savedEvent);
+        verify(eventRepository, times(1)).save(any(EventEntity.class));
+    }
 }
