@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EventRepositoryTest {
 
     @Container
@@ -27,7 +26,9 @@ public class EventRepositoryTest {
 
     @Autowired
     private EventRepository eventRepository;
-    private static final String TITLE = "Test Event";
+    private static final String TITLE_1 = "First test Event";
+    private static final String TITLE_2 = "Second test Event";
+    private static final String AUTHOR = "Test Author";
 
     @Test
     void connectionTest() {
@@ -35,37 +36,59 @@ public class EventRepositoryTest {
         Assertions.assertTrue(postgresContainer.isRunning(), "Container should be running");
     }
 
-    private EventEntity event;
+    private EventEntity event1;
+    private EventEntity event2;
 
     @BeforeEach
     public void setUp() {
         String description = "Test Description";
-        String author = "Test Author";
         String announcementPDF = "Test Announcement PDF";
         LocalDate date = LocalDate.now();
-        event = EventEntity
+         event1 = EventEntity
                 .builder()
                 .description(description)
                 .announcementPDF(announcementPDF)
-                .author(author)
+                .author(AUTHOR)
                 .date(date)
-                .title(TITLE)
+                .title(TITLE_1)
                 .available(true)
                 .build();
 
+        event2 = EventEntity
+                .builder()
+                .description(description)
+                .announcementPDF(announcementPDF)
+                .author(AUTHOR)
+                .date(date)
+                .title(TITLE_2)
+                .build();
     }
 
     @Test
     @DisplayName("Find event by title")
     void testFindEventByTitle_whenGivenTitle_returnEventWithGivenTitle() {
-        eventRepository.save(event);
-        List<EventEntity> retrievedEvent = eventRepository.findEventEntityByTitle(TITLE);
+        eventRepository.save(event1);
+        List<EventEntity> retrievedEvent = eventRepository.findEventEntityByTitle(TITLE_1);
 
         assertNotNull(retrievedEvent, "Event should not be null");
         Assertions.assertEquals(1, retrievedEvent.size(),
                 "List should contain only one element");
-        assertEquals(TITLE, retrievedEvent.getFirst().getTitle(),
+        assertEquals(TITLE_1, retrievedEvent.getFirst().getTitle(),
                 "Title of Event should be equal");
+
+    }
+
+    @Test
+    @DisplayName("Find events by author")
+    void testFindEventByAuthor_whenGivenAuthor_returnEventWithGivenAuthor() {
+        eventRepository.save(event2);
+        List<EventEntity> retrievedEvents = eventRepository.findEventEntityByAuthor(AUTHOR);
+
+        assertNotNull(retrievedEvents, "Event should not be null");
+        Assertions.assertEquals(1, retrievedEvents.size(),
+                "List should contain only one element");
+        assertEquals(AUTHOR, retrievedEvents.getFirst().getAuthor(),
+                "Author of Event should be equal");
     }
 }
 
