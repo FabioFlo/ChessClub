@@ -67,4 +67,33 @@ public class TestEventDtoValidation {
                         v.getMessage().equals("Author must not be blank"));
     }
 
+    @Test
+    @DisplayName("Validation Event Create - Title size not valid")
+    void testValidationEventCreateDto_whenTitleSizeNotValid_thenValidationFails() {
+        CreateEventDto eventDto = new CreateEventDto(
+                "T",
+                "Test Description",
+                "Test Author",
+                "Test Announcement PDF");
+
+        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("title") &&
+                        v.getMessage().equals("Title must be between 2 and 100 characters"));
+    }
+
+    @Test
+    @DisplayName("Validation Event Create - Author size not valid")
+    void testValidationEventCreateDto_whenAuthorSizeNotValid_thenValidationFails() {
+        CreateEventDto eventDto = new CreateEventDto(
+                "Test Title",
+                "Test Description",
+                "T",
+                "Test Announcement PDF");
+
+        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("author") &&
+                        v.getMessage().equals("Author must be between 2 and 100 characters"));
+    }
 }
