@@ -14,22 +14,32 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class TestEventDtoValidation {
+
     private Validator validator;
+
+    CreateEventDto eventDto;
+    private static final int MAX_TITLE_LENGTH = 100;
+    private static final int MAX_AUTHOR_LENGTH = 100;
+    private static final int MIN_TITLE_LENGTH = 2;
+    private static final int MIN_AUTHOR_LENGTH = 2;
+    private static final String TITLE = "Test Title";
+    private static final String DESCRIPTION = "Test Description";
+    private static final String AUTHOR = "Test Author";
+    private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
+    private static final String INVALID_STRING_LENGTH = "A";
+
 
     @BeforeEach
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
+
     }
 
     @Test
     @DisplayName("Validation Event Create Dto - Title is blank")
     void testValidationEventCreateDto_whenTitleIsBlank_thenValidationFails() {
-        CreateEventDto eventDto = new CreateEventDto(
-                null,
-                "Test Description",
-                "Test Author",
-                "Test Announcement PDF");
+        eventDto = new CreateEventDto(null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
@@ -40,11 +50,7 @@ public class TestEventDtoValidation {
     @Test
     @DisplayName("Validation Event Create Dto - Description is blank")
     void testValidationEventCreateDto_whenDescriptionIsBlank_thenValidationFails() {
-        CreateEventDto eventDto = new CreateEventDto(
-                "Test Title",
-                null,
-                "Test Author",
-                "Test Announcement PDF");
+        eventDto = new CreateEventDto(TITLE, null, AUTHOR, ANNOUNCEMENT_PDF);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
@@ -55,11 +61,7 @@ public class TestEventDtoValidation {
     @Test
     @DisplayName("Validation Event Create Dto - Author is blank")
     void testValidationEventCreateDto_whenAuthorIsBlank_thenValidationFails() {
-        CreateEventDto eventDto = new CreateEventDto(
-                "Test Title",
-                "Test Description",
-                null,
-                "Test Announcement PDF");
+        eventDto = new CreateEventDto(TITLE, DESCRIPTION, null, ANNOUNCEMENT_PDF);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
@@ -71,29 +73,27 @@ public class TestEventDtoValidation {
     @DisplayName("Validation Event Create - Title size not valid")
     void testValidationEventCreateDto_whenTitleSizeNotValid_thenValidationFails() {
         CreateEventDto eventDto = new CreateEventDto(
-                "T",
-                "Test Description",
-                "Test Author",
-                "Test Announcement PDF");
+                INVALID_STRING_LENGTH, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("title") &&
-                        v.getMessage().equals("Title must be between 2 and 100 characters"));
+                        v.getMessage().equals("Title must be between "
+                                + MIN_TITLE_LENGTH + " and "
+                                + MAX_TITLE_LENGTH + " characters"));
     }
 
     @Test
     @DisplayName("Validation Event Create - Author size not valid")
     void testValidationEventCreateDto_whenAuthorSizeNotValid_thenValidationFails() {
         CreateEventDto eventDto = new CreateEventDto(
-                "Test Title",
-                "Test Description",
-                "T",
-                "Test Announcement PDF");
+                TITLE, DESCRIPTION, INVALID_STRING_LENGTH, ANNOUNCEMENT_PDF);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("author") &&
-                        v.getMessage().equals("Author must be between 2 and 100 characters"));
+                        v.getMessage().equals("Author must be between "
+                                + MIN_AUTHOR_LENGTH + " and "
+                                + MAX_AUTHOR_LENGTH + " characters"));
     }
 }
