@@ -1,5 +1,6 @@
 package org.csc.chessclub.mapper;
 
+import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.GetEventDto;
 import org.csc.chessclub.model.EventEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +41,7 @@ public class EventMapperTest {
     @DisplayName("Map event to get event dto")
     void shouldMapEventToGetEventDtoCorrectly() {
         GetEventDto eventDto = eventMapper.eventToGetEventDto(event);
+
         assertEquals(event.getUuid(), eventDto.uuid(),
                 "UUID should be equal");
         assertEquals(event.getDescription(), eventDto.description(),
@@ -55,4 +58,34 @@ public class EventMapperTest {
                 "Available should be equal");
     }
 
+    @Test
+    @DisplayName("Map get event dto to event")
+    void shouldMapGetEventDtoToEventCorrectly() {
+        CreateEventDto eventDto = new CreateEventDto("Test Title", "Test Description", "Test Author", "Test Announcement PDF");
+        EventEntity event = eventMapper.createEventDtoToEvent(eventDto);
+
+        assertEquals(eventDto.title(), event.getTitle(),
+                "Title should be equal");
+        assertEquals(eventDto.description(), event.getDescription(),
+                "Description should be equal");
+        assertEquals(eventDto.author(), event.getAuthor(),
+                "Author should be equal");
+        assertEquals(eventDto.announcementPDF(), event.getAnnouncementPDF(),
+                "Announcement PDF should be equal");
+    }
+
+    @Test
+    @DisplayName("Map list of EventEntity to list of GetEventDto ")
+    void shouldMapListOfEventEntityToListOfGetEventDtoCorrectly() {
+        List<GetEventDto> eventDtoList = eventMapper.eventEntityListToGetEventDtoList(java.util.List.of(event));
+
+        assertEquals(1, eventDtoList.size(),
+                "List should contain only one element");
+        assertEquals(event.getUuid(), eventDtoList.getFirst().uuid(),
+                "UUID should be equal");
+        assertEquals(event.getDescription(), eventDtoList.getFirst().description(),
+                "Description should be equal");
+        assertEquals(event.getAnnouncementPDF(), eventDtoList.getFirst().announcementPDF(),
+                "Announcement PDF should be equal");
+    }
 }
