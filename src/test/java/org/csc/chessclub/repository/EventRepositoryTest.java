@@ -49,7 +49,7 @@ public class EventRepositoryTest {
                 .description(description)
                 .announcementPDF(announcementPDF)
                 .author(AUTHOR)
-                .date(date)
+                .createdAt(date)
                 .title(TITLE_1)
                 .available(true)
                 .build();
@@ -59,7 +59,7 @@ public class EventRepositoryTest {
                 .description(description)
                 .announcementPDF(announcementPDF)
                 .author(AUTHOR)
-                .date(date)
+                .createdAt(date)
                 .title(TITLE_2)
                 .build();
     }

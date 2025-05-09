@@ -22,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Log
 public class EventServiceUnitTest {
 
     @InjectMocks
@@ -47,11 +45,10 @@ public class EventServiceUnitTest {
                 .description(description)
                 .announcementPDF(announcementPDF)
                 .author(author)
-                .date(date)
+                .createdAt(date)
                 .title(title)
                 .available(true)
                 .build();
-        log.info("setUp UUID: " + uuid);
     }
 
     @Test

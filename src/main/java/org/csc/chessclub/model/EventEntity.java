@@ -22,7 +22,7 @@ public class EventEntity {
     private UUID uuid;
     private String title;
     private String description;
-    private LocalDate date;
+    private LocalDate createdAt;
     private String author;
     private String announcementPDF;
     private boolean available;
