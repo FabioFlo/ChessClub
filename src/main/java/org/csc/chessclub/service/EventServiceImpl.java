@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Service
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
 
