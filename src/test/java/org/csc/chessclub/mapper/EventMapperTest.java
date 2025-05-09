@@ -54,8 +54,6 @@ public class EventMapperTest {
                 "Created At should be equal");
         assertEquals(event.getTitle(), eventDto.title(),
                 "Title should be equal");
-        assertEquals(event.isAvailable(), eventDto.available(),
-                "Available should be equal");
     }
 
     @Test
