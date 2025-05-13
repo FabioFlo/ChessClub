@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/events")
@@ -32,5 +33,10 @@ public class EventController {
                 .eventEntityListToGetEventDtoList(eventService.getAll()));
     }
 
+    @GetMapping("/{uuid}")
+    public ResponseEntity<GetEventDto> getEventById(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(
+                eventMapper.eventToGetEventDto(eventService.getById(uuid)));
+    }
 
 }

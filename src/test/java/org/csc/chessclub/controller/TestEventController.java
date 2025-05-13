@@ -19,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -50,7 +50,7 @@ public class TestEventController {
     @Order(1)
     void connectionTest() {
         assertNotNull(postgresContainer, "Container should not be null");
-        Assertions.assertTrue(postgresContainer.isRunning(), "Container should be running");
+        assertTrue(postgresContainer.isRunning(), "Container should be running");
     }
 
     @BeforeAll
@@ -82,7 +82,7 @@ public class TestEventController {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().response().asString().contains("Event created");
 
-        Assertions.assertTrue(eventCreated, "Event should be created");
+        assertTrue(eventCreated, "Event should be created");
 
     }
 
@@ -103,5 +103,21 @@ public class TestEventController {
 
         uuid = events[0].uuid().toString();
         assertNotNull(uuid, "UUID should not be null");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Get Event By Id")
+    void testGetEvent_whenEventFoundById_returnsEvent() {
+        GetEventDto event = given()
+                .when()
+                .get("/events/" + uuid)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(GetEventDto.class);
+
+        assertThat(event)
+                .isNotNull();
+        assertEquals(event.uuid().toString(), uuid);
     }
 }
