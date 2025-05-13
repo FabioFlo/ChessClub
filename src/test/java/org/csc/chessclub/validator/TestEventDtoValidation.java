@@ -5,11 +5,13 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.CreateEventDto;
+import org.csc.chessclub.dto.EventDetailsDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -17,7 +19,7 @@ public class TestEventDtoValidation {
 
     private Validator validator;
 
-    CreateEventDto eventDto;
+    CreateEventDto createEvent;
     private static final int MAX_TITLE_LENGTH = 100;
     private static final int MAX_AUTHOR_LENGTH = 100;
     private static final int MIN_TITLE_LENGTH = 2;
@@ -27,6 +29,7 @@ public class TestEventDtoValidation {
     private static final String AUTHOR = "Test Author";
     private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private static final String INVALID_STRING_LENGTH = "A";
+    private UUID uuid = UUID.randomUUID();
 
 
     @BeforeEach
@@ -39,9 +42,9 @@ public class TestEventDtoValidation {
     @Test
     @DisplayName("Validation Event Create Dto - Title is blank")
     void testValidationEventCreateDto_whenTitleIsBlank_thenValidationFails() {
-        eventDto = new CreateEventDto(null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+        createEvent = new CreateEventDto(null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
-        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
+        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("title") &&
                         v.getMessage().equals("Title must not be blank"));
@@ -50,9 +53,9 @@ public class TestEventDtoValidation {
     @Test
     @DisplayName("Validation Event Create Dto - Description is blank")
     void testValidationEventCreateDto_whenDescriptionIsBlank_thenValidationFails() {
-        eventDto = new CreateEventDto(TITLE, null, AUTHOR, ANNOUNCEMENT_PDF);
+        createEvent = new CreateEventDto(TITLE, null, AUTHOR, ANNOUNCEMENT_PDF);
 
-        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
+        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("description") &&
                         v.getMessage().equals("Description must not be blank"));
@@ -61,9 +64,9 @@ public class TestEventDtoValidation {
     @Test
     @DisplayName("Validation Event Create Dto - Author is blank")
     void testValidationEventCreateDto_whenAuthorIsBlank_thenValidationFails() {
-        eventDto = new CreateEventDto(TITLE, DESCRIPTION, null, ANNOUNCEMENT_PDF);
+        createEvent = new CreateEventDto(TITLE, DESCRIPTION, null, ANNOUNCEMENT_PDF);
 
-        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
+        Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("author") &&
                         v.getMessage().equals("Author must not be blank"));
@@ -95,5 +98,27 @@ public class TestEventDtoValidation {
                         v.getMessage().equals("Author must be between "
                                 + MIN_AUTHOR_LENGTH + " and "
                                 + MAX_AUTHOR_LENGTH + " characters"));
+    }
+
+    @Test
+    @DisplayName("Validation Event Update")
+    void testValidationEventUpdateDto_whenValidEventDetailsProvided_thenValidationSucceeds() {
+        EventDetailsDto eventDetails = new EventDetailsDto(
+                uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+
+        Set<ConstraintViolation<EventDetailsDto>> violations = validator.validate(eventDetails);
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Validation Event Update - Uuid null")
+    void testValidationEventUpdateDto_whenUuidNull_thenValidationFails() {
+        EventDetailsDto eventDetails = new EventDetailsDto(
+                null, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+
+        Set<ConstraintViolation<EventDetailsDto>> violations = validator.validate(eventDetails);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("uuid") &&
+                        v.getMessage().equals("UUID must not be null"));
     }
 }
