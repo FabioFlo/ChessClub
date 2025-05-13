@@ -1,6 +1,8 @@
 package org.csc.chessclub.mapper;
 
+import jakarta.validation.Valid;
 import org.csc.chessclub.dto.CreateEventDto;
+import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
 import org.csc.chessclub.model.EventEntity;
 import org.mapstruct.Mapper;
@@ -21,4 +23,6 @@ public interface EventMapper {
     EventEntity createEventDtoToEvent(CreateEventDto createEventDto);
 
     List<GetEventDto> eventEntityListToGetEventDtoList(List<EventEntity> event);
+
+    EventEntity eventDetailsDtoToEvent(EventDetailsDto eventDetailsDto);
 }

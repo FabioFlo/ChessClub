@@ -1,6 +1,7 @@
 package org.csc.chessclub.mapper;
 
 import org.csc.chessclub.dto.CreateEventDto;
+import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
 import org.csc.chessclub.model.EventEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,23 +18,25 @@ public class EventMapperTest {
     private final EventMapper eventMapper = EventMapper.INSTANCE;
     private EventEntity event;
 
+    private final UUID uuid = UUID.randomUUID();
+    private final LocalDate CREATED_AT = LocalDate.now();
+    private final String DESCRIPTION = "Test Description";
+    private final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
+    private final String AUTHOR = "Test Author";
+    private final String TITLE = "Test Title";
+
     @BeforeEach
     public void setUp() {
-        UUID uuid = UUID.randomUUID();
-        String title = "Test Event";
-        String description = "Test Description";
-        String author = "Test Author";
-        String announcementPDF = "Test Announcement PDF";
-        LocalDate date = LocalDate.now();
+        boolean available = true;
         event = EventEntity
                 .builder()
                 .uuid(uuid)
-                .description(description)
-                .announcementPDF(announcementPDF)
-                .author(author)
-                .createdAt(date)
-                .title(title)
-                .available(true)
+                .description(DESCRIPTION)
+                .announcementPDF(ANNOUNCEMENT_PDF)
+                .author(AUTHOR)
+                .createdAt(CREATED_AT)
+                .title(TITLE)
+                .available(available)
                 .build();
     }
 
@@ -59,7 +62,7 @@ public class EventMapperTest {
     @Test
     @DisplayName("Map get event dto to event")
     void shouldMapGetEventDtoToEventCorrectly() {
-        CreateEventDto eventDto = new CreateEventDto("Test Title", "Test Description", "Test Author", "Test Announcement PDF");
+        CreateEventDto eventDto = new CreateEventDto(TITLE, DESCRIPTION, AUTHOR, DESCRIPTION);
         EventEntity event = eventMapper.createEventDtoToEvent(eventDto);
 
         assertEquals(eventDto.title(), event.getTitle(),
@@ -85,5 +88,19 @@ public class EventMapperTest {
                 "Description should be equal");
         assertEquals(event.getAnnouncementPDF(), eventDtoList.getFirst().announcementPDF(),
                 "Announcement PDF should be equal");
+    }
+
+    @Test
+    @DisplayName("Map EventDetailsDto to EventEntity")
+    void shouldMapEventDetailsDtoToEventEntityCorrectly() {
+        String updatedTitle = "Updated Title";
+        EventEntity updatedEvent = eventMapper.eventDetailsDtoToEvent(new EventDetailsDto(uuid,
+                updatedTitle, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF));
+
+        assertEquals(uuid, updatedEvent.getUuid());
+        assertEquals(updatedTitle, updatedEvent.getTitle());
+        assertEquals(DESCRIPTION, updatedEvent.getDescription());
+        assertEquals(AUTHOR, updatedEvent.getAuthor());
+        assertEquals(ANNOUNCEMENT_PDF, updatedEvent.getAnnouncementPDF());
     }
 }

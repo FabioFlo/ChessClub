@@ -3,6 +3,7 @@ package org.csc.chessclub.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.CreateEventDto;
+import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
 import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.EventService;
@@ -39,4 +40,9 @@ public class EventController {
                 eventMapper.eventToGetEventDto(eventService.getById(uuid)));
     }
 
+    @PatchMapping()
+    public ResponseEntity<EventDetailsDto> updateEvent(@Valid @RequestBody EventDetailsDto eventDetailsDto) {
+        eventService.update(eventMapper.eventDetailsDtoToEvent(eventDetailsDto));
+        return ResponseEntity.ok(eventDetailsDto);
+    }
 }
