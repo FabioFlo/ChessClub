@@ -1,13 +1,11 @@
 package org.csc.chessclub.service;
 
-import lombok.extern.java.Log;
 import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -116,9 +114,7 @@ public class EventServiceUnitTest {
     @Test
     @DisplayName("Throw when Event Not Found")
     void testEventService_whenEventNotFound_shouldThrowWhenEventNotFound() {
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            eventService.getById(event.getUuid());
-        });
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> eventService.getById(event.getUuid()));
 
         assertTrue(exception.getMessage().contains("Event not found"));
     }
@@ -129,9 +125,7 @@ public class EventServiceUnitTest {
         event.setTitle("");
         String aspectMessage = "Title cannot be null or empty";
 
-        RuntimeException exception = assertThrows(EventServiceException.class, () -> {
-            eventService.create(event);
-        });
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
 
         assertTrue(exception.getMessage().contains(aspectMessage));
     }
@@ -142,9 +136,7 @@ public class EventServiceUnitTest {
         event.setAuthor("");
         String aspectMessage = "Author cannot be null or empty";
 
-        RuntimeException exception = assertThrows(EventServiceException.class, () -> {
-            eventService.create(event);
-        });
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
 
         assertTrue(exception.getMessage().contains(aspectMessage));
     }
@@ -155,9 +147,7 @@ public class EventServiceUnitTest {
         event.setDescription("");
         String aspectMessage = "Description cannot be null or empty";
 
-        RuntimeException exception = assertThrows(EventServiceException.class, () -> {
-            eventService.create(event);
-        });
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
 
         assertTrue(exception.getMessage().contains(aspectMessage));
     }
