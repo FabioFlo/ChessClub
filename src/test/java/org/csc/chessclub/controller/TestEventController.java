@@ -8,6 +8,7 @@ import io.restassured.http.ContentType;
 import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
+import org.csc.chessclub.dto.ResponseDto;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -139,5 +140,25 @@ public class TestEventController {
                 .statusCode(HttpStatus.OK.value())
                 .body("uuid", equalTo(uuid.toString()))
                 .body("title", equalTo("New test title"));
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Delete event")
+    void testDeleteEvent_whenEventFound_returnsResponseDtoWithSuccessAndMessage() {
+        EventDetailsDto eventDetailsDto = new EventDetailsDto(uuid, TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+
+        ResponseDto responseDto = given()
+                .body(eventDetailsDto)
+                .when()
+                .delete("/events")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(ResponseDto.class);
+
+        assertThat(responseDto)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("Event deleted");
     }
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
+import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.EventService;
 import org.springframework.http.HttpStatus;
@@ -45,4 +46,11 @@ public class EventController {
         eventService.update(eventMapper.eventDetailsDtoToEvent(eventDetailsDto));
         return ResponseEntity.ok(eventDetailsDto);
     }
+
+    @DeleteMapping()
+    public ResponseEntity<ResponseDto> deleteEvent(@Valid @RequestBody EventDetailsDto eventDetailsDto) {
+        eventService.delete(eventMapper.eventDetailsDtoToEvent(eventDetailsDto));
+        return ResponseEntity.ok(new ResponseDto("Event deleted", true));
+    }
+
 }
