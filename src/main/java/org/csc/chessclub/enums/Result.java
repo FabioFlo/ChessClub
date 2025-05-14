@@ -1,4 +1,4 @@
-package org.csc.chessclub.utils;
+package org.csc.chessclub.enums;
 
 import lombok.Getter;
 

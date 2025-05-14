@@ -9,8 +9,10 @@ import org.csc.chessclub.dto.GetEventDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.EventService;
+import org.csc.chessclub.utils.ValidUUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/events")
 @RequiredArgsConstructor
+@Validated
 public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
@@ -37,7 +40,7 @@ public class EventController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<GetEventDto> getEventById(@PathVariable UUID uuid) {
+    public ResponseEntity<GetEventDto> getEventById(@ValidUUID @PathVariable UUID uuid) {
         return ResponseEntity.ok(
                 eventMapper.eventToGetEventDto(eventService.getById(uuid)));
     }

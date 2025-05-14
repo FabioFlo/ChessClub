@@ -5,7 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
-import org.csc.chessclub.utils.Result;
+import org.csc.chessclub.enums.Result;
 
 import java.util.UUID;
 

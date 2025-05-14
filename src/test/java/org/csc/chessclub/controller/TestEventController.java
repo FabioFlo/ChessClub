@@ -163,21 +163,39 @@ public class TestEventController {
 
     @Test
     @Order(7)
-    @DisplayName("Should throw and return ValidErrorMessage")
+    @DisplayName("Create Event - Should throw validation exception when invalid create event dto provided")
     void testCreateEvent_whenInvalidCreateEventDtoProvided_shouldThrowValidationException() {
         CreateEventDto invalidCreateEventDto = new CreateEventDto(
                 "", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
-       ValidErrorMessage validErrorMessage = given()
+        ValidErrorMessage validErrorMessage = given()
                 .body(invalidCreateEventDto)
                 .when()
                 .post("/events")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-               .extract().response().as(ValidErrorMessage.class);
+                .extract().response().as(ValidErrorMessage.class);
 
-       assertThat(validErrorMessage.errors())
-               .containsEntry("title", "Title must not be blank");
+        assertThat(validErrorMessage.errors())
+                .containsEntry("title", "Title must not be blank");
 
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("Get by Id - Should throw validation exception when invalid uuid provided")
+    void testGetEventById_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
+        UUID invalidUuid = new UUID(0, 0);
+
+        ValidErrorMessage validErrorMessage = given()
+                .pathParam("uuid", invalidUuid)
+                .when()
+                .get("/events/{uuid}")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().response().as(ValidErrorMessage.class);
+
+        assertThat(validErrorMessage.errors())
+                .containsEntry("uuid", "Invalid UUID format");
     }
 }
