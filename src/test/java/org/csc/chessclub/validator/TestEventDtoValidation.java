@@ -29,7 +29,7 @@ public class TestEventDtoValidation {
     private static final String AUTHOR = "Test Author";
     private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private static final String INVALID_STRING_LENGTH = "A";
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
 
 
     @BeforeEach

@@ -9,6 +9,7 @@ import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
 import org.csc.chessclub.dto.ResponseDto;
+import org.csc.chessclub.exception.ValidErrorMessage;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -158,5 +159,25 @@ public class TestEventController {
                 .isNotNull()
                 .extracting(ResponseDto::message)
                 .isEqualTo("Event deleted");
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Should throw and return ValidErrorMessage")
+    void testCreateEvent_whenInvalidCreateEventDtoProvided_shouldThrowValidationException() {
+        CreateEventDto invalidCreateEventDto = new CreateEventDto(
+                "", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+
+       ValidErrorMessage validErrorMessage = given()
+                .body(invalidCreateEventDto)
+                .when()
+                .post("/events")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+               .extract().response().as(ValidErrorMessage.class);
+
+       assertThat(validErrorMessage.errors())
+               .containsEntry("title", "Title must not be blank");
+
     }
 }
