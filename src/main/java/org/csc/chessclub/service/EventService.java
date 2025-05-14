@@ -9,6 +9,6 @@ public interface EventService {
     EventEntity create(EventEntity event);
     EventEntity update(EventEntity event);
     EventEntity getById(UUID uuid);
-    EventEntity delete(EventEntity event);
+    EventEntity delete(UUID uuid);
     List<EventEntity> getAll();
 }

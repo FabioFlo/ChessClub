@@ -146,12 +146,10 @@ public class TestEventController {
     @Order(6)
     @DisplayName("Delete event")
     void testDeleteEvent_whenEventFound_returnsResponseDtoWithSuccessAndMessage() {
-        EventDetailsDto eventDetailsDto = new EventDetailsDto(uuid, TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
-
         ResponseDto responseDto = given()
-                .body(eventDetailsDto)
+                .pathParam("uuid", uuid)
                 .when()
-                .delete("/events")
+                .delete("/events/{uuid}")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response().as(ResponseDto.class);

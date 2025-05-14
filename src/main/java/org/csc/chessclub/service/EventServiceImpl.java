@@ -7,6 +7,7 @@ import org.csc.chessclub.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -34,12 +35,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventEntity delete(EventEntity event) {
-        if (eventRepository.existsById(event.getUuid())) {
-            event.setAvailable(false);
-            return eventRepository.save(event);
+    public EventEntity delete(UUID uuid) {
+        Optional<EventEntity> event = eventRepository.findById(uuid);
+        if (event.isPresent()) {
+            event.get().setAvailable(false);
+            return eventRepository.save(event.get());
         }
-        throw new RuntimeException("Event not found with ID: " + event.getUuid());
+        throw new RuntimeException("Event not found with ID: " + uuid);
     }
 
     @Override
