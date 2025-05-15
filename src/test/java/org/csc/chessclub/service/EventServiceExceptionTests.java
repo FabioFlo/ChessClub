@@ -4,24 +4,28 @@ import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceExceptionTests {
 
     @InjectMocks
     private EventServiceImpl eventService;
+
+    @Mock
+    private EventRepository eventRepository;
 
     private EventEntity event;
 
@@ -46,9 +50,18 @@ public class EventServiceExceptionTests {
     }
 
     @Test
-    @DisplayName("Throw when Event Not Found")
-    void testEventService_whenEventNotFound_shouldThrowWhenEventNotFound() {
+    @DisplayName("Get by id - Throw when Event Not Found")
+    void testEventService_whenEventByIdNotFound_shouldThrowWhenEventNotFound() {
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.getById(event.getUuid()));
+
+        assertEquals(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()), exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Delete - Throw when Event Not Found")
+    void testEventService_whenEventDeleted_shouldThrowWhenEventNotFound() {
+        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.delete(event.getUuid()));
 
         assertTrue(exception.getMessage().contains(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid())));
     }

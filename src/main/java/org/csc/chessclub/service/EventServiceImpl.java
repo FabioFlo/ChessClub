@@ -43,7 +43,7 @@ public class EventServiceImpl implements EventService {
             event.get().setAvailable(false);
             return eventRepository.save(event.get());
         }
-        throw new RuntimeException("Event not found with ID: " + uuid);
+        throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid));
     }
 
     @Override
