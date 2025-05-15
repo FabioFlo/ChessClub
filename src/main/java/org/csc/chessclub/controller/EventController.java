@@ -1,7 +1,6 @@
 package org.csc.chessclub.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
@@ -52,7 +51,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<ResponseDto> deleteEvent(@NotNull @PathVariable UUID uuid) {
+    public ResponseEntity<ResponseDto> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
         eventService.delete(uuid);
         return ResponseEntity.ok(new ResponseDto("Event deleted", true));
     }
