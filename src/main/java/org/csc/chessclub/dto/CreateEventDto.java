@@ -2,15 +2,16 @@ package org.csc.chessclub.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.csc.chessclub.utils.EventValidationMessage;
 
 public record CreateEventDto(
-        @NotBlank(message = "Title must not be blank")
-        @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters")
+        @NotBlank(message = EventValidationMessage.TITLE_MUST_NOT_BE_BLANK)
+        @Size(min = 2, max = 100, message = EventValidationMessage.TITLE_MUST_BE_BETWEEN_2_AND_100_CHARACTERS)
         String title,
-        @NotBlank(message = "Description must not be blank")
+        @NotBlank(message = EventValidationMessage.DESCRIPTION_MUST_NOT_BE_BLANK)
         String description,
-        @NotBlank(message = "Author must not be blank")
-        @Size(min = 2, max = 100, message = "Author must be between 2 and 100 characters")
+        @NotBlank(message = EventValidationMessage.AUTHOR_MUST_NOT_BE_BLANK)
+        @Size(min = 2, max = 30, message = EventValidationMessage.AUTHOR_MUST_BE_BETWEEN_2_AND_30_CHARACTERS)
         String author,
         String announcementPDF
 ) {

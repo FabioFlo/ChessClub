@@ -6,6 +6,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
+import org.csc.chessclub.utils.EventValidationMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,6 @@ public class TestEventDtoValidation {
     private Validator validator;
 
     CreateEventDto createEvent;
-    private static final int MAX_TITLE_LENGTH = 100;
-    private static final int MAX_AUTHOR_LENGTH = 100;
-    private static final int MIN_TITLE_LENGTH = 2;
-    private static final int MIN_AUTHOR_LENGTH = 2;
     private static final String TITLE = "Test Title";
     private static final String DESCRIPTION = "Test Description";
     private static final String AUTHOR = "Test Author";
@@ -47,7 +44,7 @@ public class TestEventDtoValidation {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("title") &&
-                        v.getMessage().equals("Title must not be blank"));
+                        v.getMessage().equals(EventValidationMessage.TITLE_MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -58,7 +55,7 @@ public class TestEventDtoValidation {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("description") &&
-                        v.getMessage().equals("Description must not be blank"));
+                        v.getMessage().equals(EventValidationMessage.DESCRIPTION_MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -69,7 +66,7 @@ public class TestEventDtoValidation {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("author") &&
-                        v.getMessage().equals("Author must not be blank"));
+                        v.getMessage().equals(EventValidationMessage.AUTHOR_MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -81,9 +78,7 @@ public class TestEventDtoValidation {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("title") &&
-                        v.getMessage().equals("Title must be between "
-                                + MIN_TITLE_LENGTH + " and "
-                                + MAX_TITLE_LENGTH + " characters"));
+                        v.getMessage().equals(EventValidationMessage.TITLE_MUST_BE_BETWEEN_2_AND_100_CHARACTERS));
     }
 
     @Test
@@ -95,9 +90,7 @@ public class TestEventDtoValidation {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("author") &&
-                        v.getMessage().equals("Author must be between "
-                                + MIN_AUTHOR_LENGTH + " and "
-                                + MAX_AUTHOR_LENGTH + " characters"));
+                        v.getMessage().equals(EventValidationMessage.AUTHOR_MUST_BE_BETWEEN_2_AND_30_CHARACTERS));
     }
 
     @Test
@@ -119,6 +112,6 @@ public class TestEventDtoValidation {
         Set<ConstraintViolation<EventDetailsDto>> violations = validator.validate(eventDetails);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("uuid") &&
-                        v.getMessage().equals("UUID must not be null"));
+                        v.getMessage().equals(EventValidationMessage.UUID_MUST_BE_VALID));
     }
 }
