@@ -63,8 +63,16 @@ public class EventServiceExceptionTests {
 
     @Test
     @DisplayName("Delete - Throw when Event Not Found")
-    void testEventService_whenEventDeleted_shouldThrowWhenEventNotFound() {
+    void testEventService_whenTryToDeleteEvent_shouldThrowWhenEventNotFound() {
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.delete(event.getUuid()));
+
+        assertTrue(exception.getMessage().contains(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid())));
+    }
+
+    @Test
+    @DisplayName("Update - Throw when Event Not Found")
+    void testEventService_whenTryToUpdateEvent_shouldThrowWhenEventNotFound() {
+        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.update(event));
 
         assertTrue(exception.getMessage().contains(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid())));
     }
