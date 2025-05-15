@@ -23,9 +23,9 @@ public class ValidatorExceptionHandler {
             MethodArgumentNotValidException ex) {
         Map<String, String> violations = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((violation) -> {
-            String fieldName = ((FieldError) violation).getField();
-            String errorMessage = violation.getDefaultMessage();
-            violations.put(fieldName, errorMessage);
+            String field = ((FieldError) violation).getField();
+            String message = violation.getDefaultMessage();
+            violations.put(field, message);
         });
         ValidErrorMessage errorMessage = new ValidErrorMessage(HttpStatus.BAD_REQUEST.value(), violations);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
@@ -35,12 +35,12 @@ public class ValidatorExceptionHandler {
     public ResponseEntity<ValidErrorMessage> paramValidationException(ConstraintViolationException ex) {
         Map<String, String> violations = new HashMap<>();
         ex.getConstraintViolations().forEach(violation -> {
-            String message = violation.getMessage();
             String field = StreamSupport
                     .stream(violation.getPropertyPath().spliterator(), false)
                     .reduce((first, second) -> second)
                     .map(Path.Node::getName)
                     .orElse("unknown");
+            String message = violation.getMessage();
 
             violations.put(field, message);
         });
