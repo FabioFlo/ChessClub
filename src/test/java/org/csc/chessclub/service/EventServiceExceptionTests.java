@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceExceptionTests {
@@ -56,6 +58,7 @@ public class EventServiceExceptionTests {
 
         assertEquals(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()), exception.getMessage());
 
+        verify(eventRepository, times(1)).findById(event.getUuid());
     }
 
     @Test
