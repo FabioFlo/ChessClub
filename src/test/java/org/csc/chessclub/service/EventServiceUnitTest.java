@@ -1,6 +1,5 @@
 package org.csc.chessclub.service;
 
-import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,47 +108,6 @@ public class EventServiceUnitTest {
 
         assertDoesNotThrow(() -> eventService.delete(event.getUuid()));
         assertFalse(event.isAvailable());
-    }
-
-    @Test
-    @DisplayName("Throw when Event Not Found")
-    void testEventService_whenEventNotFound_shouldThrowWhenEventNotFound() {
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> eventService.getById(event.getUuid()));
-
-        assertTrue(exception.getMessage().contains("Event not found"));
-    }
-
-    @Test
-    @DisplayName("Empty title throw EventServiceException")
-    void testEventService_whenEmptyTitle_shouldThrowEventServiceException() {
-        event.setTitle("");
-        String aspectMessage = "Title cannot be null or empty";
-
-        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
-
-        assertTrue(exception.getMessage().contains(aspectMessage));
-    }
-
-    @Test
-    @DisplayName("Empty author throw EventServiceException")
-    void testEventService_whenEmptyAuthor_shouldThrowEventServiceException() {
-        event.setAuthor("");
-        String aspectMessage = "Author cannot be null or empty";
-
-        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
-
-        assertTrue(exception.getMessage().contains(aspectMessage));
-    }
-
-    @Test
-    @DisplayName("Empty description throw EventServiceException")
-    void testEventService_whenEmptyDescription_shouldThrowEventServiceException() {
-        event.setDescription("");
-        String aspectMessage = "Description cannot be null or empty";
-
-        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
-
-        assertTrue(exception.getMessage().contains(aspectMessage));
     }
 
     @Test

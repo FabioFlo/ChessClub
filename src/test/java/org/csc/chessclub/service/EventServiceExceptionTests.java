@@ -1,0 +1,89 @@
+package org.csc.chessclub.service;
+
+import org.csc.chessclub.enums.NotFoundMessage;
+import org.csc.chessclub.exception.CustomNotFoundException;
+import org.csc.chessclub.exception.EventServiceException;
+import org.csc.chessclub.model.EventEntity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@ExtendWith(MockitoExtension.class)
+public class EventServiceExceptionTests {
+
+    @InjectMocks
+    private EventServiceImpl eventService;
+
+    private EventEntity event;
+
+    @BeforeEach
+    public void setUp() {
+        UUID uuid = UUID.randomUUID();
+        String title = "Test Event";
+        String description = "Test Description";
+        String author = "Test Author";
+        String announcementPDF = "Test Announcement PDF";
+        LocalDate date = LocalDate.now();
+        event = EventEntity
+                .builder()
+                .uuid(uuid)
+                .description(description)
+                .announcementPDF(announcementPDF)
+                .author(author)
+                .createdAt(date)
+                .title(title)
+                .available(true)
+                .build();
+    }
+
+    @Test
+    @DisplayName("Throw when Event Not Found")
+    void testEventService_whenEventNotFound_shouldThrowWhenEventNotFound() {
+        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.getById(event.getUuid()));
+
+        assertTrue(exception.getMessage().contains(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid())));
+    }
+
+    @Test
+    @DisplayName("Empty title throw EventServiceException")
+    void testEventService_whenEmptyTitle_shouldThrowEventServiceException() {
+        event.setTitle("");
+        String aspectMessage = "Title cannot be null or empty";
+
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
+
+        assertTrue(exception.getMessage().contains(aspectMessage));
+    }
+
+    @Test
+    @DisplayName("Empty author throw EventServiceException")
+    void testEventService_whenEmptyAuthor_shouldThrowEventServiceException() {
+        event.setAuthor("");
+        String aspectMessage = "Author cannot be null or empty";
+
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
+
+        assertTrue(exception.getMessage().contains(aspectMessage));
+    }
+
+    @Test
+    @DisplayName("Empty description throw EventServiceException")
+    void testEventService_whenEmptyDescription_shouldThrowEventServiceException() {
+        event.setDescription("");
+        String aspectMessage = "Description cannot be null or empty";
+
+        RuntimeException exception = assertThrows(EventServiceException.class, () -> eventService.create(event));
+
+        assertTrue(exception.getMessage().contains(aspectMessage));
+    }
+
+}

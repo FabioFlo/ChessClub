@@ -1,6 +1,8 @@
 package org.csc.chessclub.service;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.enums.NotFoundMessage;
+import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
@@ -31,7 +33,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventEntity getById(UUID uuid) {
         return eventRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + uuid));
+                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid)));
     }
 
     @Override
