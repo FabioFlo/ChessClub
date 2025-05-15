@@ -1,13 +1,13 @@
 package org.csc.chessclub.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.csc.chessclub.utils.ValidUUID;
 
 import java.util.UUID;
 
 public record EventDetailsDto(
-        @NotNull(message = "UUID must not be null")
+        @ValidUUID(message = "UUID must be valid")
         UUID uuid,
         @NotBlank(message = "Title must not be blank")
         @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters")

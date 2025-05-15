@@ -6,6 +6,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.csc.chessclub.dto.CreateEventDto;
+import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.exception.ValidErrorMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +35,7 @@ public class TestEventValidationController {
     private static final String DESCRIPTION = "Test Description";
     private static final String AUTHOR = "Test Author";
     private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
-
+    private final UUID invalidUuid = new UUID(0, 0);
     private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
     private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
 
@@ -50,9 +51,7 @@ public class TestEventValidationController {
     void setup() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
-
         RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
-
         RestAssured.requestSpecification = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
@@ -63,7 +62,7 @@ public class TestEventValidationController {
     @DisplayName("Create Event - Should throw validation exception when invalid create event dto provided")
     void testCreateEvent_whenInvalidCreateEventDtoProvided_shouldThrowValidationException() {
         CreateEventDto invalidCreateEventDto = new CreateEventDto(
-                "", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+                null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
         ValidErrorMessage validErrorMessage = given()
                 .body(invalidCreateEventDto)
@@ -79,10 +78,29 @@ public class TestEventValidationController {
     }
 
     @Test
+    @DisplayName("Update Event - Should throw validation exception when invalid event details provided")
+    void testUpdateEvent_whenInvalidEventDetailsDtoProvided_shouldThrowValidationException() {
+        EventDetailsDto invalidUpdateEventDto = new EventDetailsDto(invalidUuid, null, null, null, "");
+
+        ValidErrorMessage validErrorMessage = given()
+                .body(invalidUpdateEventDto)
+                .when()
+                .patch("/events")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().response().as(ValidErrorMessage.class);
+
+        assertThat(validErrorMessage.errors())
+                .containsEntry("uuid", "UUID must be valid")
+                .containsEntry("title", "Title must not be blank")
+                .containsEntry("description", "Description must not be blank")
+                .containsEntry("author", "Author must not be blank")
+                .doesNotContainKey("announcementPDF");
+    }
+
+    @Test
     @DisplayName("Get by Id - Should throw validation exception when invalid uuid provided")
     void testGetEventById_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
-        UUID invalidUuid = new UUID(0, 0);
-
         ValidErrorMessage validErrorMessage = given()
                 .pathParam("uuid", invalidUuid)
                 .when()
@@ -96,8 +114,8 @@ public class TestEventValidationController {
     }
 
     @Test
+    @DisplayName("Delete - Should throw validation exception when invalid uuid provided")
     void testDeleteEvent_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
-        UUID invalidUuid = new UUID(0, 0);
         ValidErrorMessage validErrorMessage = given()
                 .pathParam("uuid", invalidUuid)
                 .when()
