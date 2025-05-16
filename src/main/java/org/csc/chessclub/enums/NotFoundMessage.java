@@ -14,6 +14,6 @@ public enum NotFoundMessage {
      }
 
      public String format(Object... args) {
-        return message.formatted(message, args);
+        return message.formatted(args);
      }
 }
