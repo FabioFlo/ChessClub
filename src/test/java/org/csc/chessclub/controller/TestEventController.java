@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -133,14 +132,20 @@ public class TestEventController {
     @DisplayName("Update event")
     void testUpdateEvent_whenValidEventDetailsProvided_returnsUpdatedEvent() {
         EventDetailsDto eventDetailsDto = new EventDetailsDto(uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
-        given()
+
+        ResponseDto<EventDetailsDto> response = given()
                 .body(eventDetailsDto)
                 .when()
                 .patch("/events")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("uuid", equalTo(uuid.toString()))
-                .body("title", equalTo("New test title"));
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .isEqualTo(eventDetailsDto);
     }
 
     @Test

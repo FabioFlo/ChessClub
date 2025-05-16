@@ -45,15 +45,15 @@ public class EventController {
     }
 
     @PatchMapping()
-    public ResponseEntity<EventDetailsDto> updateEvent(@Valid @RequestBody EventDetailsDto eventDetailsDto) {
+    public ResponseEntity<ResponseDto<EventDetailsDto>> updateEvent(@Valid @RequestBody EventDetailsDto eventDetailsDto) {
         eventService.update(eventMapper.eventDetailsDtoToEvent(eventDetailsDto));
-        return ResponseEntity.ok(eventDetailsDto);
+        return ResponseEntity.ok(new ResponseDto<>(eventDetailsDto, "Event updated", true));
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<ResponseDto<UUID>> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
         eventService.delete(uuid);
-        return ResponseEntity.ok(new ResponseDto<>(uuid,"Event deleted", true));
+        return ResponseEntity.ok(new ResponseDto<>(uuid, "Event deleted", true));
     }
 
 }
