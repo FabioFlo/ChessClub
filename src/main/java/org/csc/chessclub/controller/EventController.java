@@ -26,10 +26,12 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @PostMapping()
-    public ResponseEntity<String> createEvent(@Valid @RequestBody CreateEventDto createEventDto) {
-        eventService.create(eventMapper.createEventDtoToEvent(createEventDto));
+    public ResponseEntity<ResponseDto<GetEventDto>> createEvent(@Valid @RequestBody CreateEventDto createEventDto) {
+        GetEventDto createdEvent = eventMapper.eventToGetEventDto(
+                eventService.create(eventMapper.createEventDtoToEvent(createEventDto)));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Event created");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto<>(createdEvent, "Event created", true));
     }
 
     @GetMapping()

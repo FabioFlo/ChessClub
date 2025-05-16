@@ -81,15 +81,22 @@ public class TestEventController {
     @Order(2)
     @DisplayName("Create Event")
     void testCreateEvent_whenValidDetailsProvided_returnsCreatedEvent() {
-        boolean eventCreated = given()
+        ResponseDto<GetEventDto> response = given()
                 .body(createEventDto)
                 .when()
                 .post("/events")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .extract().response().asString().contains("Event created");
+                .extract().response().as(new TypeRef<>() {
+                });
 
-        assertTrue(eventCreated, "Event should be created");
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::message)
+                .isEqualTo("Event created");
 
     }
 
