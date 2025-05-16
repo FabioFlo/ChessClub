@@ -51,9 +51,9 @@ public class EventController {
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<ResponseDto> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
+    public ResponseEntity<ResponseDto<UUID>> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
         eventService.delete(uuid);
-        return ResponseEntity.ok(new ResponseDto("Event deleted", true));
+        return ResponseEntity.ok(new ResponseDto<>(uuid,"Event deleted", true));
     }
 
 }

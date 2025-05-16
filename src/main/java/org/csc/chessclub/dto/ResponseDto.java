@@ -1,8 +1,7 @@
 package org.csc.chessclub.dto;
 
-import java.util.Optional;
-
-public record ResponseDto(
+public record ResponseDto<T>(
+        T data,
         String message,
         boolean success) {
 }

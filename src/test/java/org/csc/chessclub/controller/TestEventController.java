@@ -2,6 +2,7 @@ package org.csc.chessclub.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
@@ -146,19 +147,23 @@ public class TestEventController {
     @Order(6)
     @DisplayName("Delete event")
     void testDeleteEvent_whenEventFound_returnsResponseDtoWithSuccessAndMessage() {
-        ResponseDto responseDto = given()
+        ResponseDto<UUID> responseDto = given()
                 .pathParam("uuid", uuid)
                 .when()
                 .delete("/events/{uuid}")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .extract().response().as(ResponseDto.class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
         assertThat(responseDto)
                 .isNotNull()
                 .extracting(ResponseDto::message)
                 .isEqualTo("Event deleted");
-    }
 
+        assertThat(responseDto)
+                .extracting(ResponseDto::data)
+                .isEqualTo(uuid);
+    }
 
 }
