@@ -33,9 +33,9 @@ public class EventController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<GetEventDto>> getAllEvents() {
-        return ResponseEntity.ok(eventMapper
-                .eventEntityListToGetEventDtoList(eventService.getAll()));
+    public ResponseEntity<ResponseDto<List<GetEventDto>>> getAllEvents() {
+        return ResponseEntity.ok(new ResponseDto<>(eventMapper
+                .eventEntityListToGetEventDtoList(eventService.getAll()), "Events found", true));
     }
 
     @GetMapping("/{uuid}")

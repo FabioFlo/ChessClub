@@ -6,6 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
 import org.csc.chessclub.dto.GetEventDto;
@@ -20,6 +21,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -95,18 +97,21 @@ public class TestEventController {
     @Order(3)
     @DisplayName("Get all Events")
     void testGetAllEvents_whenEventsFound_returnsAllEvents() {
-        GetEventDto[] events = given()
+        ResponseDto<List<GetEventDto>> response = given()
                 .when()
                 .get("/events")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .extract().response().as(GetEventDto[].class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
-        assertThat(events)
+        assertThat(response)
                 .isNotNull()
+                .extracting(ResponseDto::data)
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .isNotEmpty();
 
-        uuid = events[0].uuid();
+        uuid = response.data().getFirst().uuid();
         assertNotNull(uuid, "UUID should not be null");
     }
 
