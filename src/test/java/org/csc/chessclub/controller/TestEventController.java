@@ -114,14 +114,16 @@ public class TestEventController {
     @Order(4)
     @DisplayName("Get Event By Id")
     void testGetEvent_whenEventFoundById_returnsEvent() {
-        GetEventDto event = given()
+        ResponseDto<GetEventDto> response = given()
                 .pathParam("uuid", uuid)
                 .when()
                 .get("/events/{uuid}")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .extract().response().as(GetEventDto.class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
+        GetEventDto event = response.data();
         assertThat(event)
                 .isNotNull();
         assertEquals(event.uuid(), uuid);
