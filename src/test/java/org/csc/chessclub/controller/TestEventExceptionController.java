@@ -67,7 +67,7 @@ public class TestEventExceptionController {
 
     @Test
     @Order(2)
-    @DisplayName("Get Event By Id - Throw when Event Not Found")
+    @DisplayName("Get Event By Id - Throw Not found exception")
     void testGetEvent_whenEventNotFound_shouldThrowCustomNotFoundExceptionFromGlobalExceptionHandler() {
         ResponseDto<ErrorMessage> response = given()
                 .pathParam("uuid", notFoundUuid)
@@ -82,5 +82,21 @@ public class TestEventExceptionController {
         assertThat(response.message()).isEqualTo("Not found");
         assertThat(response.data().message()).isEqualTo(NotFoundMessage.EVENT_WITH_UUID.getMessage().formatted(notFoundUuid));
         assertThat(response.data().statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("Get Event By Id - Throw Bad Request exception")
+    void testGetEvent_whenInvalidUuid_shouldThrowCustomBadRequestExceptionFromGlobalExceptionHandler() {
+        ResponseDto<ErrorMessage> response = given()
+                .pathParam("uuid", "invalidUuid")
+                .when()
+                .get("/events/{uuid}")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().response().as(new TypeRef<>() {});
+
+        assertThat(response.success()).isFalse();
+        assertThat(response.message()).isEqualTo("Type mismatch");
+        assertThat(response.data().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
