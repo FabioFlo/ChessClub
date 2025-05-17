@@ -2,6 +2,7 @@ package org.csc.chessclub.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
+import org.csc.chessclub.dto.ResponseDto;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import java.util.stream.StreamSupport;
 public class ValidatorExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidErrorMessage> validationExceptions(
+    public ResponseEntity<ResponseDto<ValidErrorMessage>> validationExceptions(
             MethodArgumentNotValidException ex) {
         Map<String, String> violations = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((violation) -> {
@@ -27,12 +28,14 @@ public class ValidatorExceptionHandler {
             String message = violation.getDefaultMessage();
             violations.put(field, message);
         });
-        ValidErrorMessage errorMessage = new ValidErrorMessage(HttpStatus.BAD_REQUEST.value(), violations);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        ValidErrorMessage validationError = new ValidErrorMessage(HttpStatus.BAD_REQUEST.value(), violations);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseDto<>(validationError, "Validation failed", false));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ValidErrorMessage> paramValidationException(ConstraintViolationException ex) {
+    public ResponseEntity<ResponseDto<ValidErrorMessage>> paramValidationException(ConstraintViolationException ex) {
         Map<String, String> violations = new HashMap<>();
         ex.getConstraintViolations().forEach(violation -> {
             String field = StreamSupport
@@ -44,7 +47,9 @@ public class ValidatorExceptionHandler {
 
             violations.put(field, message);
         });
-        ValidErrorMessage message = new ValidErrorMessage(HttpStatus.BAD_REQUEST.value(), violations);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+        ValidErrorMessage validationError = new ValidErrorMessage(HttpStatus.BAD_REQUEST.value(), violations);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseDto<>(validationError, "Validation failed", false));
     }
 }

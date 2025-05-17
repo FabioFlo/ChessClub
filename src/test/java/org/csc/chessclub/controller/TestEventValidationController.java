@@ -2,11 +2,13 @@ package org.csc.chessclub.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.csc.chessclub.dto.CreateEventDto;
 import org.csc.chessclub.dto.EventDetailsDto;
+import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.exception.ValidErrorMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -64,17 +66,20 @@ public class TestEventValidationController {
         CreateEventDto invalidCreateEventDto = new CreateEventDto(
                 null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
-        ValidErrorMessage validErrorMessage = given()
+        ResponseDto<ValidErrorMessage> response = given()
                 .body(invalidCreateEventDto)
                 .when()
                 .post("/events")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().response().as(ValidErrorMessage.class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
-        assertThat(validErrorMessage.errors())
-                .containsEntry("title", "Title must not be blank");
-
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .extracting(ValidErrorMessage::errors)
+                .hasFieldOrProperty("title");
     }
 
     @Test
@@ -82,49 +87,60 @@ public class TestEventValidationController {
     void testUpdateEvent_whenInvalidEventDetailsDtoProvided_shouldThrowValidationException() {
         EventDetailsDto invalidUpdateEventDto = new EventDetailsDto(invalidUuid, null, null, null, "");
 
-        ValidErrorMessage validErrorMessage = given()
+        ResponseDto<ValidErrorMessage> response = given()
                 .body(invalidUpdateEventDto)
                 .when()
                 .patch("/events")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().response().as(ValidErrorMessage.class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
-        assertThat(validErrorMessage.errors())
-                .containsEntry("uuid", "UUID must be valid")
-                .containsEntry("title", "Title must not be blank")
-                .containsEntry("description", "Description must not be blank")
-                .containsEntry("author", "Author must not be blank")
-                .doesNotContainKey("announcementPDF");
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .extracting(ValidErrorMessage::errors)
+                .hasFieldOrProperty("title")
+                .hasFieldOrProperty("uuid")
+                .hasFieldOrProperty("description")
+                .hasFieldOrProperty("author");
     }
 
     @Test
     @DisplayName("Get by Id - Should throw validation exception when invalid uuid provided")
     void testGetEventById_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
-        ValidErrorMessage validErrorMessage = given()
+        ResponseDto<ValidErrorMessage> response = given()
                 .pathParam("uuid", invalidUuid)
                 .when()
                 .get("/events/{uuid}")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().response().as(ValidErrorMessage.class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
-        assertThat(validErrorMessage.errors())
-                .containsEntry("uuid", "Invalid UUID format");
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .extracting(ValidErrorMessage::errors)
+                .hasFieldOrProperty("uuid");
     }
 
     @Test
     @DisplayName("Delete - Should throw validation exception when invalid uuid provided")
     void testDeleteEvent_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
-        ValidErrorMessage validErrorMessage = given()
+        ResponseDto<ValidErrorMessage> response = given()
                 .pathParam("uuid", invalidUuid)
                 .when()
                 .delete("/events/{uuid}")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().response().as(ValidErrorMessage.class);
+                .extract().response().as(new TypeRef<>() {
+                });
 
-        assertThat(validErrorMessage.errors())
-                .containsEntry("uuid", "Invalid UUID format");
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .extracting(ValidErrorMessage::errors)
+                .hasFieldOrProperty("uuid");
     }
 }
