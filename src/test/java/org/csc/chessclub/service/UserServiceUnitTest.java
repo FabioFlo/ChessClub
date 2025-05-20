@@ -91,6 +91,17 @@ public class UserServiceUnitTest {
     }
 
     @Test
+    @DisplayName("Update User - Throw when User Already Exists with different Id")
+    void testUpdateUser_whenUserProvided_shouldThrowUserExceptionIfEmailOrUsernameAlreadyTakenWithDifferentId() {
+        when(userRepository.findByUsernameOrEmailAndUuidNot(USERNAME, EMAIL, user.getUuid())).thenReturn(Optional.ofNullable(user));
+
+        UserServiceException exception = assertThrows(UserServiceException.class,
+                () -> userService.update(user));
+
+        assertTrue(exception.getMessage().contains("Email or username already taken"));
+    }
+
+    @Test
     @DisplayName("Update User - Throw when User Not Found")
     void testUpdateUser_whenUserProvided_shouldThrowUserExceptionIfUserNotFound() {
         when(userRepository.existsById(user.getUuid())).thenReturn(false);

@@ -26,6 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity update(UserEntity user) {
+        Optional<UserEntity> existingUser = userRepository.findByUsernameOrEmailAndUuidNot(user.getUsername(), user.getEmail(), user.getUuid());
+        if (existingUser.isPresent()) {
+            throw new UserServiceException("Email or username already taken");
+        }
         if (userRepository.existsById(user.getUuid())) {
             return userRepository.save(user);
         }
