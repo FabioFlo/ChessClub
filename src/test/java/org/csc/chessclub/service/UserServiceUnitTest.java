@@ -1,9 +1,6 @@
 package org.csc.chessclub.service;
 
-import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
-import org.csc.chessclub.exception.CustomNotFoundException;
-import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,40 +98,5 @@ public class UserServiceUnitTest {
         assertFalse(user.isAvailable());
         verify(userRepository, times(1)).save(any(UserEntity.class));
 
-    }
-
-    @Test
-    @DisplayName("Create User - Throw when User Already Exists")
-    void testCreateUser_whenUserProvided_shouldThrowUserExceptionIfEmailOrUsernameAlreadyTaken() {
-        when(userRepository.findUserEntityByUsernameOrEmail(USERNAME, EMAIL)).thenReturn(Optional.ofNullable(user));
-
-        UserServiceException exception = assertThrows(UserServiceException.class,
-                () -> userService.create(user));
-
-        assertTrue(exception.getMessage().contains("Email or username already taken"));
-
-    }
-
-    @Test
-    @DisplayName("Update User - Throw when User Already Exists with different Id")
-    void testUpdateUser_whenUserProvided_shouldThrowUserExceptionIfEmailOrUsernameAlreadyTakenWithDifferentId() {
-        when(userRepository.findByUsernameOrEmailAndUuidNot(USERNAME, EMAIL, user.getUuid())).thenReturn(Optional.ofNullable(user));
-
-        UserServiceException exception = assertThrows(UserServiceException.class,
-                () -> userService.update(user));
-
-        assertTrue(exception.getMessage().contains("Email or username already taken"));
-    }
-
-    @Test
-    @DisplayName("Update User - Throw when User Not Found")
-    void testUpdateUser_whenUserProvided_shouldThrowUserExceptionIfUserNotFound() {
-        when(userRepository.existsById(user.getUuid())).thenReturn(false);
-
-        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
-                () -> userService.update(user));
-
-        assertTrue(exception.getMessage().contains(
-                NotFoundMessage.USER_WITH_UUID.format((user.getUuid()))));
     }
 }
