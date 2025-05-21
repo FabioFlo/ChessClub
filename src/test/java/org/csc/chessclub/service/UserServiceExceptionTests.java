@@ -74,14 +74,13 @@ public class UserServiceExceptionTests {
     }
 
     @Test
-    @DisplayName("Update User - Throw when User Not Found")
-    void testUpdateUser_whenUserProvided_shouldThrowUserExceptionIfUserNotFound() {
-        when(userRepository.existsById(user.getUuid())).thenReturn(false);
-
+    @DisplayName("Throw when User Not Found")
+    void testUserService_whenUserNotFoundById_shouldThrowCustomNotFoundException() {
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
                 () -> userService.update(user));
 
         assertTrue(exception.getMessage().contains(
                 NotFoundMessage.USER_WITH_UUID.format((user.getUuid()))));
     }
+
 }

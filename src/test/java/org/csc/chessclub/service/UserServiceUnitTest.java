@@ -43,6 +43,7 @@ public class UserServiceUnitTest {
                 .password(PASSWORD)
                 .email(EMAIL)
                 .role(ROLE)
+                .available(true)
                 .build();
     }
 
@@ -55,6 +56,7 @@ public class UserServiceUnitTest {
 
         assertNotNull(createdUser, "User should not be null");
         assertNotNull(createdUser.getUuid(), "UUID should not be null");
+        assertTrue(createdUser.isAvailable(), "User should be available");
         verify(userRepository, times(1)).save(Mockito.any());
     }
 
