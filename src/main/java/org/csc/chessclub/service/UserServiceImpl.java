@@ -9,6 +9,7 @@ import org.csc.chessclub.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +35,22 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(user);
         }
         throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(user.getUuid()));
+    }
+
+    @Override
+    public UserEntity getById(UUID uuid) {
+        Optional<UserEntity> user = userRepository.findById(uuid);
+        return user.orElseThrow(
+                () -> new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid)));
+    }
+
+    @Override
+    public UserEntity delete(UUID uuid) {
+        Optional<UserEntity> user = userRepository.findById(uuid);
+        if (user.isPresent()) {
+            user.get().setAvailable(false);
+            return userRepository.save(user.get());
+        }
+        throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid));
     }
 }

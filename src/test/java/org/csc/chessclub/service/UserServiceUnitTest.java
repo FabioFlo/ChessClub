@@ -79,6 +79,31 @@ public class UserServiceUnitTest {
     }
 
     @Test
+    @DisplayName("Get User By Id")
+    void testGetUser_whenUserFoundById_returnUser() {
+        when(userRepository.findById(user.getUuid())).thenReturn(Optional.of(user));
+        UserEntity retrievedUser = userService.getById(user.getUuid());
+
+        assertNotNull(retrievedUser, "User should not be null");
+        assertEquals(user, retrievedUser, "User should be equal");
+        verify(userRepository, times(1)).findById(user.getUuid());
+    }
+
+    @Test
+    @DisplayName("Delete user by Id")
+    void testDeleteUser_whenUserFoundById_availableShouldBeSetToFalse() {
+        when(userRepository.findById(user.getUuid())).thenReturn(Optional.of(user));
+        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
+
+        user.setAvailable(false);
+
+        assertDoesNotThrow(() -> userService.delete(user.getUuid()));
+        assertFalse(user.isAvailable());
+        verify(userRepository, times(1)).save(any(UserEntity.class));
+
+    }
+
+    @Test
     @DisplayName("Create User - Throw when User Already Exists")
     void testCreateUser_whenUserProvided_shouldThrowUserExceptionIfEmailOrUsernameAlreadyTaken() {
         when(userRepository.findUserEntityByUsernameOrEmail(USERNAME, EMAIL)).thenReturn(Optional.ofNullable(user));
