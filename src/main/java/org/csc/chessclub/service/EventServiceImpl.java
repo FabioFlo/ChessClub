@@ -6,6 +6,7 @@ import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
+import org.csc.chessclub.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,13 +53,13 @@ public class EventServiceImpl implements EventService {
     }
 
     EventEntity save(EventEntity event) {
-        if (event.getTitle() == null || event.getTitle().isEmpty()) {
+        if (StringUtils.isNullOrEmpty(event.getTitle())) {
             throw new EventServiceException("Title cannot be null or empty");
         }
-        if (event.getAuthor() == null || event.getAuthor().isEmpty()) {
+        if (StringUtils.isNullOrEmpty(event.getAuthor())) {
             throw new EventServiceException("Author cannot be null or empty");
         }
-        if (event.getDescription() == null || event.getDescription().isEmpty()) {
+        if (StringUtils.isNullOrEmpty(event.getDescription())) {
             throw new EventServiceException("Description cannot be null or empty");
         }
         return eventRepository.save(event);
