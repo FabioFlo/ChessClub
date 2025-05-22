@@ -3,10 +3,8 @@ package org.csc.chessclub.service;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
-import org.csc.chessclub.exception.EventServiceException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
-import org.csc.chessclub.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,13 +18,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventEntity create(EventEntity event) {
-        return save(event);
+        event.setAvailable(true);
+        return eventRepository.save(event);
     }
 
     @Override
     public EventEntity update(EventEntity event) {
         if (eventRepository.existsById(event.getUuid())) {
-            return save(event);
+            return eventRepository.save(event);
         }
         throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()));
     }
@@ -52,17 +51,5 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAll();
     }
 
-    EventEntity save(EventEntity event) {
-        if (StringUtils.isNullOrEmpty(event.getTitle())) {
-            throw new EventServiceException("Title cannot be null or empty");
-        }
-        if (StringUtils.isNullOrEmpty(event.getAuthor())) {
-            throw new EventServiceException("Author cannot be null or empty");
-        }
-        if (StringUtils.isNullOrEmpty(event.getDescription())) {
-            throw new EventServiceException("Description cannot be null or empty");
-        }
-        return eventRepository.save(event);
-    }
 }
 

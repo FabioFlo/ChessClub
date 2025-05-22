@@ -44,7 +44,6 @@ public class EventServiceUnitTest {
                 .author(author)
                 .createdAt(date)
                 .title(title)
-                .available(true)
                 .build();
     }
 
@@ -57,6 +56,7 @@ public class EventServiceUnitTest {
 
         assertNotNull(createdEvent, "Event should not be null");
         assertNotNull(createdEvent.getUuid(), "UUID should not be null");
+        assertTrue(createdEvent.isAvailable(), "Event should be available");
         verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 
@@ -115,7 +115,7 @@ public class EventServiceUnitTest {
     void testSaveEvent_whenValidEventDetailsProvided_returnEvent() {
         when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
 
-        EventEntity savedEvent = eventService.save(event);
+        EventEntity savedEvent = eventService.create(event);
 
         assertTrue(event.getTitle() != null && !event.getTitle().isEmpty());
         assertTrue(event.getAuthor() != null && !event.getAuthor().isEmpty());
