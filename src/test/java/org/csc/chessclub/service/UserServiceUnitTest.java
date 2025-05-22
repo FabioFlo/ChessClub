@@ -1,7 +1,6 @@
 package org.csc.chessclub.service;
 
 import org.csc.chessclub.enums.Role;
-import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +43,6 @@ public class UserServiceUnitTest {
                 .password(PASSWORD)
                 .email(EMAIL)
                 .role(ROLE)
-                .available(true)
                 .build();
     }
 

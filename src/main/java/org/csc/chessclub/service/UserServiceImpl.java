@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
         if (existingUser.isPresent()) {
             throw new UserServiceException("Email or username already taken");
         }
+        user.setAvailable(true);
         return userRepository.save(user);
     }
 

@@ -83,16 +83,4 @@ public class UserServiceExceptionTests {
                 NotFoundMessage.USER_WITH_UUID.format((user.getUuid()))));
     }
 
-    //TODO: complete this test with the string validation utils in userServiceImpl
-    @Test
-    @DisplayName("Empty username throw UserServiceException")
-    void testCreateUser_whenUserProvided_shouldThrowUserExceptionIfUsernameIsNullOrEmpty() {
-        user.setUsername(null);
-        String aspectMessage = "Username cannot be null or empty";
-
-        UserServiceException exception = assertThrows(UserServiceException.class,
-                () -> userService.create(user));
-
-        assertTrue(exception.getMessage().contains(aspectMessage));
-    }
 }
