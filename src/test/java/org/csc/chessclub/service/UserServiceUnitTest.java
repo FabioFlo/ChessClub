@@ -7,10 +7,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,11 +27,13 @@ public class UserServiceUnitTest {
     private UserServiceImpl userService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     private static final String USERNAME = "Test Username";
-    private static final String PASSWORD = "<PASSWORD>";
+    private static final String PASSWORD = "password";
     private static final String EMAIL = "email@email.com";
-    private static final Role ROLE = Role.ADMIN;
+    private static final Role ROLE = Role.USER;
     private static final UUID uuid = UUID.randomUUID();
     private UserEntity user;
 
@@ -49,13 +53,22 @@ public class UserServiceUnitTest {
     @Test
     @DisplayName("Create User")
     public void testCreateUser_whenUserProvided_returnUser() {
-        when(userRepository.save(Mockito.any())).thenReturn(user);
+        String encodedPassword = "$2a$10$encodedPassword";
+
+        ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
+        when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(passwordEncoder.encode(PASSWORD)).thenReturn(encodedPassword);
 
         UserEntity createdUser = userService.create(user);
+        UserEntity savedUser = userCaptor.getValue();
 
         assertNotNull(createdUser, "User should not be null");
         assertNotNull(createdUser.getUuid(), "UUID should not be null");
+        assertEquals(Role.USER, createdUser.getRole(), "Role should be equal");
         assertTrue(createdUser.isAvailable(), "User should be available");
+        assertNotEquals(PASSWORD, savedUser.getPassword(), "Password should not be equal");
+        assertEquals(encodedPassword, savedUser.getPassword(), "Encoded password mismatch");
+
         verify(userRepository, times(1)).save(Mockito.any());
     }
 
