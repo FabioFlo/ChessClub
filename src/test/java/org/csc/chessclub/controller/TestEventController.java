@@ -8,8 +8,8 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.EventDetailsDto;
-import org.csc.chessclub.dto.GetEventDto;
+import org.csc.chessclub.dto.EventDto;
+import org.csc.chessclub.dto.UpdateEventDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -81,7 +81,7 @@ public class TestEventController {
     @Order(2)
     @DisplayName("Create Event")
     void testCreateEvent_whenValidDetailsProvided_returnsCreatedEvent() {
-        ResponseDto<GetEventDto> response = given()
+        ResponseDto<EventDto> response = given()
                 .body(createEventDto)
                 .when()
                 .post("/events")
@@ -104,7 +104,7 @@ public class TestEventController {
     @Order(3)
     @DisplayName("Get all Events")
     void testGetAllEvents_whenEventsFound_returnsAllEvents() {
-        ResponseDto<List<GetEventDto>> response = given()
+        ResponseDto<List<EventDto>> response = given()
                 .when()
                 .get("/events")
                 .then()
@@ -126,7 +126,7 @@ public class TestEventController {
     @Order(4)
     @DisplayName("Get Event By Id")
     void testGetEvent_whenEventFoundById_returnsEvent() {
-        ResponseDto<GetEventDto> response = given()
+        ResponseDto<EventDto> response = given()
                 .pathParam("uuid", uuid)
                 .when()
                 .get("/events/{uuid}")
@@ -135,7 +135,7 @@ public class TestEventController {
                 .extract().response().as(new TypeRef<>() {
                 });
 
-        GetEventDto event = response.data();
+        EventDto event = response.data();
         assertThat(event)
                 .isNotNull();
         assertEquals(event.uuid(), uuid);
@@ -145,10 +145,10 @@ public class TestEventController {
     @Order(5)
     @DisplayName("Update event")
     void testUpdateEvent_whenValidEventDetailsProvided_returnsUpdatedEvent() {
-        EventDetailsDto eventDetailsDto = new EventDetailsDto(uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+        UpdateEventDto updateEventDto = new UpdateEventDto(uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
-        ResponseDto<EventDetailsDto> response = given()
-                .body(eventDetailsDto)
+        ResponseDto<UpdateEventDto> response = given()
+                .body(updateEventDto)
                 .when()
                 .patch("/events")
                 .then()
@@ -159,7 +159,7 @@ public class TestEventController {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::data)
-                .isEqualTo(eventDetailsDto);
+                .isEqualTo(updateEventDto);
     }
 
     @Test

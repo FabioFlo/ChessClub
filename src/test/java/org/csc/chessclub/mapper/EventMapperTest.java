@@ -1,8 +1,8 @@
 package org.csc.chessclub.mapper;
 
 import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.EventDetailsDto;
-import org.csc.chessclub.dto.GetEventDto;
+import org.csc.chessclub.dto.UpdateEventDto;
+import org.csc.chessclub.dto.EventDto;
 import org.csc.chessclub.model.EventEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ public class EventMapperTest {
     @Test
     @DisplayName("Map event to get event dto")
     void shouldMapEventToGetEventDtoCorrectly() {
-        GetEventDto eventDto = eventMapper.eventToGetEventDto(event);
+        EventDto eventDto = eventMapper.eventToGetEventDto(event);
 
         assertEquals(event.getUuid(), eventDto.uuid(),
                 "UUID should be equal");
@@ -78,7 +78,7 @@ public class EventMapperTest {
     @Test
     @DisplayName("Map list of EventEntity to list of GetEventDto ")
     void shouldMapListOfEventEntityToListOfGetEventDtoCorrectly() {
-        List<GetEventDto> eventDtoList = eventMapper.eventEntityListToGetEventDtoList(java.util.List.of(event));
+        List<EventDto> eventDtoList = eventMapper.eventEntityListToGetEventDtoList(java.util.List.of(event));
 
         assertEquals(1, eventDtoList.size(),
                 "List should contain only one element");
@@ -94,7 +94,7 @@ public class EventMapperTest {
     @DisplayName("Map EventDetailsDto to EventEntity")
     void shouldMapEventDetailsDtoToEventEntityCorrectly() {
         String updatedTitle = "Updated Title";
-        EventEntity updatedEvent = eventMapper.eventDetailsDtoToEvent(new EventDetailsDto(uuid,
+        EventEntity updatedEvent = eventMapper.eventDetailsDtoToEvent(new UpdateEventDto(uuid,
                 updatedTitle, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF));
 
         assertEquals(uuid, updatedEvent.getUuid());

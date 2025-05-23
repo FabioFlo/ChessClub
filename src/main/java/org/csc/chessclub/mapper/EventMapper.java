@@ -1,9 +1,8 @@
 package org.csc.chessclub.mapper;
 
-import jakarta.validation.Valid;
 import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.EventDetailsDto;
-import org.csc.chessclub.dto.GetEventDto;
+import org.csc.chessclub.dto.UpdateEventDto;
+import org.csc.chessclub.dto.EventDto;
 import org.csc.chessclub.model.EventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,14 +14,14 @@ import java.util.List;
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    GetEventDto eventToGetEventDto(EventEntity event);
+    EventDto eventToGetEventDto(EventEntity event);
 
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "available", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     EventEntity createEventDtoToEvent(CreateEventDto createEventDto);
 
-    List<GetEventDto> eventEntityListToGetEventDtoList(List<EventEntity> event);
+    List<EventDto> eventEntityListToGetEventDtoList(List<EventEntity> event);
 
-    EventEntity eventDetailsDtoToEvent(EventDetailsDto eventDetailsDto);
+    EventEntity eventDetailsDtoToEvent(UpdateEventDto updateEventDto);
 }

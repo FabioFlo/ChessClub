@@ -7,7 +7,7 @@ import org.csc.chessclub.utils.ValidUUID;
 
 import java.util.UUID;
 
-public record EventDetailsDto(
+public record UpdateEventDto(
         @ValidUUID(message = EventValidationMessage.UUID_MUST_BE_VALID)
         UUID uuid,
         @NotBlank(message = EventValidationMessage.TITLE_MUST_NOT_BE_BLANK)

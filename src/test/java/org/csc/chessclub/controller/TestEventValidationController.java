@@ -7,7 +7,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.EventDetailsDto;
+import org.csc.chessclub.dto.UpdateEventDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.exception.ValidErrorMessage;
 import org.junit.jupiter.api.BeforeAll;
@@ -85,7 +85,7 @@ public class TestEventValidationController {
     @Test
     @DisplayName("Update Event - Should throw validation exception when invalid event details provided")
     void testUpdateEvent_whenInvalidEventDetailsDtoProvided_shouldThrowValidationException() {
-        EventDetailsDto invalidUpdateEventDto = new EventDetailsDto(invalidUuid, null, null, null, "");
+        UpdateEventDto invalidUpdateEventDto = new UpdateEventDto(invalidUuid, null, null, null, "");
 
         ResponseDto<ValidErrorMessage> response = given()
                 .body(invalidUpdateEventDto)

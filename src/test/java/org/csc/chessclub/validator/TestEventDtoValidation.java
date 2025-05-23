@@ -5,7 +5,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.EventDetailsDto;
+import org.csc.chessclub.dto.UpdateEventDto;
 import org.csc.chessclub.utils.EventValidationMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -96,20 +96,20 @@ public class TestEventDtoValidation {
     @Test
     @DisplayName("Validation Event Update")
     void testValidationEventUpdateDto_whenValidEventDetailsProvided_thenValidationSucceeds() {
-        EventDetailsDto eventDetails = new EventDetailsDto(
+        UpdateEventDto eventDetails = new UpdateEventDto(
                 uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
-        Set<ConstraintViolation<EventDetailsDto>> violations = validator.validate(eventDetails);
+        Set<ConstraintViolation<UpdateEventDto>> violations = validator.validate(eventDetails);
         assertThat(violations).isEmpty();
     }
 
     @Test
     @DisplayName("Validation Event Update - Uuid null")
     void testValidationEventUpdateDto_whenUuidNull_thenValidationFails() {
-        EventDetailsDto eventDetails = new EventDetailsDto(
+        UpdateEventDto eventDetails = new UpdateEventDto(
                 null, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
-        Set<ConstraintViolation<EventDetailsDto>> violations = validator.validate(eventDetails);
+        Set<ConstraintViolation<UpdateEventDto>> violations = validator.validate(eventDetails);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("uuid") &&
                         v.getMessage().equals(EventValidationMessage.UUID_MUST_BE_VALID));

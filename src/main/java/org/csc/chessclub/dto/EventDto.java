@@ -3,7 +3,7 @@ package org.csc.chessclub.dto;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record GetEventDto(
+public record EventDto(
         UUID uuid,
         String title,
         String description,
