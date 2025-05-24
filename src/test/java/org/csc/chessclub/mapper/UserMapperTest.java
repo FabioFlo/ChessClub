@@ -1,5 +1,6 @@
 package org.csc.chessclub.mapper;
 
+import org.csc.chessclub.dto.RegisterUserRequest;
 import org.csc.chessclub.dto.UserDto;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
@@ -88,5 +89,19 @@ public class UserMapperTest {
                 "Email should be equal");
         assertTrue(userDtoList.getFirst().available(),
                 "User should be available");
+    }
+
+    @Test
+    @DisplayName("Map RegisterUserRequest to UserEntity")
+    void shouldMapURegisterUserRequestToUserEntity() {
+        RegisterUserRequest userRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
+        UserEntity registeredUser = userMapper.registerUserRequestToUser(userRequest);
+
+        assertEquals(userRequest.username(), registeredUser.getUsername(),
+                "Username should be equal");
+        assertEquals(userRequest.email(), registeredUser.getEmail(),
+                "Email should be equal");
+        assertEquals(userRequest.password(), registeredUser.getPassword(),
+                "Password should be equal");
     }
 }

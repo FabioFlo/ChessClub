@@ -1,5 +1,6 @@
 package org.csc.chessclub.mapper;
 
+import org.csc.chessclub.dto.RegisterUserRequest;
 import org.csc.chessclub.dto.UserDto;
 import org.csc.chessclub.model.UserEntity;
 import org.mapstruct.Mapper;
@@ -16,4 +17,6 @@ public interface UserMapper {
     UserEntity userDtoToUser(UserDto userDto);
 
     List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList);
+
+    UserEntity registerUserRequestToUser(RegisterUserRequest userRequest);
 }
