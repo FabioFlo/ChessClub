@@ -1,4 +1,4 @@
-package org.csc.chessclub.dto;
+package org.csc.chessclub.dto.event;
 
 import java.time.LocalDate;
 import java.util.UUID;

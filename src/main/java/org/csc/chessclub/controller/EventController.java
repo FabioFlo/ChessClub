@@ -2,9 +2,9 @@ package org.csc.chessclub.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.EventDto;
-import org.csc.chessclub.dto.UpdateEventDto;
+import org.csc.chessclub.dto.event.CreateEventDto;
+import org.csc.chessclub.dto.event.EventDto;
+import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.EventService;

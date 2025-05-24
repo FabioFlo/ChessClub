@@ -1,8 +1,8 @@
 package org.csc.chessclub.mapper;
 
-import org.csc.chessclub.dto.CreateEventDto;
-import org.csc.chessclub.dto.UpdateEventDto;
-import org.csc.chessclub.dto.EventDto;
+import org.csc.chessclub.dto.event.CreateEventDto;
+import org.csc.chessclub.dto.event.UpdateEventDto;
+import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.model.EventEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

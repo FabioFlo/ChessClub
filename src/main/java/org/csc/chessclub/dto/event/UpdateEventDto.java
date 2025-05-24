@@ -1,4 +1,4 @@
-package org.csc.chessclub.dto;
+package org.csc.chessclub.dto.event;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
