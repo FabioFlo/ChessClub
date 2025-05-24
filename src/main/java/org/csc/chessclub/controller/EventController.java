@@ -27,7 +27,7 @@ public class EventController {
 
     @PostMapping()
     public ResponseEntity<ResponseDto<EventDto>> createEvent(@Valid @RequestBody CreateEventDto createEventDto) {
-        EventDto createdEvent = eventMapper.eventToGetEventDto(
+        EventDto createdEvent = eventMapper.eventToEventDto(
                 eventService.create(eventMapper.createEventDtoToEvent(createEventDto)));
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -37,19 +37,19 @@ public class EventController {
     @GetMapping()
     public ResponseEntity<ResponseDto<List<EventDto>>> getAllEvents() {
         return ResponseEntity.ok(new ResponseDto<>(eventMapper
-                .eventEntityListToGetEventDtoList(eventService.getAll()), "Events found", true));
+                .eventEntityListToEventDtoList(eventService.getAll()), "Events found", true));
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ResponseDto<EventDto>> getEventById(@ValidUUID @PathVariable UUID uuid) {
             return ResponseEntity.ok(new ResponseDto<>(
-                    eventMapper.eventToGetEventDto(eventService.getById(uuid)), "Event found", true));
+                    eventMapper.eventToEventDto(eventService.getById(uuid)), "Event found", true));
 
     }
 
     @PatchMapping()
     public ResponseEntity<ResponseDto<UpdateEventDto>> updateEvent(@Valid @RequestBody UpdateEventDto updateEventDto) {
-        eventService.update(eventMapper.eventDetailsDtoToEvent(updateEventDto));
+        eventService.update(eventMapper.updateEventDtoToEvent(updateEventDto));
         return ResponseEntity.ok(new ResponseDto<>(updateEventDto, "Event updated", true));
     }
 
