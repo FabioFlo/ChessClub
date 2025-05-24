@@ -19,6 +19,7 @@ public class UserMapperTest {
     private static final String EMAIL = "email@email.com";
     private static final Role ROLE = Role.USER;
     private static final UUID uuid = UUID.randomUUID();
+    private static final boolean AVAILABLE = true;
     private UserEntity user;
 
     @BeforeEach
@@ -30,7 +31,7 @@ public class UserMapperTest {
                 .password(PASSWORD)
                 .email(EMAIL)
                 .role(ROLE)
-                .available(true)
+                .available(AVAILABLE)
                 .build();
     }
 
@@ -46,6 +47,21 @@ public class UserMapperTest {
         assertEquals(user.getEmail(), userDto.email(),
                 "Email should be equal");
         assertEquals(user.getRole(), userDto.role(),
+                "Role should be equal");
+    }
+
+    @Test
+    public void shouldMapUserDtoToUserEntity() {
+        UserDto userDto = new UserDto(uuid, USERNAME, EMAIL, ROLE, AVAILABLE);
+        UserEntity user = userMapper.userDtoToUser(userDto);
+
+        assertEquals(userDto.uuid(), user.getUuid(),
+                "UUID should be equal");
+        assertEquals(userDto.username(), user.getUsername(),
+                "Username should be equal");
+        assertEquals(userDto.email(), user.getEmail(),
+                "Email should be equal");
+        assertEquals(userDto.role(), user.getRole(),
                 "Role should be equal");
     }
 }
