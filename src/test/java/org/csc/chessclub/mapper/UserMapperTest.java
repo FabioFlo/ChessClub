@@ -7,9 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserMapperTest {
     private final UserMapper userMapper = UserMapper.INSTANCE;
@@ -36,7 +38,7 @@ public class UserMapperTest {
     }
 
     @Test
-    @DisplayName("Map User entity to user dto")
+    @DisplayName("Map UserEntity to UserDto")
     void shouldMapUserEntityToUserDto() {
         UserDto userDto = userMapper.userToUserDto(user);
 
@@ -48,9 +50,12 @@ public class UserMapperTest {
                 "Email should be equal");
         assertEquals(user.getRole(), userDto.role(),
                 "Role should be equal");
+        assertTrue(userDto.available(),
+                "User should be available");
     }
 
     @Test
+    @DisplayName("Map UserDto to UserEntity")
     public void shouldMapUserDtoToUserEntity() {
         UserDto userDto = new UserDto(uuid, USERNAME, EMAIL, ROLE, AVAILABLE);
         UserEntity user = userMapper.userDtoToUser(userDto);
@@ -63,5 +68,25 @@ public class UserMapperTest {
                 "Email should be equal");
         assertEquals(userDto.role(), user.getRole(),
                 "Role should be equal");
+        assertTrue(userDto.available(),
+                "User should be available");
+    }
+
+    @Test
+    @DisplayName("Map list of UserEntity to list of UserDto")
+    void shouldMapListOfUserEntityToListOfUserDto() {
+        List<UserDto> userDtoList =
+                userMapper.userEntityListToUserDtoList(java.util.List.of(user));
+
+        assertEquals(1, userDtoList.size(),
+                "List should contain only one element");
+        assertEquals(user.getUuid(), userDtoList.getFirst().uuid(),
+                "UUID should be equal");
+        assertEquals(user.getUsername(), userDtoList.getFirst().username(),
+                "Username should be equal");
+        assertEquals(user.getEmail(), userDtoList.getFirst().email(),
+                "Email should be equal");
+        assertTrue(userDtoList.getFirst().available(),
+                "User should be available");
     }
 }
