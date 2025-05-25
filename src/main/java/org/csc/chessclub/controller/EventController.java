@@ -8,7 +8,7 @@ import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.EventService;
-import org.csc.chessclub.utils.ValidUUID;
+import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

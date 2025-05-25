@@ -2,8 +2,8 @@ package org.csc.chessclub.dto.event;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.csc.chessclub.utils.EventValidationMessage;
-import org.csc.chessclub.utils.ValidUUID;
+import org.csc.chessclub.exception.validation.EventValidationMessage;
+import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 
 import java.util.UUID;
 
