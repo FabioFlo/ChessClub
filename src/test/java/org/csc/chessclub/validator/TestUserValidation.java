@@ -50,4 +50,15 @@ public class TestUserValidation {
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_TOO_SHORT));
     }
+
+    @Test
+    @DisplayName("Validation Register User Request - Password null")
+    void testValidationRegisterUserRequest_whenPasswordNull_thenValidationFails() {
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, null);
+
+        Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("password") &&
+                        v.getMessage().equals(PasswordValidationMassage.PASSWORD_NOT_VALID));
+    }
 }
