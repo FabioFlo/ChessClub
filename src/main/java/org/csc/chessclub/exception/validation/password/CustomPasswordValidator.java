@@ -18,7 +18,7 @@ public class CustomPasswordValidator implements ConstraintValidator<ValidPasswor
             messages.add(PasswordValidationMassage.PASSWORD_TOO_SHORT);
         }
         if (!password.matches(".*[A-Z].*")) {
-            messages.add("Password must contain at least one uppercase letter");
+            messages.add(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_UPPERCASE_LETTER);
         }
         if (!password.matches(".*[a-z].*")) {
             messages.add("Password must contain at least one lowercase letter");

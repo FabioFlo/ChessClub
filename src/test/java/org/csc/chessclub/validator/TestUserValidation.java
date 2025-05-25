@@ -61,4 +61,15 @@ public class TestUserValidation {
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_NOT_VALID));
     }
+
+    @Test
+    @DisplayName("Validation Register User Request - Password not contains upper case")
+    void testValidationRegisterUserRequest_whenPasswordNotContainsUpperCase_thenValidationFails() {
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
+
+        Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("password") &&
+                        v.getMessage().equals(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_UPPERCASE_LETTER));
+    }
 }
