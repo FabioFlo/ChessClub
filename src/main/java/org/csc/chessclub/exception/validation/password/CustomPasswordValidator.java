@@ -21,16 +21,16 @@ public class CustomPasswordValidator implements ConstraintValidator<ValidPasswor
             messages.add(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_UPPERCASE_LETTER);
         }
         if (!password.matches(".*[a-z].*")) {
-            messages.add("Password must contain at least one lowercase letter");
+            messages.add(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_LOWERCASE_LETTER);
         }
         if (!password.matches(".*\\d.*")) {
-            messages.add("Password must contain at least one digit");
+            messages.add(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_DIGIT);
         }
         if (!password.matches(".*[^a-zA-Z0-9].*")) {
-            messages.add("Password must contain at least one special character");
+            messages.add(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_SPECIAL_CHARACTER);
         }
         if (password.matches(".*\\s.*")) {
-            messages.add("Password must not contain whitespace");
+            messages.add(PasswordValidationMassage.PASSWORD_MUST_NOT_CONTAIN_WHITESPACE);
         }
 
         if (!messages.isEmpty()) {
