@@ -1,8 +1,7 @@
-package org.csc.chessclub.exception;
+package org.csc.chessclub.exception.validation.uuid;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.csc.chessclub.utils.ValidUUID;
 
 import java.util.UUID;
 

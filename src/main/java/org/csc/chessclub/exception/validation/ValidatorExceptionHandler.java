@@ -1,4 +1,4 @@
-package org.csc.chessclub.exception;
+package org.csc.chessclub.exception.validation;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;

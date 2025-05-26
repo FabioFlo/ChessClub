@@ -1,4 +1,4 @@
-package org.csc.chessclub.dto;
+package org.csc.chessclub.dto.user;
 
 import org.csc.chessclub.enums.Role;
 

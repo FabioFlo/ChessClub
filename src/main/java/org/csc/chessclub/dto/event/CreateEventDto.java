@@ -2,7 +2,7 @@ package org.csc.chessclub.dto.event;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.csc.chessclub.utils.EventValidationMessage;
+import org.csc.chessclub.exception.validation.EventValidationMessage;
 
 public record CreateEventDto(
         @NotBlank(message = EventValidationMessage.TITLE_MUST_NOT_BE_BLANK)

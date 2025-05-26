@@ -1,8 +1,8 @@
 package org.csc.chessclub.mapper;
 
-import org.csc.chessclub.dto.RegisterUserRequest;
-import org.csc.chessclub.dto.UpdateUserRequest;
-import org.csc.chessclub.dto.UserDto;
+import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateUserRequest;
+import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,8 +107,9 @@ public class UserMapperTest {
     }
 
     @Test
+    @DisplayName("Map UpdateUserRequest to UserEntity")
     void shouldMapUpdateUserRequestToUserEntity() {
-        UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL, ROLE);
+        UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL);
         UserEntity updatedUser = userMapper.updateUserRequestToUser(user);
 
         assertEquals(updateUser.uuid(), updatedUser.getUuid(),
@@ -117,7 +118,5 @@ public class UserMapperTest {
                 "Username should be equal");
         assertEquals(updateUser.email(), updatedUser.getEmail(),
                 "Email should be equal");
-        assertEquals(updateUser.role(), updatedUser.getRole(),
-                "Role should be equal");
     }
 }
