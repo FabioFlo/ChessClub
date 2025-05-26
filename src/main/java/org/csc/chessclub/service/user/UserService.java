@@ -1,4 +1,4 @@
-package org.csc.chessclub.service;
+package org.csc.chessclub.service.user;
 
 import org.csc.chessclub.model.UserEntity;
 

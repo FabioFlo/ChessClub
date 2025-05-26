@@ -1,4 +1,4 @@
-package org.csc.chessclub.service;
+package org.csc.chessclub.service.event;
 
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;

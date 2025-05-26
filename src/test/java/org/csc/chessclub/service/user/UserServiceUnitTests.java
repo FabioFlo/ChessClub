@@ -3,7 +3,6 @@ package org.csc.chessclub.service.user;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
-import org.csc.chessclub.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

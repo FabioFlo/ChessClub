@@ -1,7 +1,8 @@
-package org.csc.chessclub.service;
+package org.csc.chessclub.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;
+import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.model.UserEntity;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
             throw new UserServiceException("Email or username already taken");
         }
         user.setAvailable(true);
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);

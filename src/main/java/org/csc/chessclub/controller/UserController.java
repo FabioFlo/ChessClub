@@ -1,0 +1,32 @@
+package org.csc.chessclub.controller;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.ResponseDto;
+import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.mapper.UserMapper;
+import org.csc.chessclub.service.user.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/users")
+@RequiredArgsConstructor
+public class UserController {
+    private final UserService userService;
+    private final UserMapper userMapper;
+
+    @PostMapping()
+    public ResponseEntity<ResponseDto<UserDto>> createUser(@Valid @RequestBody RegisterUserRequest userRequest) {
+        UserDto userDto = userMapper.userToUserDto(
+                userService.create(userMapper.registerUserRequestToUser(userRequest)));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto<>(userDto, "User registered", true));
+    }
+}

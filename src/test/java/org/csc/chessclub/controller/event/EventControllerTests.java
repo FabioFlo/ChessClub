@@ -1,4 +1,4 @@
-package org.csc.chessclub.controller;
+package org.csc.chessclub.controller.event;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;

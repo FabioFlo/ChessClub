@@ -1,4 +1,4 @@
-package org.csc.chessclub.service;
+package org.csc.chessclub.service.event;
 
 import org.csc.chessclub.model.EventEntity;
 

@@ -1,4 +1,4 @@
-package org.csc.chessclub.controller;
+package org.csc.chessclub.controller.user;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -7,8 +7,8 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.csc.chessclub.dto.ResponseDto;
-import org.csc.chessclub.enums.NotFoundMessage;
-import org.csc.chessclub.exception.ErrorMessage;
+import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UserDto;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,8 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -31,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Testcontainers
 @ActiveProfiles("test")
-public class EventExceptionControllerTests {
+public class UserControllerTests {
 
     @Container
     @ServiceConnection
@@ -41,16 +39,14 @@ public class EventExceptionControllerTests {
     @LocalServerPort
     private int port;
 
-    private final UUID notFoundUuid = UUID.randomUUID();
     private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
     private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
 
-    @Test
-    @Order(1)
-    void connectionTest() {
-        assertNotNull(postgresContainer, "Container should not be null");
-        assertTrue(postgresContainer.isRunning(), "Container should be running");
-    }
+    private RegisterUserRequest registerUserRequest;
+
+    private static final String USERNAME = "Test Username";
+    private static final String PASSWORD = "Password1_";
+    private static final String EMAIL = "email@email.com";
 
     @BeforeAll
     void setup() {
@@ -63,40 +59,38 @@ public class EventExceptionControllerTests {
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
                 .build();
+
+        registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
+    }
+
+    @Test
+    @Order(1)
+    void connectionTest() {
+        assertNotNull(postgresContainer, "Container should not be null");
+        assertTrue(postgresContainer.isRunning(), "Container should be running");
     }
 
     @Test
     @Order(2)
-    @DisplayName("Get Event By Id - Throw Not found exception")
-    void testGetEvent_whenEventNotFound_shouldThrowCustomNotFoundExceptionFromGlobalExceptionHandler() {
-        ResponseDto<ErrorMessage> response = given()
-                .pathParam("uuid", notFoundUuid)
+    @DisplayName("Register User")
+    void testRegisterUser_whenValidUserProvided_returnsRegisteredUser() {
+        ResponseDto<UserDto> response = given()
+                .body(registerUserRequest)
                 .when()
-                .get("/events/{uuid}")
+                .post("/users")
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .extract().response().as(new TypeRef<>() {
                 });
 
-        assertThat(response.success()).isFalse();
-        assertThat(response.message()).isEqualTo("Not found");
-        assertThat(response.data().message()).isEqualTo(NotFoundMessage.EVENT_WITH_UUID.getMessage().formatted(notFoundUuid));
-        assertThat(response.data().statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
-    }
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .extracting(UserDto::username)
+                .isEqualTo(USERNAME);
 
-    @Test
-    @DisplayName("Get Event By Id - Throw Bad Request exception")
-    void testGetEvent_whenInvalidUuid_shouldThrowCustomBadRequestExceptionFromGlobalExceptionHandler() {
-        ResponseDto<ErrorMessage> response = given()
-                .pathParam("uuid", "invalidUuid")
-                .when()
-                .get("/events/{uuid}")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().response().as(new TypeRef<>() {});
-
-        assertThat(response.success()).isFalse();
-        assertThat(response.message()).isEqualTo("Type mismatch");
-        assertThat(response.data().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response)
+                .extracting(ResponseDto::message)
+                .isEqualTo("User registered");
     }
 }
