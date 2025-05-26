@@ -8,7 +8,7 @@ import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import java.util.UUID;
 
 public record UpdateEventDto(
-        @ValidUUID(message = EventValidationMessage.UUID_MUST_BE_VALID)
+        @ValidUUID
         UUID uuid,
         @NotBlank(message = EventValidationMessage.TITLE_MUST_NOT_BE_BLANK)
         @Size(min = 2, max = 100, message = EventValidationMessage.TITLE_MUST_BE_BETWEEN_2_AND_100_CHARACTERS)
