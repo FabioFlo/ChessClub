@@ -30,99 +30,119 @@ public class TestUserValidation {
     }
 
     @Test
-    @DisplayName("Username is blank")
+    @DisplayName("Validation Register User Request - Username is blank")
     void testValidationRegisterUserRequest_whenUsernameIsBlank_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(null, PASSWORD, EMAIL);
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("username") &&
                         v.getMessage().equals(UserValidationMessage.USERNAME_MUST_NOT_BE_BLANK));
     }
 
     @Test
-    @DisplayName("Password too short")
+    @DisplayName("Validation Register User Request - Password too short")
     void testValidationRegisterUserRequest_whenPasswordTooShort_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_TOO_SHORT));
     }
 
     @Test
-    @DisplayName("Password null")
+    @DisplayName("Validation Register User Request - Password null")
     void testValidationRegisterUserRequest_whenPasswordNull_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, null);
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_NOT_VALID));
     }
 
     @Test
-    @DisplayName("Password not contains upper case")
+    @DisplayName("Validation Register User Request - Password not contains upper case")
     void testValidationRegisterUserRequest_whenPasswordNotContainsUpperCase_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "password");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_UPPERCASE_LETTER));
     }
 
     @Test
-    @DisplayName("Password not contains lower case")
+    @DisplayName("Validation Register User Request - Password not contains lower case")
     void testValidationRegisterUserRequest_whenPasswordNotContainsLowerCase_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "PASSWORD");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_LOWERCASE_LETTER));
     }
 
     @Test
-    @DisplayName("Password not contains digit")
+    @DisplayName("Validation Register User Request - Password not contains digit")
     void testValidationRegisterUserRequest_whenPasswordNotContainsDigit_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "PassworD");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_DIGIT));
     }
 
     @Test
-    @DisplayName("Password not contains special character")
+    @DisplayName("Validation Register User Request - Password not contains special character")
     void testValidationRegisterUserRequest_whenPasswordNotContainsSpecialCharacter_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "PassworD");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_MUST_CONTAIN_SPECIAL_CHARACTER));
     }
 
     @Test
-    @DisplayName("Password contains whitespace")
+    @DisplayName("Validation Register User Request - Password contains whitespace")
     void testValidationRegisterUserRequest_whenPasswordContainsWhitespace_thenValidationFails() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "PassworD ");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("password") &&
                         v.getMessage().equals(PasswordValidationMassage.PASSWORD_MUST_NOT_CONTAIN_WHITESPACE));
     }
 
     @Test
-    @DisplayName("Password valid")
+    @DisplayName("Validation Register User Request - Password valid")
     void testValidationRegisterUserRequest_whenPasswordValid_thenValidationSucceeds() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, "<Password1>");
 
         Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
         assertThat(violations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Validation Register User Request - Email invalid")
+    void testValidationRegisterUserRequest_whenEmailInvalid_thenValidationFails() {
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, "invalid-email", PASSWORD);
+
+        Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("email") &&
+                        v.getMessage().equals(UserValidationMessage.EMAIL_MUST_BE_VALID));
     }
 }
