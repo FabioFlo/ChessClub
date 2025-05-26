@@ -20,7 +20,7 @@ public class TestUserValidation {
     private Validator validator;
 
     private static final String USERNAME = "Test Username";
-    private static final String PASSWORD = "password";
+    private static final String PASSWORD = "Password1_";
     private static final String EMAIL = "email@email.com";
 
     @BeforeEach
@@ -144,5 +144,13 @@ public class TestUserValidation {
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("email") &&
                         v.getMessage().equals(UserValidationMessage.EMAIL_MUST_BE_VALID));
+    }
+
+    @Test
+    void testValidationUpdateUserRequest_whenValidUserProvided_thenValidationSucceeds() {
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
+
+        Set<ConstraintViolation<RegisterUserRequest>> violations = validator.validate(registerUserRequest);
+        assertThat(violations).isEmpty();
     }
 }

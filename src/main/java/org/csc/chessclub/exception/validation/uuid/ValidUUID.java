@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUUID {
-    String message() default "Invalid UUID format";
+    String message() default UuidValidationMessage.UUID_MUST_BE_VALID;
 
     Class<?>[] groups() default {};
 
