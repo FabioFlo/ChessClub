@@ -7,6 +7,7 @@ import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.exception.validation.EventValidationMessage;
+import org.csc.chessclub.exception.validation.uuid.UuidValidationMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,14 +105,14 @@ public class TestEventValidation {
     }
 
     @Test
-    @DisplayName("Validation Event Update - Uuid null")
-    void testValidationEventUpdateDto_whenUuidNull_thenValidationFails() {
+    @DisplayName("Validation Event Update - Uuid null or not valid")
+    void testValidationEventUpdateDto_whenUuidNullOrNotValid_thenValidationFails() {
         UpdateEventDto eventDetails = new UpdateEventDto(
                 null, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
         Set<ConstraintViolation<UpdateEventDto>> violations = validator.validate(eventDetails);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("uuid") &&
-                        v.getMessage().equals(EventValidationMessage.UUID_MUST_BE_VALID));
+                        v.getMessage().equals(UuidValidationMessage.UUID_MUST_BE_VALID));
     }
 }
