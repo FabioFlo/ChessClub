@@ -1,7 +1,8 @@
-package org.csc.chessclub.service;
+package org.csc.chessclub.service.event;
 
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
+import org.csc.chessclub.service.EventServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EventServiceUnitTest {
+public class EventServiceUnitTests {
 
     @InjectMocks
     private EventServiceImpl eventService;

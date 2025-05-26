@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Testcontainers
 @ActiveProfiles("test")
-public class TestEventExceptionController {
+public class EventExceptionControllerTests {
 
     @Container
     @ServiceConnection

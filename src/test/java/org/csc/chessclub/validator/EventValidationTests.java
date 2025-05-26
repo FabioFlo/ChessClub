@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class TestEventValidation {
+public class EventValidationTests {
 
     private Validator validator;
 

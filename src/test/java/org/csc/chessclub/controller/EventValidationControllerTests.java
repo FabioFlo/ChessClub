@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Testcontainers
 @ActiveProfiles("test")
-public class TestEventValidationController {
+public class EventValidationControllerTests {
 
     private static final String DESCRIPTION = "Test Description";
     private static final String AUTHOR = "Test Author";

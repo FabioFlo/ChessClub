@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class TestUserValidation {
+public class UserValidationTests {
 
     private Validator validator;
 

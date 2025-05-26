@@ -1,4 +1,4 @@
-package org.csc.chessclub.service;
+package org.csc.chessclub.service.user;
 
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
@@ -6,6 +6,7 @@ import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
+import org.csc.chessclub.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

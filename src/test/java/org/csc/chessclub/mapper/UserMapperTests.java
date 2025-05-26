@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserMapperTest {
+public class UserMapperTests {
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
     private static final String USERNAME = "Test Username";
