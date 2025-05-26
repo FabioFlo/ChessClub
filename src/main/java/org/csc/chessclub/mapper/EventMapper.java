@@ -23,5 +23,7 @@ public interface EventMapper {
 
     List<EventDto> eventEntityListToGetEventDtoList(List<EventEntity> event);
 
+    @Mapping(target = "available", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     EventEntity eventDetailsDtoToEvent(UpdateEventDto updateEventDto);
 }
