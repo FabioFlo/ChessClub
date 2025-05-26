@@ -14,14 +14,16 @@ import java.util.List;
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    EventDto eventToEventDto(EventEntity event);
+    EventDto eventToGetEventDto(EventEntity event);
 
     @Mapping(target = "uuid", ignore = true)
     @Mapping(target = "available", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     EventEntity createEventDtoToEvent(CreateEventDto createEventDto);
 
-    List<EventDto> eventEntityListToEventDtoList(List<EventEntity> event);
+    List<EventDto> eventEntityListToGetEventDtoList(List<EventEntity> event);
 
-    EventEntity updateEventDtoToEvent(UpdateEventDto updateEventDto);
+    @Mapping(target = "available", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    EventEntity eventDetailsDtoToEvent(UpdateEventDto updateEventDto);
 }
