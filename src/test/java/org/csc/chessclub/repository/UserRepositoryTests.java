@@ -26,11 +26,14 @@ public class UserRepositoryTests {
     static PostgreSQLContainer<?> postgresContainer
             = new PostgreSQLContainer<>("postgres:latest");
 
-    private static final String USERNAME = "Test Username";
-    private static final String PASSWORD = "password";
-    private static final String EMAIL = "email@email.com";
-    private static final Role ROLE = Role.ADMIN;
-    private UserEntity user;
+
+    private UserEntity user1;
+    private final String USERNAME1 = "Test Username";
+    private final String EMAIL1 = "email1@email.com";
+
+    private UserEntity user2;
+    private final String USERNAME2 = "Test Username 2";
+    private final String EMAIL2 = "email2@email.com";
 
     @Autowired
     private UserRepository userRepository;
@@ -38,36 +41,47 @@ public class UserRepositoryTests {
     @BeforeEach
     public void setUp() {
         new UserEntity();
-        user = UserEntity
+        String password1 = "password1";
+        user1 = UserEntity
                 .builder()
-                .username(USERNAME)
-                .password(PASSWORD)
-                .email(EMAIL)
-                .role(ROLE)
+                .username(USERNAME1)
+                .password(password1)
+                .email(EMAIL1)
+                .role(Role.USER)
                 .build();
+
+        String password2 = "<PASSWORD>";
+        user2 = UserEntity
+                .builder()
+                .username(USERNAME2)
+                .password(password2)
+                .email(EMAIL2)
+                .role(Role.ADMIN)
+                .build();
+
     }
 
     @Test
     @DisplayName("Find user by username or email")
     void testFindUserByUsernameOrEmail_whenGivenUsernameOrEmail_returnUserWithGivenUsernameOrEmail() {
-        userRepository.save(user);
-        Optional<UserEntity> retrievedUser = userRepository.findUserEntityByUsernameOrEmail(USERNAME, EMAIL);
+        userRepository.save(user1);
+        Optional<UserEntity> retrievedUser = userRepository.findUserEntityByUsernameOrEmail(USERNAME1, EMAIL1);
 
         assertTrue(retrievedUser.isPresent(), "User should be present");
-        assertEquals(USERNAME, retrievedUser.get().getUsername(), "Username should be equal");
-        assertEquals(EMAIL, retrievedUser.get().getEmail(), "Email should be equal");
+        assertEquals(USERNAME1, retrievedUser.get().getUsername(), "Username should be equal");
+        assertEquals(EMAIL1, retrievedUser.get().getEmail(), "Email should be equal");
     }
 
     @Test
     @DisplayName("Find user by username or email with different uuid")
     void testFindUserUsernameOrEmailWithDifferentUuid_whenGivenUsernameOrEmailAndUuidNot_returnUserWithGivenUsernameOrEmailAndIdNot() {
-        userRepository.save(user);
-        Optional<UserEntity> retrievedUser = userRepository.findByUsernameOrEmailAndUuidNot(USERNAME, EMAIL, user.getUuid());
+        userRepository.save(user2);
+        Optional<UserEntity> retrievedUser = userRepository.findByUsernameOrEmailAndUuidNot(USERNAME2, EMAIL2, user1.getUuid());
 
         assertTrue(retrievedUser.isPresent(), "User should be present");
-        assertEquals(USERNAME, retrievedUser.get().getUsername(),
+        assertEquals(USERNAME2, retrievedUser.get().getUsername(),
                 "Username should be equal");
-        assertEquals(EMAIL, retrievedUser.get().getEmail(),
+        assertEquals(EMAIL2, retrievedUser.get().getEmail(),
                 "Email should be equal");
     }
 }
