@@ -10,6 +10,7 @@ import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
@@ -61,7 +62,7 @@ public class UserControllerTests {
     private static final String EMAIL = "email@email.com";
     private String adminToken = "";
     private String userToken = "";
-    private UUID uuid = UUID.randomUUID();
+    private UUID userUuid = UUID.randomUUID();
 
     @Autowired
     private UserRepository userRepository;
@@ -84,6 +85,13 @@ public class UserControllerTests {
 
         registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
 
+        userRepository.save(UserEntity.
+                builder()
+                .username("admin")
+                .email("admin@admin.com")
+                .password(passwordEncoder.encode("Admin123_"))
+                .role(Role.ADMIN)
+                .available(true).build());
     }
 
     @Test
@@ -91,16 +99,6 @@ public class UserControllerTests {
     void connectionTest() {
         assertNotNull(postgresContainer, "Container should not be null");
         assertTrue(postgresContainer.isRunning(), "Container should be running");
-
-        UserEntity adminUser = userRepository.saveAndFlush(UserEntity.
-                builder()
-                .username("admin")
-                .email("admin@admin.com")
-                .password(passwordEncoder.encode("Admin123_"))
-                .role(Role.ADMIN)
-                .available(true).build());
-        System.out.println(adminUser);
-
     }
 
     @Test
@@ -186,7 +184,30 @@ public class UserControllerTests {
 
         String usernameOrEmail = service.extractUsernameOrEmail(userToken);
         assertEquals(USERNAME, usernameOrEmail);
-        uuid = UUID.fromString(service.extractId(userToken));
-        assertNotNull(uuid);
+        userUuid = UUID.fromString(service.extractId(userToken));
+        assertNotNull(userUuid);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Update User")
+    void testUpdateUser_whenValidUpdateUserProvided_returnsUpdatedUser() {
+        UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, "NewUsername", EMAIL);
+
+        ResponseDto<UpdateUserRequest> response = given()
+                .header("Authorization", "Bearer " + userToken)
+                .body(updateUser)
+                .when()
+                .patch("/users")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("User updated");
+
     }
 }

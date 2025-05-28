@@ -1,6 +1,7 @@
 package org.csc.chessclub.mapper;
 
 import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.model.UserEntity;
 import org.mapstruct.Mapper;
@@ -25,5 +26,5 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     UserEntity registerUserRequestToUser(RegisterUserRequest userRequest);
 
-    UserEntity updateUserRequestToUser(UserEntity user);
+    UserEntity updateUserRequestToUser(UpdateUserRequest updateUserRequest);
 }

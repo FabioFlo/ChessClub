@@ -83,4 +83,5 @@ public class UserServiceExceptionTests {
                 NotFoundMessage.USER_WITH_UUID.format((user.getUuid()))));
     }
 
+    //TODO throw exception when a user try to modify someone else and is not admin
 }

@@ -110,7 +110,7 @@ public class UserMapperTests {
     @DisplayName("Map UpdateUserRequest to UserEntity")
     void shouldMapUpdateUserRequestToUserEntity() {
         UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL);
-        UserEntity updatedUser = userMapper.updateUserRequestToUser(user);
+        UserEntity updatedUser = userMapper.updateUserRequestToUser(updateUser);
 
         assertEquals(updateUser.uuid(), updatedUser.getUuid(),
                 "UUID should be equal");
