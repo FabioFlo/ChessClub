@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.csc.chessclub.model.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,10 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractId(String token) {
+        return extractClaim(token, Claims::getId);
+    }
+
     // Metodo per estrarre un singolo claim
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -42,7 +47,9 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
-        List<String> authorities = userDetails.getAuthorities()
+        UserEntity user = (UserEntity) userDetails;
+
+        List<String> authorities = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
@@ -50,7 +57,8 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getUsername())
+                .claim("jti", user.getUuid())
                 .claim("roles", authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))

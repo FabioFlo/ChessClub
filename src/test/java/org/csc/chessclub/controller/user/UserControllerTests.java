@@ -14,6 +14,7 @@ import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
+import org.csc.chessclub.security.JwtService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,10 +27,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -57,11 +59,16 @@ public class UserControllerTests {
     private static final String USERNAME = "Test Username";
     private static final String PASSWORD = "Password1_";
     private static final String EMAIL = "email@email.com";
-    private String token = "";
+    private String adminToken = "";
+    private String userToken = "";
+    private UUID uuid = UUID.randomUUID();
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService service;
 
     @BeforeAll
     void setup() {
@@ -98,9 +105,9 @@ public class UserControllerTests {
 
     @Test
     @Order(2)
-    @DisplayName("Login")
-    void testLogin_whenValidUserProvided_returnsUser() {
-        AuthenticationRequest request = new AuthenticationRequest("admin" , "Admin123_");
+    @DisplayName("Admin Login")
+    void testAdminLogin_whenValidUserProvided_returnsUser() {
+        AuthenticationRequest request = new AuthenticationRequest("admin", "Admin123_");
 
         ResponseDto<AuthenticationResponse> response =
                 given()
@@ -112,18 +119,20 @@ public class UserControllerTests {
                         .extract().response().as(new TypeRef<>() {
                         });
 
-        token = response.data().token();
+        adminToken = response.data().token();
 
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::message)
                 .isEqualTo("User logged in");
 
-        assertNotNull(token);
+        assertNotNull(adminToken);
         assertThat(response)
                 .extracting(ResponseDto::data)
                 .extracting(AuthenticationResponse::token)
-                .isEqualTo(token);
+                .isEqualTo(adminToken);
+        String usernameOrEmail = service.extractUsernameOrEmail(adminToken);
+        assertEquals("admin", usernameOrEmail);
     }
 
     @Test
@@ -131,7 +140,7 @@ public class UserControllerTests {
     @DisplayName("Register User")
     void testRegisterUser_whenValidUserProvided_returnsRegisteredUser() {
         ResponseDto<UserDto> response = given()
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", "Bearer " + adminToken)
                 .body(registerUserRequest)
                 .when()
                 .post("/users")
@@ -151,4 +160,33 @@ public class UserControllerTests {
                 .isEqualTo("User registered");
     }
 
+    @Test
+    @Order(4)
+    @DisplayName("User login")
+    void testUserLogin_whenValidUserProvided_returnsUser() {
+        AuthenticationRequest request = new AuthenticationRequest(EMAIL, PASSWORD);
+
+        ResponseDto<AuthenticationResponse> response =
+                given()
+                        .body(request)
+                        .when()
+                        .post("/users/login")
+                        .then()
+                        .statusCode(HttpStatus.OK.value())
+                        .extract().response().as(new TypeRef<>() {
+                        });
+
+        userToken = response.data().token();
+        assertNotNull(userToken);
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("User logged in");
+
+        String usernameOrEmail = service.extractUsernameOrEmail(userToken);
+        assertEquals(USERNAME, usernameOrEmail);
+        uuid = UUID.fromString(service.extractId(userToken));
+        assertNotNull(uuid);
+    }
 }
