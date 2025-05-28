@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 
 @ControllerAdvice
@@ -41,5 +42,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ResponseDto<>(error, "Type mismatch", false));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ResponseDto<ErrorMessage>> handleAccessDenied(AccessDeniedException ex) {
+        ErrorMessage error = new ErrorMessage(
+                ex.getMessage(), HttpStatus.FORBIDDEN.value(), Instant.now().toString()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ResponseDto<>(error, "Access denied", false));
     }
 }

@@ -26,6 +26,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final AuthenticationService authService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<ResponseDto<UserDto>> createUser(@Valid @RequestBody RegisterUserRequest userRequest) {
         UserDto userDto = userMapper.userToUserDto(
@@ -35,7 +36,6 @@ public class UserController {
                 .body(new ResponseDto<>(userDto, "User registered", true));
     }
 
-    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     public ResponseEntity<ResponseDto<AuthenticationResponse>> login(@Valid @RequestBody AuthenticationRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
