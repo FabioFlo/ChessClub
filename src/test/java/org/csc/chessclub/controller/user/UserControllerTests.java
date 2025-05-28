@@ -6,6 +6,8 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import org.csc.chessclub.auth.AuthenticationRequest;
+import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
@@ -39,6 +41,9 @@ public class UserControllerTests {
     @LocalServerPort
     private int port;
 
+
+    //private final AuthenticationManager authenticationManager;
+
     private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
     private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
 
@@ -47,6 +52,8 @@ public class UserControllerTests {
     private static final String USERNAME = "Test Username";
     private static final String PASSWORD = "Password1_";
     private static final String EMAIL = "email@email.com";
+    private String token = "";
+
 
     @BeforeAll
     void setup() {
@@ -92,5 +99,36 @@ public class UserControllerTests {
         assertThat(response)
                 .extracting(ResponseDto::message)
                 .isEqualTo("User registered");
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Login")
+    void testLogin_whenValidUserProvided_returnsUser() {
+        AuthenticationRequest request = new AuthenticationRequest(EMAIL, PASSWORD);
+
+        ResponseDto<AuthenticationResponse> response =
+                given()
+                        .body(request)
+                        .when()
+                        .post("/users/login")
+                        .then()
+                        .statusCode(HttpStatus.OK.value())
+                        .extract().response().as(new TypeRef<>() {
+                        });
+
+        token = response.data().token();
+
+        // Assert
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("User logged in");
+
+        assertNotNull(token);
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(AuthenticationResponse::token)
+                .isEqualTo(token);
     }
 }

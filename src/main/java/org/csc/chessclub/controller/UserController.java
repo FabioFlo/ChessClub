@@ -2,6 +2,9 @@ package org.csc.chessclub.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.auth.AuthenticationRequest;
+import org.csc.chessclub.auth.AuthenticationResponse;
+import org.csc.chessclub.auth.AuthenticationService;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
@@ -9,6 +12,7 @@ import org.csc.chessclub.mapper.UserMapper;
 import org.csc.chessclub.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final AuthenticationService authService;
 
     @PostMapping()
     public ResponseEntity<ResponseDto<UserDto>> createUser(@Valid @RequestBody RegisterUserRequest userRequest) {
@@ -28,5 +33,12 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto<>(userDto, "User registered", true));
+    }
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDto<AuthenticationResponse>> login(@Valid @RequestBody AuthenticationRequest request) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(authService.authenticate(request), "User logged in", true));
     }
 }
