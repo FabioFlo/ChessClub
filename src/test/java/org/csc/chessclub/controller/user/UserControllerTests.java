@@ -136,7 +136,7 @@ public class UserControllerTests {
     @Test
     @Order(3)
     @DisplayName("Register User")
-    void testRegisterUser_whenValidUserProvided_returnsRegisteredUser() {
+    void testRegisterUser_whenAuthenticatedAdminAndValidUserProvided_returnsRegisteredUser() {
         ResponseDto<UserDto> response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .body(registerUserRequest)
@@ -191,7 +191,7 @@ public class UserControllerTests {
     @Test
     @Order(5)
     @DisplayName("Update User")
-    void testUpdateUser_whenValidUpdateUserProvided_returnsUpdatedUser() {
+    void testUpdateUser_whenAuthenticatedAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, "NewUsername", EMAIL);
 
         ResponseDto<UpdateUserRequest> response = given()
@@ -209,5 +209,27 @@ public class UserControllerTests {
                 .extracting(ResponseDto::message)
                 .isEqualTo("User updated");
 
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Admin can call update user")
+    void testUpdateUser_whenAuthenticatedAdminAndValidUpdateUserProvided_returnsUpdatedUser() {
+        UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, USERNAME, EMAIL);
+
+        ResponseDto<UpdateUserRequest> response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateUser)
+                .when()
+                .patch("/users")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("User updated");
     }
 }
