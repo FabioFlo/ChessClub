@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -47,5 +49,12 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(userRequest, "User updated", true));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseDto<UserDto>> getUser(@PathVariable UUID uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
+                userMapper.userToUserDto(userService.getById(uuid)), "User found", true));
     }
 }
