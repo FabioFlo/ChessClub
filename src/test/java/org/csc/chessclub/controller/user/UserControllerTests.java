@@ -255,4 +255,29 @@ public class UserControllerTests {
                 .extracting(UserDto::username)
                 .isEqualTo(USERNAME);
     }
+
+    @Test
+    @Order(8)
+    @DisplayName("Admin can delete user")
+    void testDeleteUser_whenAuthenticatedAdminAndValidUuidProvided_returnsDeletedUser() {
+        ResponseDto<UserDto> response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .pathParam("uuid", userUuid)
+                .when()
+                .delete("/users/{uuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("User deleted");
+
+        UserDto userDto = response.data();
+        assertThat(userDto)
+                .isNotNull()
+                .extracting(UserDto::available).isEqualTo(false);
+    }
 }

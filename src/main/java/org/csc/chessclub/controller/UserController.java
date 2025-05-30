@@ -9,6 +9,7 @@ import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.csc.chessclub.mapper.UserMapper;
 import org.csc.chessclub.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -53,8 +54,15 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{uuid}")
-    public ResponseEntity<ResponseDto<UserDto>> getUser(@PathVariable UUID uuid) {
+    public ResponseEntity<ResponseDto<UserDto>> getUser(@ValidUUID @PathVariable UUID uuid) {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
                 userMapper.userToUserDto(userService.getById(uuid)), "User found", true));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<ResponseDto<UserDto>> deleteUser(@ValidUUID @PathVariable UUID uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
+                userMapper.userToUserDto(userService.delete(uuid)), "User deleted", true));
     }
 }
