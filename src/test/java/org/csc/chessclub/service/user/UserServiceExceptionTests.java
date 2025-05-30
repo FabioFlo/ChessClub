@@ -2,21 +2,28 @@ package org.csc.chessclub.service.user;
 
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
+import org.csc.chessclub.exception.CustomAccessDeniedException;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -49,6 +56,10 @@ public class UserServiceExceptionTests {
                 .build();
     }
 
+    @AfterEach
+    public void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     @DisplayName("Create User - Throw when User Already Exists")
@@ -83,5 +94,29 @@ public class UserServiceExceptionTests {
                 NotFoundMessage.USER_WITH_UUID.format((user.getUuid()))));
     }
 
-    //TODO throw exception when a user try to modify someone else and is not admin
+    @Test
+    @DisplayName("Throw when not allowed to update user")
+    void testUpdateUser_whenUserIdDoNotMatchAndIsNotAdmin_shouldThrowAccessDeniedException() {
+        UUID userUUID = UUID.randomUUID();
+        UUID notAllowedUserUUID = UUID.randomUUID();
+
+        UserEntity notAllowedUser = new UserEntity();
+        notAllowedUser.setUuid(notAllowedUserUUID);
+        notAllowedUser.setRole(Role.USER);
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(notAllowedUser);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        UserEntity request = new UserEntity();
+        request.setUuid(userUUID);
+        request.setUsername("new username");
+        request.setEmail("newEmail@email.com");
+
+        assertThatThrownBy(() -> userService.update(request))
+                .isInstanceOf(CustomAccessDeniedException.class)
+                .hasMessageContaining("You are not allowed to update this user");
+    }
 }

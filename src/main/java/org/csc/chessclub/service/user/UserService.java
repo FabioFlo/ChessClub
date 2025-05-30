@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface UserService {
     UserEntity create(UserEntity user);
 
-    UserEntity update(UserEntity user);
+    UserEntity update(UserEntity user) ;
 
     UserEntity getById(UUID uuid);
 

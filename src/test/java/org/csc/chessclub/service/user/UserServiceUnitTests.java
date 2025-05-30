@@ -3,6 +3,7 @@ package org.csc.chessclub.service.user;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -50,6 +54,11 @@ public class UserServiceUnitTests {
                 .build();
     }
 
+    @AfterEach
+    public void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
+
     @Test
     @DisplayName("Create User")
     public void testCreateUser_whenUserProvided_returnUser() {
@@ -74,7 +83,45 @@ public class UserServiceUnitTests {
 
     @Test
     @DisplayName("Update user")
-    void testUpdateUser_whenUserProvided_returnUpdatedUser() {
+    void testUpdateUser_whenAuthenticatedUserAndValidUserProvided_returnUpdatedUser() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(user);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.existsById(user.getUuid())).thenReturn(true);
+        when(userRepository.save(Mockito.any())).thenReturn(user);
+
+        user.setUsername("Updated Username");
+
+        UserEntity updatedUser = userService.update(user);
+
+        assertNotNull(updatedUser,
+                "User should not be null");
+        assertEquals(user.getUsername(), updatedUser.getUsername(),
+                "Username of User should be equal");
+        verify(userRepository, times(1)).save(Mockito.any());
+    }
+
+    @Test
+    @DisplayName("Admin can update user")
+    void testAdminCanUpdateUser_whenAuthenticatedUserAndValidUserProvided_returnUpdatedUser() {
+        UserEntity admin =  UserEntity
+                .builder()
+                .uuid(UUID.randomUUID())
+                .username("admin")
+                .password(PASSWORD)
+                .email("admin@email.com")
+                .role(Role.ADMIN)
+                .build();
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(admin);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         when(userRepository.existsById(user.getUuid())).thenReturn(true);
         when(userRepository.save(Mockito.any())).thenReturn(user);
 

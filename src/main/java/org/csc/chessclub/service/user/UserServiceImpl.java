@@ -3,10 +3,13 @@ package org.csc.chessclub.service.user;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
+import org.csc.chessclub.exception.CustomAccessDeniedException;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity update(UserEntity user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
+
+        if (!currentUser.getUuid().equals(user.getUuid()) &&
+                !currentUser.getRole().equals(Role.ADMIN)) {
+            throw new CustomAccessDeniedException("You are not allowed to update this user");
+        }
+
         Optional<UserEntity> existingUser = userRepository.findByUsernameOrEmailAndUuidNot(user.getUsername(), user.getEmail(), user.getUuid());
         if (existingUser.isPresent()) {
             throw new UserServiceException("Email or username already taken");
