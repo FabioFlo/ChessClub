@@ -76,6 +76,13 @@ public class UserServiceExceptionTests {
     @Test
     @DisplayName("Update User - Throw when User Already Exists with different Id")
     void testUpdateUser_whenUserProvided_shouldThrowUserExceptionIfEmailOrUsernameAlreadyTakenWithDifferentId() {
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(user);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         when(userRepository.findByUsernameOrEmailAndUuidNot(USERNAME, EMAIL, user.getUuid())).thenReturn(Optional.ofNullable(user));
 
         UserServiceException exception = assertThrows(UserServiceException.class,
@@ -87,6 +94,12 @@ public class UserServiceExceptionTests {
     @Test
     @DisplayName("Throw when User Not Found")
     void testUserService_whenUserNotFoundById_shouldThrowCustomNotFoundException() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(user);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
                 () -> userService.update(user));
 
