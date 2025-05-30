@@ -40,7 +40,7 @@ public class UserController {
                 .body(new ResponseDto<>(authService.authenticate(request), "User logged in", true));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("isAuthenticated")
     @PatchMapping()
     public ResponseEntity<ResponseDto<UpdateUserRequest>> updateUser(@Valid @RequestBody UpdateUserRequest userRequest) {
         userService.update(userMapper.updateUserRequestToUser(userRequest));
