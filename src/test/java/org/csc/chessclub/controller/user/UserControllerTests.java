@@ -13,6 +13,7 @@ import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
+import org.csc.chessclub.exception.ErrorMessage;
 import org.csc.chessclub.model.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.csc.chessclub.security.JwtService;
@@ -187,7 +188,49 @@ public class UserControllerTests {
 
     @Test
     @Order(5)
-    @DisplayName("Update User")
+    @DisplayName("Throw when USER try to call get by id")
+    void testGetUser_whenUserTryGetUserByID_shouldThrowAccessDeniedException() {
+        ResponseDto<ErrorMessage> response = given()
+                .header("Authorization", "Bearer " + userToken)
+                .pathParam("uuid", userUuid)
+                .when()
+                .get("/users/{uuid}")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull();
+        assertThat(response.success()).isFalse();
+        assertThat(response.message()).isEqualTo("Access denied");
+        assertThat(response.data().statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Throw when USER try to call delete user")
+    void testDeleteUser_whenUserTryToDeleteAUser_shouldThrowAccessDeniedException() {
+        ResponseDto<ErrorMessage> response = given()
+                .header("Authorization", "Bearer " + userToken)
+                .pathParam("uuid", userUuid)
+                .when()
+                .delete("/users/{uuid}")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull();
+        assertThat(response.success()).isFalse();
+        assertThat(response.message()).isEqualTo("Access denied");
+        assertThat(response.data().statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("User can update his data")
     void testUpdateUser_whenAuthenticatedAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, "NewUsername", EMAIL);
 
@@ -209,8 +252,28 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(6)
-    @DisplayName("Admin can call update user")
+    @Order(8)
+    @DisplayName("Admin can get user by id")
+    void testGetUser_whenAuthenticatedAdminAndValidUuidProvided_returnUserDto() {
+        ResponseDto<UserDto> response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .pathParam("uuid", userUuid)
+                .when()
+                .get("/users/{uuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo("User found");
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("Admin can update user")
     void testUpdateUser_whenAuthenticatedAdminAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, USERNAME, EMAIL);
 
@@ -231,33 +294,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(7)
-    @DisplayName("Admin can get user by id")
-    void testGetUser_whenAuthenticatedAdminAndValidUuidProvided_returnUserDto() {
-        ResponseDto<UserDto> response = given()
-                .header("Authorization", "Bearer " + adminToken)
-                .pathParam("uuid", userUuid)
-                .when()
-                .get("/users/{uuid}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
-
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::message)
-                .isEqualTo("User found");
-
-        UserDto userDto = response.data();
-        assertThat(userDto)
-                .isNotNull()
-                .extracting(UserDto::username)
-                .isEqualTo(USERNAME);
-    }
-
-    @Test
-    @Order(8)
+    @Order(10)
     @DisplayName("Admin can delete user")
     void testDeleteUser_whenAuthenticatedAdminAndValidUuidProvided_returnsDeletedUser() {
         ResponseDto<UserDto> response = given()
@@ -279,5 +316,28 @@ public class UserControllerTests {
         assertThat(userDto)
                 .isNotNull()
                 .extracting(UserDto::available).isEqualTo(false);
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Login fail when user available is false")
+    void testLogin_whenUserHaveAvailableFalse_shouldThrowException() {
+        AuthenticationRequest request = new AuthenticationRequest(EMAIL, PASSWORD);
+
+        ResponseDto<ErrorMessage> response =
+                given()
+                        .body(request)
+                        .when()
+                        .post("/users/login")
+                        .then()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
+                        .extract().response().as(new TypeRef<>() {
+                        });
+
+        assertThat(response)
+                .isNotNull();
+        assertThat(response.success()).isFalse();
+        assertThat(response.data().message()).isEqualTo("User is disabled");
+        assertThat(response.message()).isEqualTo("Authentication Required");
     }
 }

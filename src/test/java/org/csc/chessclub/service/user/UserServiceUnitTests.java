@@ -133,6 +133,7 @@ public class UserServiceUnitTests {
                 "User should not be null");
         assertEquals(user.getUsername(), updatedUser.getUsername(),
                 "Username of User should be equal");
+        assertNotNull(updatedUser.getRole(), "Role should not be null");
         verify(userRepository, times(1)).save(Mockito.any());
     }
 
@@ -148,7 +149,7 @@ public class UserServiceUnitTests {
     }
 
     @Test
-    @DisplayName("Delete user by Id")
+    @DisplayName("Delete user by Id set available false")
     void testDeleteUser_whenUserFoundById_availableShouldBeSetToFalse() {
         when(userRepository.findById(user.getUuid())).thenReturn(Optional.of(user));
         when(userRepository.save(any(UserEntity.class))).thenReturn(user);
