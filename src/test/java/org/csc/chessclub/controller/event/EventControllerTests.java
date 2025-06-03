@@ -1,25 +1,17 @@
 package org.csc.chessclub.controller.event;
 
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.common.mapper.TypeRef;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.csc.chessclub.controller.BaseIntegrationTest;
+import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
-import org.csc.chessclub.dto.ResponseDto;
-import org.junit.jupiter.api.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,20 +20,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Testcontainers
-@ActiveProfiles("test")
-public class EventControllerTests {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgresContainer
-            = new PostgreSQLContainer<>("postgres:latest");
-
-    @LocalServerPort
-    private int port;
+public class EventControllerTests extends BaseIntegrationTest {
 
     private CreateEventDto createEventDto;
     private static final String TITLE = "Test Title";
@@ -50,31 +29,17 @@ public class EventControllerTests {
     private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private UUID uuid;
 
-    private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
-    private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
+    @BeforeAll
+    void setup() {
+        createEventDto = new CreateEventDto(
+                TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+    }
 
     @Test
     @Order(1)
     void connectionTest() {
-        assertNotNull(postgresContainer, "Container should not be null");
-        assertTrue(postgresContainer.isRunning(), "Container should be running");
-    }
-
-    @BeforeAll
-    void setup() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
-
-        RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
-
-        RestAssured.requestSpecification = new RequestSpecBuilder()
-                .setContentType(ContentType.JSON)
-                .setAccept(ContentType.JSON)
-                .build();
-
-        createEventDto = new CreateEventDto(
-                TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
-
+        assertTrue(isContainerNotNullAndRunning(),
+                "Container should be not null and running");
     }
 
     @Test
