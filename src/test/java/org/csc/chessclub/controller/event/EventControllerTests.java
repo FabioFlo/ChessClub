@@ -2,6 +2,7 @@ package org.csc.chessclub.controller.event;
 
 import io.restassured.common.mapper.TypeRef;
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -29,10 +31,20 @@ public class EventControllerTests extends BaseIntegrationTest {
     private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private UUID uuid;
 
+    private String userToken;
+    @Value("${user.username}")
+    private String userUsername;
+    @Value("${user.password}")
+    private String userPassword;
+
+
     @BeforeAll
     void setup() {
         createEventDto = new CreateEventDto(
                 TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+
+        AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
+        userToken = loginAndGetToken(userLogin).data().token();
     }
 
     @Test
@@ -45,8 +57,9 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Test
     @Order(2)
     @DisplayName("Create Event")
-    void testCreateEvent_whenValidDetailsProvided_returnsCreatedEvent() {
+    void testCreateEvent_whenUserAuthenticatedAndValidDetailsProvided_returnsCreatedEvent() {
         ResponseDto<EventDto> response = given()
+                .header("Authorization", "Bearer " + userToken)
                 .body(createEventDto)
                 .when()
                 .post("/events")
@@ -109,10 +122,11 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Test
     @Order(5)
     @DisplayName("Update event")
-    void testUpdateEvent_whenValidEventDetailsProvided_returnsUpdatedEvent() {
+    void testUpdateEvent_whenUserAuthenticatedAndValidEventDetailsProvided_returnsUpdatedEvent() {
         UpdateEventDto updateEventDto = new UpdateEventDto(uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
         ResponseDto<UpdateEventDto> response = given()
+                .header("Authorization", "Bearer " + userToken)
                 .body(updateEventDto)
                 .when()
                 .patch("/events")
@@ -130,9 +144,10 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Test
     @Order(6)
     @DisplayName("Delete event")
-    void testDeleteEvent_whenEventFound_returnsResponseDtoWithSuccessAndMessage() {
+    void testDeleteEvent_whenUserAuthenticatedAndEventFound_returnsResponseDtoWithSuccessAndMessage() {
         ResponseDto<UUID> responseDto = given()
                 .pathParam("uuid", uuid)
+                .header("Authorization", "Bearer " + userToken)
                 .when()
                 .delete("/events/{uuid}")
                 .then()

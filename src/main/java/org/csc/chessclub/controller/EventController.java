@@ -11,6 +11,7 @@ import org.csc.chessclub.service.event.EventService;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @PostMapping()
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<EventDto>> createEvent(@Valid @RequestBody CreateEventDto createEventDto) {
         EventDto createdEvent = eventMapper.eventToEventDto(
                 eventService.create(eventMapper.createEventDtoToEvent(createEventDto)));
@@ -48,12 +50,14 @@ public class EventController {
     }
 
     @PatchMapping()
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<UpdateEventDto>> updateEvent(@Valid @RequestBody UpdateEventDto updateEventDto) {
         eventService.update(eventMapper.updateEventDtoToEvent(updateEventDto));
         return ResponseEntity.ok(new ResponseDto<>(updateEventDto, "Event updated", true));
     }
 
     @DeleteMapping("/{uuid}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<UUID>> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
         eventService.delete(uuid);
         return ResponseEntity.ok(new ResponseDto<>(uuid, "Event deleted", true));
