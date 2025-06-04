@@ -44,7 +44,7 @@ public class EventControllerTests extends BaseIntegrationTest {
                 TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
 
         AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
-        userToken = loginAndGetToken(userLogin).data().token();
+        userToken = loginAndGetResponse(userLogin).data().token();
     }
 
     @Test

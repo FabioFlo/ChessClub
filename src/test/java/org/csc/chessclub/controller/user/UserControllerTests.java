@@ -50,7 +50,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         AuthenticationRequest request = new AuthenticationRequest("admin", "Admin123_");
 
         ResponseDto<AuthenticationResponse> response =
-                loginAndGetToken(request);
+                loginAndGetResponse(request);
 
         adminToken = response.data().token();
 
@@ -100,7 +100,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         AuthenticationRequest request = new AuthenticationRequest(EMAIL, PASSWORD);
 
         ResponseDto<AuthenticationResponse> response =
-                loginAndGetToken(request);
+                loginAndGetResponse(request);
 
         userToken = response.data().token();
         assertNotNull(userToken);

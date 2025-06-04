@@ -101,7 +101,7 @@ public abstract class BaseIntegrationTest {
         return postgresContainer != null && postgresContainer.isRunning();
     }
 
-    protected ResponseDto<AuthenticationResponse> loginAndGetToken(AuthenticationRequest request) {
+    protected ResponseDto<AuthenticationResponse> loginAndGetResponse (AuthenticationRequest request) {
 
         return given()
                 .body(request)
