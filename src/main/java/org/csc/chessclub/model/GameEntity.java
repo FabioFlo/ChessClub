@@ -12,12 +12,12 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "games")
-public class GamesEntity {
+public class GameEntity {
     @Id
     @GeneratedValue
     private UUID uuid;
-    private String white;
-    private String black;
+    private String whitePlayer;
+    private String blackPlayer;
     private Result result;
     private String pgn;
 }
