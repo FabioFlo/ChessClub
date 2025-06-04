@@ -4,7 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.csc.chessclub.enums.Result;
 
 import java.util.UUID;
@@ -12,6 +15,9 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "games")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GameEntity {
     @Id
     @GeneratedValue
@@ -20,4 +26,5 @@ public class GameEntity {
     private String blackPlayer;
     private Result result;
     private String pgn;
+    private boolean available;
 }
