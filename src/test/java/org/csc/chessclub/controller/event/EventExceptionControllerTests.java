@@ -1,8 +1,10 @@
 package org.csc.chessclub.controller.event;
 
 import io.restassured.common.mapper.TypeRef;
+import org.assertj.core.api.Assertions;
 import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.ResponseDto;
+import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
@@ -61,5 +63,27 @@ public class EventExceptionControllerTests extends BaseIntegrationTest {
         assertThat(response.success()).isFalse();
         assertThat(response.message()).isEqualTo("Type mismatch");
         assertThat(response.data().statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("Throw 401 when not authenticated")
+    void testCreateEvent_whenUnauthenticatedUserTryToCreateEvent_shouldThrow401() {
+        CreateEventDto createEventDto = new CreateEventDto("Test title", "Test description", "Test author", "pdf");
+        ResponseDto<ErrorMessage> response = given()
+                .body(createEventDto)
+                .when()
+                .post("/events")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        Assertions.assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(false);
+
+        Assertions.assertThat(response)
+                .extracting(ResponseDto::message)
+                .isEqualTo("Authentication Required");
     }
 }
