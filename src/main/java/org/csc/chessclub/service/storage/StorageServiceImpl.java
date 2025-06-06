@@ -46,4 +46,9 @@ public class StorageServiceImpl implements StorageService {
             throw new StorageException("Failed to store file.");
         }
     }
+
+    @Override
+    public Path load(String filename) {
+        return this.rootLocation.resolve(filename);
+    }
 }
