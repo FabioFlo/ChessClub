@@ -25,7 +25,6 @@ public class EventValidationTests {
     private static final String TITLE = "Test Title";
     private static final String DESCRIPTION = "Test Description";
     private static final String AUTHOR = "Test Author";
-    private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private static final String INVALID_STRING_LENGTH = "A";
     private final UUID uuid = UUID.randomUUID();
 
@@ -40,7 +39,7 @@ public class EventValidationTests {
     @Test
     @DisplayName("Validation Event Create Dto - Title is blank")
     void testValidationEventCreateDto_whenTitleIsBlank_thenValidationFails() {
-        createEvent = new CreateEventDto(null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+        createEvent = new CreateEventDto(null, DESCRIPTION, AUTHOR);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
@@ -51,7 +50,7 @@ public class EventValidationTests {
     @Test
     @DisplayName("Validation Event Create Dto - Description is blank")
     void testValidationEventCreateDto_whenDescriptionIsBlank_thenValidationFails() {
-        createEvent = new CreateEventDto(TITLE, null, AUTHOR, ANNOUNCEMENT_PDF);
+        createEvent = new CreateEventDto(TITLE, null, AUTHOR );
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
@@ -62,7 +61,7 @@ public class EventValidationTests {
     @Test
     @DisplayName("Validation Event Create Dto - Author is blank")
     void testValidationEventCreateDto_whenAuthorIsBlank_thenValidationFails() {
-        createEvent = new CreateEventDto(TITLE, DESCRIPTION, null, ANNOUNCEMENT_PDF);
+        createEvent = new CreateEventDto(TITLE, DESCRIPTION, null);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(createEvent);
         assertThat(violations).anyMatch(v ->
@@ -74,7 +73,7 @@ public class EventValidationTests {
     @DisplayName("Validation Event Create - Title size not valid")
     void testValidationEventCreateDto_whenTitleSizeNotValid_thenValidationFails() {
         CreateEventDto eventDto = new CreateEventDto(
-                INVALID_STRING_LENGTH, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+                INVALID_STRING_LENGTH, DESCRIPTION, AUTHOR);
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
@@ -86,7 +85,7 @@ public class EventValidationTests {
     @DisplayName("Validation Event Create - Author size not valid")
     void testValidationEventCreateDto_whenAuthorSizeNotValid_thenValidationFails() {
         CreateEventDto eventDto = new CreateEventDto(
-                TITLE, DESCRIPTION, INVALID_STRING_LENGTH, ANNOUNCEMENT_PDF);
+                TITLE, DESCRIPTION, INVALID_STRING_LENGTH );
 
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
@@ -98,7 +97,7 @@ public class EventValidationTests {
     @DisplayName("Validation Event Update")
     void testValidationEventUpdateDto_whenValidEventDetailsProvided_thenValidationSucceeds() {
         UpdateEventDto eventDetails = new UpdateEventDto(
-                uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+                uuid, "New test title", DESCRIPTION, AUTHOR );
 
         Set<ConstraintViolation<UpdateEventDto>> violations = validator.validate(eventDetails);
         assertThat(violations).isEmpty();
@@ -108,7 +107,7 @@ public class EventValidationTests {
     @DisplayName("Validation Event Update - Uuid null or not valid")
     void testValidationEventUpdateDto_whenUuidNullOrNotValid_thenValidationFails() {
         UpdateEventDto eventDetails = new UpdateEventDto(
-                null, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+                null, "New test title", DESCRIPTION, AUTHOR );
 
         Set<ConstraintViolation<UpdateEventDto>> violations = validator.validate(eventDetails);
         assertThat(violations).anyMatch(v ->

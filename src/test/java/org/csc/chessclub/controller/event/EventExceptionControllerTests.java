@@ -68,9 +68,10 @@ public class EventExceptionControllerTests extends BaseIntegrationTest {
     @Test
     @DisplayName("Throw 401 when not authenticated")
     void testCreateEvent_whenUnauthenticatedUserTryToCreateEvent_shouldThrow401() {
-        CreateEventDto createEventDto = new CreateEventDto("Test title", "Test description", "Test author", "pdf");
+        CreateEventDto createEventDto = new CreateEventDto("Test title", "Test description", "Test author");
         ResponseDto<ErrorMessage> response = given()
-                .body(createEventDto)
+                .multiPart("event", "event.json", createEventDto, "application/json")
+                .contentType("multipart/form-data")
                 .when()
                 .post("/events")
                 .then()

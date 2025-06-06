@@ -21,7 +21,6 @@ public class EventMapperTests {
     private final UUID uuid = UUID.randomUUID();
     private final LocalDate CREATED_AT = LocalDate.now();
     private final String DESCRIPTION = "Test Description";
-    private final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private final String AUTHOR = "Test Author";
     private final String TITLE = "Test Title";
 
@@ -32,7 +31,6 @@ public class EventMapperTests {
                 .builder()
                 .uuid(uuid)
                 .description(DESCRIPTION)
-                .announcementPDF(ANNOUNCEMENT_PDF)
                 .author(AUTHOR)
                 .createdAt(CREATED_AT)
                 .title(TITLE)
@@ -62,7 +60,7 @@ public class EventMapperTests {
     @Test
     @DisplayName("Map event dto to event")
     void shouldMapEventDtoToEventCorrectly() {
-        CreateEventDto eventDto = new CreateEventDto(TITLE, DESCRIPTION, AUTHOR, DESCRIPTION);
+        CreateEventDto eventDto = new CreateEventDto(TITLE, DESCRIPTION, AUTHOR);
         EventEntity event = eventMapper.createEventDtoToEvent(eventDto);
 
         assertEquals(eventDto.title(), event.getTitle(),
@@ -71,8 +69,7 @@ public class EventMapperTests {
                 "Description should be equal");
         assertEquals(eventDto.author(), event.getAuthor(),
                 "Author should be equal");
-        assertEquals(eventDto.announcementPDF(), event.getAnnouncementPDF(),
-                "Announcement PDF should be equal");
+
     }
 
     @Test
@@ -95,12 +92,11 @@ public class EventMapperTests {
     void shouldMapUpdateEventDtoToEventEntityCorrectly() {
         String updatedTitle = "Updated Title";
         EventEntity updatedEvent = eventMapper.updateEventDtoToEvent(new UpdateEventDto(uuid,
-                updatedTitle, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF));
+                updatedTitle, DESCRIPTION, AUTHOR));
 
         assertEquals(uuid, updatedEvent.getUuid());
         assertEquals(updatedTitle, updatedEvent.getTitle());
         assertEquals(DESCRIPTION, updatedEvent.getDescription());
         assertEquals(AUTHOR, updatedEvent.getAuthor());
-        assertEquals(ANNOUNCEMENT_PDF, updatedEvent.getAnnouncementPDF());
     }
 }

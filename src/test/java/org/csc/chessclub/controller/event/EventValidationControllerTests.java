@@ -1,13 +1,16 @@
 package org.csc.chessclub.controller.event;
 
 import io.restassured.common.mapper.TypeRef;
+import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.exception.validation.ValidErrorMessage;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
@@ -19,17 +22,29 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
 
     private static final String DESCRIPTION = "Test Description";
     private static final String AUTHOR = "Test Author";
-    private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private final UUID invalidUuid = new UUID(0, 0);
+    private String userToken;
+    @Value("${user.username}")
+    private String userUsername;
+    @Value("${user.password}")
+    private String userPassword;
+
+    @BeforeAll
+    void setup() {
+        AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
+        userToken = loginAndGetResponse(userLogin).data().token();
+    }
 
     @Test
     @DisplayName("Create Event - Should throw validation exception when invalid create event dto provided")
     void testCreateEvent_whenInvalidCreateEventDtoProvided_shouldThrowValidationException() {
         CreateEventDto invalidCreateEventDto = new CreateEventDto(
-                null, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+                null, DESCRIPTION, AUTHOR);
 
         ResponseDto<ValidErrorMessage> response = given()
-                .body(invalidCreateEventDto)
+                .header("Authorization", "Bearer " + userToken)
+                .multiPart("event", "event.json", invalidCreateEventDto, "application/json")
+                .contentType("multipart/form-data")
                 .when()
                 .post("/events")
                 .then()
@@ -47,7 +62,7 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
     @Test
     @DisplayName("Update Event - Should throw validation exception when invalid event details provided")
     void testUpdateEvent_whenInvalidEventDetailsDtoProvided_shouldThrowValidationException() {
-        UpdateEventDto invalidUpdateEventDto = new UpdateEventDto(invalidUuid, null, null, null, "");
+        UpdateEventDto invalidUpdateEventDto = new UpdateEventDto(invalidUuid, null, null, null);
 
         ResponseDto<ValidErrorMessage> response = given()
                 .body(invalidUpdateEventDto)
@@ -91,6 +106,7 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
     @DisplayName("Delete - Should throw validation exception when invalid uuid provided")
     void testDeleteEvent_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
         ResponseDto<ValidErrorMessage> response = given()
+                .header("Authorization", "Bearer " + userToken)
                 .pathParam("uuid", invalidUuid)
                 .when()
                 .delete("/events/{uuid}")

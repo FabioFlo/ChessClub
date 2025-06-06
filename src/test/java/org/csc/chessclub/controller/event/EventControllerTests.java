@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,6 @@ public class EventControllerTests extends BaseIntegrationTest {
     private static final String TITLE = "Test Title";
     private static final String DESCRIPTION = "Test Description";
     private static final String AUTHOR = "Test Author";
-    private static final String ANNOUNCEMENT_PDF = "Test Announcement PDF";
     private UUID uuid;
 
     private String userToken;
@@ -36,12 +36,14 @@ public class EventControllerTests extends BaseIntegrationTest {
     private String userUsername;
     @Value("${user.password}")
     private String userPassword;
+    @Value("${storage.pdf-folder}")
+    String storageFolder;
 
 
     @BeforeAll
     void setup() {
         createEventDto = new CreateEventDto(
-                TITLE, DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+                TITLE, DESCRIPTION, AUTHOR);
 
         AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
         userToken = loginAndGetResponse(userLogin).data().token();
@@ -60,7 +62,9 @@ public class EventControllerTests extends BaseIntegrationTest {
     void testCreateEvent_whenUserAuthenticatedAndValidDetailsProvided_returnsCreatedEvent() {
         ResponseDto<EventDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
-                .body(createEventDto)
+                .multiPart("event", "event.json", createEventDto, "application/json")
+                .multiPart("pdfFile", new File(storageFolder + "/announcement.pdf"))
+                .contentType("multipart/form-data")
                 .when()
                 .post("/events")
                 .then()
@@ -123,7 +127,7 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Order(5)
     @DisplayName("Update event")
     void testUpdateEvent_whenUserAuthenticatedAndValidEventDetailsProvided_returnsUpdatedEvent() {
-        UpdateEventDto updateEventDto = new UpdateEventDto(uuid, "New test title", DESCRIPTION, AUTHOR, ANNOUNCEMENT_PDF);
+        UpdateEventDto updateEventDto = new UpdateEventDto(uuid, "New test title", DESCRIPTION, AUTHOR);
 
         ResponseDto<UpdateEventDto> response = given()
                 .header("Authorization", "Bearer " + userToken)

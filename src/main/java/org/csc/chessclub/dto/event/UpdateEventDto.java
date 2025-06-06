@@ -17,7 +17,6 @@ public record UpdateEventDto(
         String description,
         @NotBlank(message = EventValidationMessage.AUTHOR_MUST_NOT_BE_BLANK)
         @Size(min = 2, max = 30, message = EventValidationMessage.AUTHOR_MUST_BE_BETWEEN_2_AND_30_CHARACTERS)
-        String author,
-        String announcementPDF
+        String author
 ) {
 }
