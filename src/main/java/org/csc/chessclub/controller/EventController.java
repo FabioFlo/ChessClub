@@ -10,11 +10,14 @@ import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.event.EventService;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,11 +29,13 @@ public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
 
-    @PostMapping()
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseDto<EventDto>> createEvent(@Valid @RequestBody CreateEventDto createEventDto) {
+    public ResponseEntity<ResponseDto<EventDto>> createEvent(
+            @Valid @RequestBody CreateEventDto createEventDto,
+            @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
         EventDto createdEvent = eventMapper.eventToEventDto(
-                eventService.create(eventMapper.createEventDtoToEvent(createEventDto)));
+                eventService.create(eventMapper.createEventDtoToEvent(createEventDto), file));
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto<>(createdEvent, "Event created", true));
@@ -44,8 +49,8 @@ public class EventController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ResponseDto<EventDto>> getEventById(@ValidUUID @PathVariable UUID uuid) {
-            return ResponseEntity.ok(new ResponseDto<>(
-                    eventMapper.eventToEventDto(eventService.getById(uuid)), "Event found", true));
+        return ResponseEntity.ok(new ResponseDto<>(
+                eventMapper.eventToEventDto(eventService.getById(uuid)), "Event found", true));
 
     }
 

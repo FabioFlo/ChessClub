@@ -5,8 +5,11 @@ import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
+import org.csc.chessclub.service.storage.StorageService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,9 +18,15 @@ import java.util.UUID;
 @Service
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final StorageService storageService;
 
     @Override
-    public EventEntity create(EventEntity event) {
+    public EventEntity create(EventEntity event, MultipartFile file) throws IOException {
+        String filename = null;
+        if (file != null && !file.isEmpty()) {
+            filename = storageService.store(file);
+        }
+        event.setAnnouncementPDF(filename);
         event.setAvailable(true);
         return eventRepository.save(event);
     }

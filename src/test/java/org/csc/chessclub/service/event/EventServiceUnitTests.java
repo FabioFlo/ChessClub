@@ -2,6 +2,7 @@ package org.csc.chessclub.service.event;
 
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
+import org.csc.chessclub.service.storage.StorageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +28,8 @@ public class EventServiceUnitTests {
     private EventServiceImpl eventService;
     @Mock
     private EventRepository eventRepository;
+    @Mock
+    private StorageServiceImpl storageService;
 
     private EventEntity event;
 
@@ -34,13 +39,11 @@ public class EventServiceUnitTests {
         String title = "Test Event";
         String description = "Test Description";
         String author = "Test Author";
-        String announcementPDF = "Test Announcement PDF";
         LocalDate date = LocalDate.now();
         event = EventEntity
                 .builder()
                 .uuid(uuid)
                 .description(description)
-                .announcementPDF(announcementPDF)
                 .author(author)
                 .createdAt(date)
                 .title(title)
@@ -49,14 +52,30 @@ public class EventServiceUnitTests {
 
     @Test
     @DisplayName("Create Event")
-    public void testCreateEvent_whenEventDetailsProvided_returnEvent() {
+    public void testCreateEvent_whenEventDetailsProvided_returnEvent() throws IOException {
         when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
 
-        EventEntity createdEvent = eventService.create(event);
+        EventEntity createdEvent = eventService.create(event, null);
 
         assertNotNull(createdEvent, "Event should not be null");
         assertNotNull(createdEvent.getUuid(), "UUID should not be null");
         assertTrue(createdEvent.isAvailable(), "Event should be available");
+        verify(eventRepository, times(1)).save(any(EventEntity.class));
+    }
+
+    @Test
+    @DisplayName("Create Event with pdf")
+    public void testCreateEvent_whenCreateEventDtoProvided_returnEvent() throws IOException {
+        String filename = "announcement.pdf";
+        MultipartFile mockFile = mock(MultipartFile.class);
+        when(storageService.store(mockFile)).thenReturn(filename);
+        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+
+        EventEntity createdEvent = eventService.create(event, mockFile);
+
+        assertNotNull(createdEvent, "Event should not be null");
+        assertNotNull(createdEvent.getAnnouncementPDF(), "Pdf name should be present");
+        assertEquals(filename, createdEvent.getAnnouncementPDF());
         verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 
@@ -112,10 +131,10 @@ public class EventServiceUnitTests {
 
     @Test
     @DisplayName("Save if valid Event details")
-    void testSaveEvent_whenValidEventDetailsProvided_returnEvent() {
+    void testSaveEvent_whenValidEventDetailsProvided_returnEvent() throws IOException {
         when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
 
-        EventEntity savedEvent = eventService.create(event);
+        EventEntity savedEvent = eventService.create(event, null);
 
         assertTrue(event.getTitle() != null && !event.getTitle().isEmpty());
         assertTrue(event.getAuthor() != null && !event.getAuthor().isEmpty());
