@@ -81,17 +81,34 @@ public class EventServiceUnitTests {
 
     @Test
     @DisplayName("Update Event")
-    public void testUpdateEvent_whenEventDetailsProvided_returnUpdatedEvent() {
+    public void testUpdateEvent_whenEventDetailsProvided_returnUpdatedEvent() throws IOException {
         when(eventRepository.existsById(event.getUuid())).thenReturn(true);
         when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
 
         event.setTitle("Updated Title");
 
-        EventEntity updatedEvent = eventService.update(event);
+        EventEntity updatedEvent = eventService.update(event, null);
 
         assertNotNull(updatedEvent, "Event should not be null");
         assertEquals(event.getTitle(), updatedEvent.getTitle(), "Title of Event should be equal");
         verify(eventRepository, times(1)).save(any(EventEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should Update Event with pdf filename")
+    public void testUpdateEvent_whenUpdateEventDtoProvidedWithPdf_returnUpdatedEvent() throws IOException {
+        String filename = "announcement.pdf";
+        MultipartFile mockFile = mock(MultipartFile.class);
+        when(storageService.store(mockFile)).thenReturn(filename);
+        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
+        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+
+        EventEntity updatedEvent = eventService.update(event, mockFile);
+
+        assertNotNull(updatedEvent, "Event should not be null");
+        assertNotNull(updatedEvent.getAnnouncementPDF(), "Pdf name should be present");
+        assertEquals(filename, updatedEvent.getAnnouncementPDF());
+     verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 
     @Test
@@ -142,4 +159,5 @@ public class EventServiceUnitTests {
         assertNotNull(savedEvent);
         verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
+
 }

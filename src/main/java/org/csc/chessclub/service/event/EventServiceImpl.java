@@ -32,11 +32,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventEntity update(EventEntity event) {
-        if (eventRepository.existsById(event.getUuid())) {
-            return eventRepository.save(event);
+    public EventEntity update(EventEntity event, MultipartFile file) throws IOException {
+        if (!eventRepository.existsById(event.getUuid())) {
+            throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()));
         }
-        throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()));
+        String filename = null;
+        if (file != null && !file.isEmpty()) {
+            filename = storageService.store(file);
+        }
+        event.setAnnouncementPDF(filename);
+        return eventRepository.save(event);
     }
 
     @Override

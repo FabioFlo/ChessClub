@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface EventService {
     EventEntity create(EventEntity event, MultipartFile file) throws IOException;
-    EventEntity update(EventEntity event);
+    EventEntity update(EventEntity event, MultipartFile file) throws IOException;
     EventEntity getById(UUID uuid);
     EventEntity delete(UUID uuid);
     List<EventEntity> getAll();

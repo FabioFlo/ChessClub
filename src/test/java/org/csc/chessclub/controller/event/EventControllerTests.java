@@ -128,10 +128,11 @@ public class EventControllerTests extends BaseIntegrationTest {
     @DisplayName("Update event")
     void testUpdateEvent_whenUserAuthenticatedAndValidEventDetailsProvided_returnsUpdatedEvent() {
         UpdateEventDto updateEventDto = new UpdateEventDto(uuid, "New test title", DESCRIPTION, AUTHOR);
-
         ResponseDto<UpdateEventDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
-                .body(updateEventDto)
+                .multiPart("event", "event.json", updateEventDto, "application/json")
+                .multiPart("pdfFile", new File(storageFolder + "/announcement.pdf"))
+                .contentType("multipart/form-data")
                 .when()
                 .patch("/events")
                 .then()

@@ -34,6 +34,7 @@ public class EventController {
     public ResponseEntity<ResponseDto<EventDto>> createEvent(
             @Valid @RequestPart(value = "event") CreateEventDto createEventDto,
             @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
+
         EventDto createdEvent = eventMapper.eventToEventDto(
                 eventService.create(eventMapper.createEventDtoToEvent(createEventDto), file));
 
@@ -54,10 +55,14 @@ public class EventController {
 
     }
 
-    @PatchMapping()
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseDto<UpdateEventDto>> updateEvent(@Valid @RequestBody UpdateEventDto updateEventDto) {
-        eventService.update(eventMapper.updateEventDtoToEvent(updateEventDto));
+    public ResponseEntity<ResponseDto<UpdateEventDto>> updateEvent(
+            @Valid @RequestPart(value = "event") UpdateEventDto updateEventDto,
+            @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
+
+        eventService.update(eventMapper.updateEventDtoToEvent(updateEventDto), file);
+
         return ResponseEntity.ok(new ResponseDto<>(updateEventDto, "Event updated", true));
     }
 

@@ -65,7 +65,8 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
         UpdateEventDto invalidUpdateEventDto = new UpdateEventDto(invalidUuid, null, null, null);
 
         ResponseDto<ValidErrorMessage> response = given()
-                .body(invalidUpdateEventDto)
+                .multiPart("event", "event.json", invalidUpdateEventDto, "application/json")
+                .contentType("multipart/form-data")
                 .when()
                 .patch("/events")
                 .then()

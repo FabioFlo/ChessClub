@@ -70,7 +70,7 @@ public class EventServiceExceptionTests {
     @Test
     @DisplayName("Update - Throw when Event Not Found")
     void testEventService_whenTryToUpdateEvent_shouldThrowWhenEventNotFound() {
-        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.update(event));
+        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.update(event, null));
 
         assertTrue(exception.getMessage().contains(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid())));
     }
