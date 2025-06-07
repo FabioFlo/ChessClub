@@ -7,6 +7,8 @@ import org.csc.chessclub.model.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class GameServiceImpl implements GameService {
@@ -24,5 +26,12 @@ public class GameServiceImpl implements GameService {
             throw new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(gameEntity.getUuid()));
         }
         return gameRepository.save(gameEntity);
+    }
+
+    @Override
+    public GameEntity getByUuid(UUID uuid) {
+        return gameRepository.findById(uuid)
+                .orElseThrow(()
+                        -> new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(uuid)));
     }
 }

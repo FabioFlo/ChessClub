@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -92,6 +93,19 @@ public class GameServiceUnitTests {
         assertNotNull(game.getUuid(), "Uuid should not be null");
 
         verify(gameRepository, Mockito.times(1)).save(Mockito.any());
+
+    }
+
+    @Test
+    @DisplayName("Should return the game with the right uuid")
+    public void testGetGame_whenGameFoundByUuid_thenReturnGame() {
+        when(gameRepository.findById(game.getUuid())).thenReturn(Optional.of(game));
+
+        GameEntity retrievedGame = gameService.getByUuid(game.getUuid());
+
+        assertNotNull(retrievedGame, "Game should not be null");
+        assertEquals(game, retrievedGame, "Game should match");
+        verify(gameRepository, Mockito.times(1)).findById(game.getUuid());
 
     }
 }
