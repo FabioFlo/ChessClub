@@ -1,6 +1,6 @@
 package org.csc.chessclub.service.storage;
 
-import org.csc.chessclub.exception.StorageException;
+import org.csc.chessclub.exception.StorageServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +18,7 @@ public class StorageServiceImpl implements StorageService {
 
     public StorageServiceImpl(StorageProperties properties) {
         if (properties.getLocation().trim().isEmpty()) {
-            throw new StorageException("File upload location can not be Empty.");
+            throw new StorageServiceException("File upload location can not be Empty.");
         }
 
         this.rootLocation = Paths.get(properties.getLocation());
@@ -28,13 +28,13 @@ public class StorageServiceImpl implements StorageService {
     public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file.");
+                throw new StorageServiceException("Failed to store empty file.");
             }
             Path destinationFile = this.rootLocation.resolve(
                             Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
                     .normalize().toAbsolutePath();
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
-                throw new StorageException(
+                throw new StorageServiceException(
                         "Cannot store file outside current directory.");
             }
             try (InputStream inputStream = file.getInputStream()) {
@@ -43,7 +43,7 @@ public class StorageServiceImpl implements StorageService {
             }
             return destinationFile.toString();
         } catch (IOException e) {
-            throw new StorageException("Failed to store file.");
+            throw new StorageServiceException("Failed to store file.");
         }
     }
 

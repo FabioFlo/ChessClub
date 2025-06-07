@@ -15,8 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GameServiceUnitTests {
@@ -65,7 +64,7 @@ public class GameServiceUnitTests {
     }
 
     @Test
-    @DisplayName("Create game")
+    @DisplayName("Should Create game")
     public void testCreateGame_whenGameEntityProvided_returnGame() {
         when(gameRepository.save(Mockito.any())).thenReturn(game);
 
@@ -75,5 +74,24 @@ public class GameServiceUnitTests {
         assertNotNull(game.getUuid(), "Uuid should not be null");
         assertTrue(game.isAvailable(), "Game should be available");
         verify(gameRepository, Mockito.times(1)).save(Mockito.any());
+    }
+
+    @Test
+    @DisplayName("Should update game")
+    public void testUpdateGame_whenGameEntityProvided_returnGame() {
+        String newPlayerName = "newPlayerName";
+        when(gameRepository.existsById(game.getUuid())).thenReturn(true);
+        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+
+        game.setBlackPlayer(newPlayerName);
+
+        GameEntity updatedGame = gameService.update(game);
+
+        assertNotNull(updatedGame, "Game should not be null");
+        assertEquals(newPlayerName, updatedGame.getBlackPlayer(), "Black player name should match");
+        assertNotNull(game.getUuid(), "Uuid should not be null");
+
+        verify(gameRepository, Mockito.times(1)).save(Mockito.any());
+
     }
 }

@@ -7,7 +7,9 @@ public enum NotFoundMessage {
     EVENT("Event not found"),
     EVENT_WITH_UUID("Event with UUID %s not found"),
     USER("User not found"),
-    USER_WITH_UUID("User with UUID %s not found");
+    USER_WITH_UUID("User with UUID %s not found"),
+    GAME("Game not found"),
+    GAME_WITH_UUID("Game with UUID %s not found");
 
     private final String message;
 
