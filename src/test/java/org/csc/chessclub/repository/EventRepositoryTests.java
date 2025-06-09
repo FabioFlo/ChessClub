@@ -1,42 +1,26 @@
 package org.csc.chessclub.repository;
 
+import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.model.EventEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers
-public class EventRepositoryTests {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgresContainer
-            = new PostgreSQLContainer<>("postgres:latest");
+public class EventRepositoryTests extends TestContainerConfig {
 
     @Autowired
     private EventRepository eventRepository;
     private static final String TITLE_1 = "First test Event";
     private static final String TITLE_2 = "Second test Event";
     private static final String AUTHOR = "Test Author";
-
-    @Test
-    void connectionTest() {
-        assertNotNull(postgresContainer, "Container should not be null");
-        assertTrue(postgresContainer.isRunning(), "Container should be running");
-    }
 
     private EventEntity event1;
     private EventEntity event2;
