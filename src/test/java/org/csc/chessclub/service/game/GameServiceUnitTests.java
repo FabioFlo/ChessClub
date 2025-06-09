@@ -97,7 +97,7 @@ public class GameServiceUnitTests {
     }
 
     @Test
-    @DisplayName("Should return the game with the right uuid")
+    @DisplayName("Should return the game with the correct uuid")
     public void testGetGame_whenGameFoundByUuid_thenReturnGame() {
         when(gameRepository.findById(game.getUuid())).thenReturn(Optional.of(game));
 
@@ -106,6 +106,17 @@ public class GameServiceUnitTests {
         assertNotNull(retrievedGame, "Game should not be null");
         assertEquals(game, retrievedGame, "Game should match");
         verify(gameRepository, Mockito.times(1)).findById(game.getUuid());
+    }
 
+    @Test
+    @DisplayName("Should delete by setting available false")
+    public void testDeleteGame_whenGameUuidProvided_shouldSetAvailableFalse() {
+        when(gameRepository.findById(game.getUuid())).thenReturn(Optional.of(game));
+        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+
+        game.setAvailable(false);
+
+        assertDoesNotThrow(() -> gameService.delete(game.getUuid()));
+        assertFalse(game.isAvailable(), "Game should not be available");
     }
 }

@@ -9,4 +9,6 @@ public interface GameService {
     GameEntity update(GameEntity gameEntity);
 
     GameEntity getByUuid(UUID uuid);
+
+    GameEntity delete(UUID uuid);
 }

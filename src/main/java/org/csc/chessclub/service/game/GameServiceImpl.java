@@ -7,6 +7,7 @@ import org.csc.chessclub.model.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -33,5 +34,15 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findById(uuid)
                 .orElseThrow(()
                         -> new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(uuid)));
+    }
+
+    @Override
+    public GameEntity delete(UUID uuid) {
+        Optional<GameEntity> game = gameRepository.findById(uuid);
+        if (game.isEmpty()) {
+            throw new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(uuid));
+        }
+        game.get().setAvailable(false);
+        return gameRepository.save(game.get());
     }
 }
