@@ -19,8 +19,9 @@ public class GameMapperTests {
     private final UUID gameId = UUID.randomUUID();
     private final String whitePlayerName = "White";
     private final String blackPlayerName = "Black";
+    private final Result result = Result.BlackWon;
     private final String pgn = """
-             [Event "Live Chess"]
+            [Event "Live Chess"]
             [Site "Chess.com"]
             [Date "2025.06.04"]
             [Round "?"]
@@ -40,7 +41,6 @@ public class GameMapperTests {
             dxc5 Bf6 16. Qd2 Bg4 17. Be2 Re8 18. Rfe1 Na5 19. Bd4 Nb3 20. Bxf6 Qxf6 21. Qxd5
             Nxa1 22. Rxa1 Rxe2 23. Qxb7 Bxf3 24. gxf3 Qg5+ 25. Kf1 Rae8 26. c6 Qd2 27. Kg2
             Rxf2+ 28. Kg3 Rg2+ 29. Kh3 0-1""";
-    private final Result result = Result.BlackWon;
 
     @BeforeEach
     public void setup() {
@@ -66,5 +66,25 @@ public class GameMapperTests {
                 "White player name should match");
         assertEquals(gameDto.result(), game.getResult(),
                 "Result should match");
+        assertEquals(gameDto.pgn(), game.getPgn(),
+                "Pgn should match");
+    }
+
+    @Test
+    @DisplayName("Correctly map GameDto to GameEntity")
+    void shouldMapGameDtoToGameEntity() {
+        GameDto gameDto = new GameDto(gameId, whitePlayerName, blackPlayerName, pgn, result);
+        GameEntity game = gameMapper.gameDtoToGame(gameDto);
+
+        assertEquals(game.getUuid(), gameDto.uuid(),
+                "Uuid should match");
+        assertEquals(game.getWhitePlayerName(), gameDto.whitePlayerName(),
+                "White player name should match");
+        assertEquals(game.getBlackPlayerName(), gameDto.blackPlayerName(),
+                "Black player name should match");
+        assertEquals(game.getResult(), gameDto.result(),
+                "Result should match");
+        assertEquals(game.getPgn(), gameDto.pgn(),
+                "Pgn should match");
     }
 }

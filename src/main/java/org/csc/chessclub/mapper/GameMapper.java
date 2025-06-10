@@ -11,4 +11,5 @@ public interface GameMapper {
     GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
 
     GameDto gameToGameDto(GameEntity gameEntity);
+    GameEntity gameDtoToGame(GameDto gameDto);
 }

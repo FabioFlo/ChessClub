@@ -8,6 +8,7 @@ public record GameDto(
         UUID uuid,
         String whitePlayerName,
         String blackPlayerName,
+        String pgn,
         Result result
 ) {
 }
