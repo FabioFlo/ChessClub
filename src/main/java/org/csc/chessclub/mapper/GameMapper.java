@@ -1,5 +1,6 @@
 package org.csc.chessclub.mapper;
 
+import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.model.GameEntity;
 import org.mapstruct.Mapper;
@@ -11,5 +12,5 @@ public interface GameMapper {
     GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
 
     GameDto gameToGameDto(GameEntity gameEntity);
-    GameEntity gameDtoToGame(GameDto gameDto);
+    GameEntity createGameDtoToGame(CreateGameDto gameDto);
 }

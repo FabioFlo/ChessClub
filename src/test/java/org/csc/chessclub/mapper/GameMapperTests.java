@@ -1,5 +1,6 @@
 package org.csc.chessclub.mapper;
 
+import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.GameEntity;
@@ -71,13 +72,11 @@ public class GameMapperTests {
     }
 
     @Test
-    @DisplayName("Correctly map GameDto to GameEntity")
-    void shouldMapGameDtoToGameEntity() {
-        GameDto gameDto = new GameDto(gameId, whitePlayerName, blackPlayerName, pgn, result);
-        GameEntity game = gameMapper.gameDtoToGame(gameDto);
+    @DisplayName("Correctly map CreateGameDto to GameEntity")
+    void shouldMapCreateGameDtoToGameEntity() {
+        CreateGameDto gameDto = new CreateGameDto(whitePlayerName, blackPlayerName, pgn, result);
+        GameEntity game = gameMapper.createGameDtoToGame(gameDto);
 
-        assertEquals(game.getUuid(), gameDto.uuid(),
-                "Uuid should match");
         assertEquals(game.getWhitePlayerName(), gameDto.whitePlayerName(),
                 "White player name should match");
         assertEquals(game.getBlackPlayerName(), gameDto.blackPlayerName(),

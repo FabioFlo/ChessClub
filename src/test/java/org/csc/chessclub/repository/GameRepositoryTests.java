@@ -56,7 +56,7 @@ public class GameRepositoryTests extends TestContainerConfig {
         gameRepository.save(gameTwo);
         gameRepository.save(gameThree);
     }
-
+    //TODO: test the case where both player names are NN
     @Test
     @DisplayName("Should return games with the given player name")
     void testFindByPlayerName_whenPlayerNameGiven_returnGamesWithGivenPlayerName() {

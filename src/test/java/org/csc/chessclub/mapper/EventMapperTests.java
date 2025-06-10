@@ -56,7 +56,7 @@ public class EventMapperTests {
         assertEquals(event.getTitle(), eventDto.title(),
                 "Title should be equal");
     }
-
+//TODO: refactor method name with CreateEventDto
     @Test
     @DisplayName("Map event dto to event")
     void shouldMapEventDtoToEventCorrectly() {
