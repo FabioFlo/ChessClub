@@ -1,31 +1,19 @@
 package org.csc.chessclub.repository;
 
+import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Testcontainers
-public class UserRepositoryTests {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgresContainer
-            = new PostgreSQLContainer<>("postgres:latest");
-
+public class UserRepositoryTests extends TestContainerConfig {
 
     private UserEntity user1;
     private final String USERNAME1 = "Test Username";
