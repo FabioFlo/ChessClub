@@ -17,7 +17,10 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameEntity create(GameEntity gameEntity) {
+        gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
+        gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
         gameEntity.setAvailable(true);
+
         return gameRepository.save(gameEntity);
     }
 
@@ -26,6 +29,8 @@ public class GameServiceImpl implements GameService {
         if (!gameRepository.existsById(gameEntity.getUuid())) {
             throw new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(gameEntity.getUuid()));
         }
+        gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
+        gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
         return gameRepository.save(gameEntity);
     }
 
@@ -44,5 +49,12 @@ public class GameServiceImpl implements GameService {
         }
         game.get().setAvailable(false);
         return gameRepository.save(game.get());
+    }
+
+    private String setEmptyPlayerNameToNN(String playerName) {
+        if (playerName.trim().isEmpty()) {
+            return "NN";
+        }
+        return playerName;
     }
 }

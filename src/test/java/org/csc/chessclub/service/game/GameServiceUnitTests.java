@@ -68,7 +68,6 @@ public class GameServiceUnitTests {
     @DisplayName("Should Create game")
     public void testCreateGame_whenGameEntityProvided_returnGame() {
         when(gameRepository.save(Mockito.any())).thenReturn(game);
-        //TODO: in case whitePlayerName or blackPlayerName are empty, NN should be set
         //TODO: be sure that the result is correctly set with the enum value if "0-1" is passed for example
         GameEntity createdGame = gameService.create(game);
 
@@ -81,7 +80,6 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Should update game")
     public void testUpdateGame_whenGameEntityProvided_returnGame() {
-        //TODO: in case whitePlayerName or blackPlayerName are empty, NN should be set
         //TODO: be sure that the result is correctly set with the enum value if "0-1" is passed for example
         String newPlayerName = "newPlayerName";
         when(gameRepository.existsById(game.getUuid())).thenReturn(true);
@@ -121,5 +119,34 @@ public class GameServiceUnitTests {
 
         assertDoesNotThrow(() -> gameService.delete(game.getUuid()));
         assertFalse(game.isAvailable(), "Game should not be available");
+    }
+
+    @Test
+    @DisplayName("Empty player name set to NN")
+    public void testCreateGame_whenGameWithEmptyWhiteOrBlackPlayerNameProvided_thenPlayerNameShouldBeSetToNN() {
+        game.setWhitePlayerName("");
+        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+
+        GameEntity createdGame = gameService.create(game);
+
+        assertEquals("NN", createdGame.getWhitePlayerName(),
+                "White player name should be NN");
+        assertEquals(game.getBlackPlayerName(), createdGame.getBlackPlayerName(),
+                "Black player name should match");
+    }
+
+    @Test
+    @DisplayName("Update game - empty player name set to NN")
+    public void testUpdateGame_whenGameWithEmptyWhiteOrBlackPlayerNameProvided_thenPlayerNameShouldBeSetToNN() {
+        game.setBlackPlayerName("");
+        when(gameRepository.existsById(game.getUuid())).thenReturn(true);
+        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+
+        GameEntity updatedGame = gameService.update(game);
+
+        assertEquals("NN", updatedGame.getBlackPlayerName(),
+                "White player name should be NN");
+        assertEquals(game.getWhitePlayerName(), updatedGame.getWhitePlayerName(),
+                "Black player name should match");
     }
 }
