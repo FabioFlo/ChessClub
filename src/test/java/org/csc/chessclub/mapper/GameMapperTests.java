@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -103,6 +104,26 @@ public class GameMapperTests {
         assertEquals(game.getResult(), gameDto.result(),
                 "Result should match");
         assertEquals(game.getPgn(), gameDto.pgn(),
+                "Pgn should match");
+    }
+
+    @Test
+    @DisplayName("Correctly map list of GameEntity to GameDto")
+    void shouldMapListGameEntityToGameDto() {
+        List<GameEntity> games = List.of(game, game);
+        List<GameDto> gameDtos = gameMapper.listOfGamesToGameDto(games);
+
+        assertEquals(2, gameDtos.size(),
+                "List size size should match");
+        assertEquals(game.getUuid(), gameDtos.getFirst().uuid(),
+                "Uuid should match");
+        assertEquals(game.getWhitePlayerName(), gameDtos.getFirst().whitePlayerName(),
+                "White player name should match");
+        assertEquals(game.getBlackPlayerName(), gameDtos.getFirst().blackPlayerName(),
+                "Black player name should match");
+        assertEquals(game.getResult(), gameDtos.getFirst().result(),
+                "Result should match");
+        assertEquals(game.getPgn(), gameDtos.getFirst().pgn(),
                 "Pgn should match");
     }
 }
