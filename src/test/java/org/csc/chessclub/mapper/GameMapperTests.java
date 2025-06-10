@@ -2,6 +2,7 @@ package org.csc.chessclub.mapper;
 
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
+import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.GameEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +78,24 @@ public class GameMapperTests {
         CreateGameDto gameDto = new CreateGameDto(whitePlayerName, blackPlayerName, pgn, result);
         GameEntity game = gameMapper.createGameDtoToGame(gameDto);
 
+        assertEquals(game.getWhitePlayerName(), gameDto.whitePlayerName(),
+                "White player name should match");
+        assertEquals(game.getBlackPlayerName(), gameDto.blackPlayerName(),
+                "Black player name should match");
+        assertEquals(game.getResult(), gameDto.result(),
+                "Result should match");
+        assertEquals(game.getPgn(), gameDto.pgn(),
+                "Pgn should match");
+    }
+
+    @Test
+    @DisplayName("Correctly map UpdateGameDto to GameEntity")
+    void shouldMapUpdateGameDtoToGameEntity() {
+        UpdateGameDto gameDto = new UpdateGameDto(gameId, whitePlayerName, blackPlayerName, pgn, result);
+        GameEntity game = gameMapper.updateGameDtoToGame(gameDto);
+
+        assertEquals(game.getUuid(), gameDto.uuid(),
+                "Uuid should match");
         assertEquals(game.getWhitePlayerName(), gameDto.whitePlayerName(),
                 "White player name should match");
         assertEquals(game.getBlackPlayerName(), gameDto.blackPlayerName(),
