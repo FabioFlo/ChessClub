@@ -30,24 +30,24 @@ public class GameRepositoryTests extends TestContainerConfig {
 
         gameOne = GameEntity.builder()
                 .pgn(pgn)
-                .whitePlayer(playerOne)
-                .blackPlayer(playerTwo)
+                .whitePlayerName(playerOne)
+                .blackPlayerName(playerTwo)
                 .result(whiteWon)
                 .available(true)
                 .build();
 
         gameTwo = GameEntity.builder()
                 .pgn(pgn)
-                .whitePlayer(playerTwo)
-                .blackPlayer(playerOne)
+                .whitePlayerName(playerTwo)
+                .blackPlayerName(playerOne)
                 .result(blackWon)
                 .available(true)
                 .build();
 
         GameEntity gameThree = GameEntity.builder()
                 .pgn(pgn)
-                .whitePlayer(playerTwo)
-                .blackPlayer(playerOne)
+                .whitePlayerName(playerTwo)
+                .blackPlayerName(playerOne)
                 .result(whiteWon)
                 .available(true)
                 .build();
@@ -61,11 +61,11 @@ public class GameRepositoryTests extends TestContainerConfig {
     @DisplayName("Should return games with the given player name")
     void testFindByPlayerName_whenPlayerNameGiven_returnGamesWithGivenPlayerName() {
         String playerName = "Paolo";
-        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerOrBlackPlayer(playerName, playerName);
+        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(playerName, playerName);
 
         assertNotNull(gamesRetrieved,
                 "Game with player name " + playerName + " not found");
-        assertEquals(2, gamesRetrieved.size(),
+        assertEquals(3, gamesRetrieved.size(),
                 "Game with player name " + playerName + " found");
         assertEquals(gameOne, gamesRetrieved.getFirst(),
                 "Game one should be equal to first");
@@ -73,10 +73,10 @@ public class GameRepositoryTests extends TestContainerConfig {
 
     @Test
     @DisplayName("Find games where playerName is the white player")
-    void testFindByPlayerName_whenPlayerNameGiven_shouldReturnAllGamesWhereIsTheWhitePLayer() {
+    void testFindByPlayerName_whenPlayerNameGiven_shouldReturnAllGamesWhereIsTheWhitePlayerName() {
         String playerName = "Gino";
 
-        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayer(playerName);
+        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerName(playerName);
 
         assertNotNull(gamesRetrieved, "Games should not be null");
         assertEquals(1, gamesRetrieved.size(),
@@ -87,10 +87,10 @@ public class GameRepositoryTests extends TestContainerConfig {
 
     @Test
     @DisplayName("Find games where playerName is the black player")
-    void testFindByPlayerName_whenPlayerNameGiven_shouldReturnAllGamesWhereIsTheBlackPLayer() {
+    void testFindByPlayerName_whenPlayerNameGiven_shouldReturnAllGamesWhereIsTheBlackPlayerName() {
         String playerName = "Gino";
 
-        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByBlackPlayer(playerName);
+        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByBlackPlayerName(playerName);
 
         assertNotNull(gamesRetrieved, "Games should not be null");
         assertEquals(2, gamesRetrieved.size(),

@@ -22,8 +22,8 @@ public class GameEntity {
     @Id
     @GeneratedValue
     private UUID uuid;
-    private String whitePlayer;
-    private String blackPlayer;
+    private String whitePlayerName;
+    private String blackPlayerName;
     private Result result;
     private String pgn;
     private boolean available;

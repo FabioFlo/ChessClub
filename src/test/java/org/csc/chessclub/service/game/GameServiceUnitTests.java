@@ -58,8 +58,8 @@ public class GameServiceUnitTests {
         game = GameEntity.builder()
                 .uuid(uuid)
                 .pgn(pgn)
-                .whitePlayer(whitePlayer)
-                .blackPlayer(blackPlayer)
+                .whitePlayerName(whitePlayer)
+                .blackPlayerName(blackPlayer)
                 .result(result)
                 .build();
     }
@@ -84,12 +84,12 @@ public class GameServiceUnitTests {
         when(gameRepository.existsById(game.getUuid())).thenReturn(true);
         when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
 
-        game.setBlackPlayer(newPlayerName);
+        game.setBlackPlayerName(newPlayerName);
 
         GameEntity updatedGame = gameService.update(game);
 
         assertNotNull(updatedGame, "Game should not be null");
-        assertEquals(newPlayerName, updatedGame.getBlackPlayer(), "Black player name should match");
+        assertEquals(newPlayerName, updatedGame.getBlackPlayerName(), "Black player name should match");
         assertNotNull(game.getUuid(), "Uuid should not be null");
 
         verify(gameRepository, Mockito.times(1)).save(Mockito.any());
