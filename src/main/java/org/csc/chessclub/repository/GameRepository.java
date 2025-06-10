@@ -13,4 +13,6 @@ public interface GameRepository extends JpaRepository<GameEntity, UUID> {
     List<GameEntity> findGameEntitiesByWhitePlayerOrBlackPlayer(String whitePlayer, String blackPlayer);
 
     List<GameEntity> findGameEntitiesByWhitePlayer(String whitePlayer);
+
+    List<GameEntity> findGameEntitiesByBlackPlayer(String blackPlayer);
 }
