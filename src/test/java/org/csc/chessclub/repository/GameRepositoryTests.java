@@ -52,10 +52,20 @@ public class GameRepositoryTests extends TestContainerConfig {
                 .available(true)
                 .build();
 
+        GameEntity nnPlayersGame = GameEntity.builder()
+                .pgn(pgn)
+                .whitePlayerName("NN")
+                .blackPlayerName("NN")
+                .result(whiteWon)
+                .available(true)
+                .build();
+
         gameRepository.save(gameOne);
         gameRepository.save(gameTwo);
         gameRepository.save(gameThree);
+        gameRepository.save(nnPlayersGame);
     }
+
     //TODO: test the case where both player names are NN
     @Test
     @DisplayName("Should return games with the given player name")
@@ -69,6 +79,18 @@ public class GameRepositoryTests extends TestContainerConfig {
                 "Game with player name " + playerName + " found");
         assertEquals(gameOne, gamesRetrieved.getFirst(),
                 "Game one should be equal to first");
+    }
+
+    @Test
+    @DisplayName("Should return games with NN players")
+    void testFindByPlayerName_whenPlayerNameGivenIsNN_returnGamesWithGivenPlayerName() {
+        String playerName = "NN";
+        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(playerName, playerName);
+
+        assertNotNull(gamesRetrieved,
+                "Game with player name " + playerName + " not found");
+        assertEquals(1, gamesRetrieved.size(),
+                "Game with player name " + playerName + " found");
     }
 
     @Test

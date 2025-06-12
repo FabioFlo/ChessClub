@@ -32,7 +32,7 @@ public class GameServiceUnitTests {
     public void setup() {
         UUID uuid = UUID.randomUUID();
         String pgn = """
-                 [Event "Live Chess"]
+                [Event "Live Chess"]
                 [Site "Chess.com"]
                 [Date "2025.06.04"]
                 [Round "?"]
@@ -68,7 +68,6 @@ public class GameServiceUnitTests {
     @DisplayName("Should Create game")
     public void testCreateGame_whenGameEntityProvided_returnGame() {
         when(gameRepository.save(Mockito.any())).thenReturn(game);
-        //TODO: be sure that the result is correctly set with the enum value if "0-1" is passed for example
         GameEntity createdGame = gameService.create(game);
 
         assertNotNull(createdGame, "Game should not be null");
@@ -80,7 +79,6 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Should update game")
     public void testUpdateGame_whenGameEntityProvided_returnGame() {
-        //TODO: be sure that the result is correctly set with the enum value if "0-1" is passed for example
         String newPlayerName = "newPlayerName";
         when(gameRepository.existsById(game.getUuid())).thenReturn(true);
         when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
