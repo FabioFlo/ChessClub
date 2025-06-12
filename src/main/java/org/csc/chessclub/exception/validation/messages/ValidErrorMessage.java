@@ -1,4 +1,4 @@
-package org.csc.chessclub.exception.validation;
+package org.csc.chessclub.exception.validation.messages;
 
 import java.util.Map;
 

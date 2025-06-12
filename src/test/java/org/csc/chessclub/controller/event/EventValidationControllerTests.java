@@ -6,7 +6,7 @@ import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
-import org.csc.chessclub.exception.validation.ValidErrorMessage;
+import org.csc.chessclub.exception.validation.messages.ValidErrorMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

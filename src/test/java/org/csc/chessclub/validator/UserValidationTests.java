@@ -5,7 +5,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
-import org.csc.chessclub.exception.validation.UserValidationMessage;
+import org.csc.chessclub.exception.validation.messages.UserValidationMessage;
 import org.csc.chessclub.exception.validation.password.PasswordValidationMassage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

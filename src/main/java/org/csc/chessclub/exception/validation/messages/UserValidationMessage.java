@@ -1,4 +1,4 @@
-package org.csc.chessclub.exception.validation;
+package org.csc.chessclub.exception.validation.messages;
 
 public class UserValidationMessage {
     public static final String USERNAME_MUST_NOT_BE_BLANK = "Username must not be blank";

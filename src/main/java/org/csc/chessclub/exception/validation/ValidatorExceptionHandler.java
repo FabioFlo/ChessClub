@@ -3,6 +3,7 @@ package org.csc.chessclub.exception.validation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.csc.chessclub.dto.ResponseDto;
+import org.csc.chessclub.exception.validation.messages.ValidErrorMessage;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
