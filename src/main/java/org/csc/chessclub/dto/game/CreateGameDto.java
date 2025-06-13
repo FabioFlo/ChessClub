@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
+import org.csc.chessclub.exception.validation.result.ValidResult;
 
 public record CreateGameDto(
         @Size(max = 20, message = GameValidationMessage.PLAYER_NAME_TOO_LONG)
@@ -15,6 +16,7 @@ public record CreateGameDto(
         String blackPlayerName,
         @NotBlank(message = GameValidationMessage.PGN_MUST_NOT_BE_BLANK)
         String pgn,
+        @ValidResult
         Result result
 ) {
 }

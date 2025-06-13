@@ -7,6 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
+import org.csc.chessclub.exception.validation.result.ResultValidationMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class GameValidationTest {
     //TODO: be sure that the result is correctly set with the enum value if "0-1" is passed for example
 
     private Validator validator;
-
+    private String propertyPath = "";
     CreateGameDto createGameDto;
 
     @BeforeEach
@@ -28,13 +29,14 @@ public class GameValidationTest {
     }
 
     @Test
-    @DisplayName("Validation CreateGame - Pgn is blank")
+    @DisplayName("Validation - Pgn is blank")
     void testValidCreateGameDto_whenPngIsBlank_thenValidationFails() {
         createGameDto = new CreateGameDto("", "", "", Result.BlackWon);
+        propertyPath = "pgn";
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("pgn") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(GameValidationMessage.PGN_MUST_NOT_BE_BLANK));
     }
 
@@ -42,24 +44,36 @@ public class GameValidationTest {
     @DisplayName("Validation - Player name too long")
     void testValidCreateGameDto_whenPlayerNameTooLong_thenValidationFails() {
         String generated = RandomStringUtils.randomAlphanumeric(30);
-        String propertyName = "whitePlayerName";
+        propertyPath = "whitePlayerName";
         createGameDto = new CreateGameDto(generated, "", "game pgn", Result.BlackWon);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals(propertyName) &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(GameValidationMessage.PLAYER_NAME_TOO_LONG));
     }
 
     @Test
-    @DisplayName("Player name null validation fail")
+    @DisplayName("Validation - Player name is null")
     void testValidCreateGameDto_whenPlayerNameIsNull_thenValidationFails() {
-        String propertyName = "whitePlayerName";
+        propertyPath = "whitePlayerName";
         createGameDto = new CreateGameDto(null, "", "game pgn", Result.BlackWon);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals(propertyName) &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(GameValidationMessage.PLAYER_NAME_NULL));
+    }
+
+    @Test
+    @DisplayName("Validation - Result is not valid")
+    void testValidCreateGameDto_whenResultIsNotValid_thenValidationFails() {
+        createGameDto = new CreateGameDto("", "", "game pgn", null);
+        String propertyPath = "result";
+
+        Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals(propertyPath) &&
+                        v.getMessage().equals(ResultValidationMessage.RESULT_MUST_BE_VALID));
     }
 }
