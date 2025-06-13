@@ -3,6 +3,7 @@ package org.csc.chessclub.validator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
@@ -32,8 +33,33 @@ public class GameValidationTest {
         createGameDto = new CreateGameDto("", "", "", Result.BlackWon);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
-       assertThat(violations).anyMatch(v ->
-               v.getPropertyPath().toString().equals("pgn") &&
-                       v.getMessage().equals(GameValidationMessage.PGN_MUST_NOT_BE_BLANK));
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("pgn") &&
+                        v.getMessage().equals(GameValidationMessage.PGN_MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @DisplayName("Validation - Player name too long")
+    void testValidCreateGameDto_whenPlayerNameTooLong_thenValidationFails() {
+        String generated = RandomStringUtils.randomAlphanumeric(30);
+        String propertyName = "whitePlayerName";
+        createGameDto = new CreateGameDto(generated, "", "game pgn", Result.BlackWon);
+
+        Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals(propertyName) &&
+                        v.getMessage().equals(GameValidationMessage.PLAYER_NAME_TOO_LONG));
+    }
+
+    @Test
+    @DisplayName("Player name null validation fail")
+    void testValidCreateGameDto_whenPlayerNameIsNull_thenValidationFails() {
+        String propertyName = "whitePlayerName";
+        createGameDto = new CreateGameDto(null, "", "game pgn", Result.BlackWon);
+
+        Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals(propertyName) &&
+                        v.getMessage().equals(GameValidationMessage.PLAYER_NAME_NULL));
     }
 }
