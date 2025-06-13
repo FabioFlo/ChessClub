@@ -5,6 +5,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.csc.chessclub.dto.game.CreateGameDto;
+import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
 import org.csc.chessclub.exception.validation.result.ResultValidationMessage;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -75,5 +77,23 @@ public class GameValidationTest {
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(ResultValidationMessage.RESULT_MUST_BE_VALID));
+    }
+
+    @Test
+    @DisplayName("Valid CreateGameDto")
+    void testValidCreateGameDto_whenValidCreateGameDto_thenSuccess() {
+        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon);
+
+        Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Valid UpdateGameDto")
+    void testValidUpdateGameDto_whenValidUpdateGameDto_thenSuccess() {
+        UpdateGameDto updateGameDto = new UpdateGameDto(UUID.randomUUID(), "", "", "game pgn", Result.BlackWon);
+
+        Set<ConstraintViolation<UpdateGameDto>> violations = validator.validate(updateGameDto);
+        assertThat(violations).isEmpty();
     }
 }
