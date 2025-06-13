@@ -19,7 +19,6 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class GameValidationTest {
-    //TODO: be sure that the result is correctly set with the enum value if "0-1" is passed for example
 
     private Validator validator;
     private String propertyPath = "";
@@ -44,6 +43,7 @@ public class GameValidationTest {
 
     @Test
     @DisplayName("Validation - Player name too long")
+    @SuppressWarnings(value = "deprecation")
     void testValidCreateGameDto_whenPlayerNameTooLong_thenValidationFails() {
         String generated = RandomStringUtils.randomAlphanumeric(30);
         propertyPath = "whitePlayerName";
