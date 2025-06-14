@@ -5,14 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
+import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.mapper.GameMapper;
 import org.csc.chessclub.service.game.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Valid
 @RestController
@@ -29,6 +27,12 @@ public class GameController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto<>(gameDto, "Game created", true));
+    }
+
+    @PatchMapping
+    public ResponseEntity<ResponseDto<UpdateGameDto>> updateGame(@Valid @RequestBody UpdateGameDto updateGameDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(updateGameDto, "Game updated", true));
     }
 }
 
