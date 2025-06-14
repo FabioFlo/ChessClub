@@ -6,11 +6,14 @@ import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
+import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.csc.chessclub.mapper.GameMapper;
 import org.csc.chessclub.service.game.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Valid
 @RestController
@@ -33,6 +36,14 @@ public class GameController {
     public ResponseEntity<ResponseDto<UpdateGameDto>> updateGame(@Valid @RequestBody UpdateGameDto updateGameDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(updateGameDto, "Game updated", true));
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseDto<GameDto>> getGame(@ValidUUID @PathVariable("uuid") UUID uuid) {
+        GameDto gameDto = gameMapper.gameToGameDto(gameService.getByUuid(uuid));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(gameDto, "Game found", true));
     }
 }
 

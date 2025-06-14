@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GameControllerTests extends BaseIntegrationTest {
 
+    private final String apiPath = "/games";
     private String userToken;
     @Value("${user.username}")
     private String userUsername;
@@ -46,7 +47,7 @@ public class GameControllerTests extends BaseIntegrationTest {
                 .header("Authorization", "Bearer " + userToken)
                 .body(createGameDto)
                 .when()
-                .post("/games")
+                .post(apiPath)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().response().as(new TypeRef<>() {
@@ -72,7 +73,7 @@ public class GameControllerTests extends BaseIntegrationTest {
                 .header("Authorization", "Bearer " + userToken)
                 .body(updateGameDto)
                 .when()
-                .patch("/games")
+                .patch(apiPath)
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response().as(new TypeRef<>() {
@@ -85,5 +86,27 @@ public class GameControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .extracting(ResponseDto::message)
                 .isEqualTo("Game updated");
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Get game by id")
+    void testGetGameById_whenExistingIdProvided_returnsGame() {
+        ResponseDto<GameDto> response = given()
+                .pathParam("uuid", gameId)
+                .when()
+                .get(apiPath + "/{uuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(GameDto::uuid).isEqualTo(gameId);
     }
 }
