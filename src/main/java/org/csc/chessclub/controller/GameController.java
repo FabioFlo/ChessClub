@@ -33,9 +33,12 @@ public class GameController {
     }
 
     @PatchMapping
-    public ResponseEntity<ResponseDto<UpdateGameDto>> updateGame(@Valid @RequestBody UpdateGameDto updateGameDto) {
+    public ResponseEntity<ResponseDto<GameDto>> updateGame(@Valid @RequestBody UpdateGameDto updateGameDto) {
+        GameDto gameDto = gameMapper.gameToGameDto(
+                gameService.update(gameMapper.updateGameDtoToGame(updateGameDto)));
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(updateGameDto, "Game updated", true));
+                .body(new ResponseDto<>(gameDto, "Game updated", true));
     }
 
     @GetMapping("/{uuid}")

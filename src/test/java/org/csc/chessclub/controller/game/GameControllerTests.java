@@ -69,7 +69,7 @@ public class GameControllerTests extends BaseIntegrationTest {
     @DisplayName("Update Game correctly")
     void testUpdateGame_whenUserAuthenticatedAndValidUpdateGameProvided_returnsUpdatedGame() {
         UpdateGameDto updateGameDto = new UpdateGameDto(gameId, "White player", "Black player", "", Result.WhiteWon);
-        ResponseDto<UpdateGameDto> response = given()
+        ResponseDto<GameDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
                 .body(updateGameDto)
                 .when()
@@ -82,6 +82,11 @@ public class GameControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(GameDto::whitePlayerName)
+                .isEqualTo("White player");
 
         assertThat(response)
                 .extracting(ResponseDto::message)
