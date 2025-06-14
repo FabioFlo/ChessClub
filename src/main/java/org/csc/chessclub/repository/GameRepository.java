@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -15,7 +14,9 @@ public interface GameRepository extends JpaRepository<GameEntity, UUID> {
     Page<GameEntity> findGameEntitiesByWhitePlayerNameOrBlackPlayerName(String whitePlayer, String blackPlayer,
                                                                         Pageable pageable);
 
-    List<GameEntity> findGameEntitiesByWhitePlayerName(String whitePlayer);
+    Page<GameEntity> findGameEntitiesByWhitePlayerName(String whitePlayer,
+                                                       Pageable pageable);
 
-    List<GameEntity> findGameEntitiesByBlackPlayerName(String blackPlayer);
+    Page<GameEntity> findGameEntitiesByBlackPlayerName(String blackPlayer,
+                                                       Pageable pageable);
 }
