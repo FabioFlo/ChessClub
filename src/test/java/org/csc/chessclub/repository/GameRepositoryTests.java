@@ -7,11 +7,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameRepositoryTests extends TestContainerConfig {
 
@@ -66,31 +68,35 @@ public class GameRepositoryTests extends TestContainerConfig {
         gameRepository.save(nnPlayersGame);
     }
 
-    //TODO: test the case where both player names are NN
     @Test
     @DisplayName("Should return games with the given player name")
     void testFindByPlayerName_whenPlayerNameGiven_returnGamesWithGivenPlayerName() {
         String playerName = "Paolo";
-        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(playerName, playerName);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
+                playerName, playerName, pageable);
 
-        assertNotNull(gamesRetrieved,
-                "Game with player name " + playerName + " not found");
-        assertEquals(3, gamesRetrieved.size(),
-                "Game with player name " + playerName + " found");
-        assertEquals(gameOne, gamesRetrieved.getFirst(),
-                "Game one should be equal to first");
+        assertAll("Game search by player name",
+                () -> assertNotNull(gamesRetrieved, "The retrieved page should not be null"),
+                () -> assertEquals(3, gamesRetrieved.getTotalElements(), "Should return 3 games with player name " + playerName),
+                () -> assertFalse(gamesRetrieved.getContent().isEmpty(), "The game list should not be empty"),
+                () -> assertEquals(gameOne, gamesRetrieved.getContent().getFirst(), "First game should match expected gameOne")
+        );
     }
 
     @Test
     @DisplayName("Should return games with NN players")
     void testFindByPlayerName_whenPlayerNameGivenIsNN_returnGamesWithGivenPlayerName() {
         String playerName = "NN";
-        List<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(playerName, playerName);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
+                playerName, playerName, pageable);
 
-        assertNotNull(gamesRetrieved,
-                "Game with player name " + playerName + " not found");
-        assertEquals(1, gamesRetrieved.size(),
-                "Game with player name " + playerName + " found");
+        assertAll("Game search by player name",
+                () -> assertNotNull(gamesRetrieved, "Game with player name " + playerName + " not found"),
+                () -> assertEquals(1, gamesRetrieved.getTotalElements(), "Game with player name " + playerName + " found"),
+                () -> assertFalse(gamesRetrieved.getContent().isEmpty(), "The game list should not be empty")
+        );
     }
 
     @Test
