@@ -1,6 +1,5 @@
 package org.csc.chessclub.service.game;
 
-import org.aspectj.weaver.Utils;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
@@ -32,13 +31,11 @@ public class GameServiceUnitTests {
     @Mock
     private GameRepository gameRepository;
     @Mock
-    private Utils utils;
-    @Mock
     private Pageable pageable;
-    @Mock
-    Page<GameEntity> page;
 
     private GameEntity game;
+    private GameEntity game2;
+    private final String blackPlayer = "OwlMight";
 
     @BeforeEach
     public void setup() {
@@ -67,7 +64,6 @@ public class GameServiceUnitTests {
                 Nxa1 22. Rxa1 Rxe2 23. Qxb7 Bxf3 24. gxf3 Qg5+ 25. Kf1 Rae8 26. c6 Qd2 27. Kg2
                 Rxf2+ 28. Kg3 Rg2+ 29. Kh3 0-1""";
         String whitePlayer = "iamsogarbagegod";
-        String blackPlayer = "OwlMight";
         Result result = Result.BlackWon;
         game = GameEntity.builder()
                 .uuid(uuid)
@@ -75,6 +71,14 @@ public class GameServiceUnitTests {
                 .whitePlayerName(whitePlayer)
                 .blackPlayerName(blackPlayer)
                 .result(result)
+                .build();
+
+        game2 = GameEntity.builder()
+                .uuid(UUID.randomUUID())
+                .pgn("")
+                .result(Result.BlackWon)
+                .blackPlayerName(blackPlayer)
+                .whitePlayerName(whitePlayer)
                 .build();
     }
 
@@ -170,7 +174,7 @@ public class GameServiceUnitTests {
 
         when(gameRepository.findAll(any(Pageable.class))).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAllPaged(pageable);
+        Page<GameEntity> result = gameService.getAll(pageable);
 
         assertAll("Page assertions",
                 () -> assertEquals(1, result.getTotalElements()),
@@ -178,6 +182,24 @@ public class GameServiceUnitTests {
                 () -> assertEquals(10, result.getSize()),
                 () -> assertEquals(game, result.getContent().getFirst()));
     }
-    //TODO: add methods for retrieve games by player name (black or white side)
+
+    @Test
+    @DisplayName("Get paged games by player name")
+    public void testGetAllGames_whenPageSizeAndPlayerNameProvided_returnPagedGames() {
+        List<GameEntity> allGames = List.of(game, game2);
+        Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
+
+        when(gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
+                blackPlayer, blackPlayer, pageable)).thenReturn(pagedGames);
+
+        Page<GameEntity> result = gameService.getAllByPlayerName(blackPlayer, pageable);
+
+        assertAll("Paged games by player name assertions",
+                () -> assertEquals(2, result.getTotalElements(),
+                        "Should return two games"),
+                () -> assertEquals(blackPlayer, result.getContent().getFirst().getBlackPlayerName(),
+                        "Black player name should be " + blackPlayer));
+    }
+
     //TODO: add methods for retrieve player games where player plays with white or black specifically
 }

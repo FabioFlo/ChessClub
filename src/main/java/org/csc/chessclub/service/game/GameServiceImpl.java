@@ -54,8 +54,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Page<GameEntity> getAllPaged(Pageable pageable) {
+    public Page<GameEntity> getAll(Pageable pageable) {
         return gameRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable) {
+        return gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(playerName, playerName, pageable);
     }
 
     private String setEmptyPlayerNameToNN(String playerName) {

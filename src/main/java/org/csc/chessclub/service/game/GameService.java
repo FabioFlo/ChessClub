@@ -15,5 +15,7 @@ public interface GameService {
 
     GameEntity delete(UUID uuid);
 
-    Page<GameEntity> getAllPaged(Pageable pageable);
+    Page<GameEntity> getAll(Pageable pageable);
+
+    Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable);
 }
