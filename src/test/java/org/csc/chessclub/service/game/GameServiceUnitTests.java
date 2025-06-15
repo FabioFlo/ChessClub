@@ -186,19 +186,20 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Get paged games by player name")
     public void testGetAllGames_whenPageSizeAndPlayerNameProvided_returnPagedGames() {
+        String playerName = blackPlayer;
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
         when(gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
-                blackPlayer, blackPlayer, pageable)).thenReturn(pagedGames);
+                playerName, playerName, pageable)).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAllByPlayerName(blackPlayer, pageable);
+        Page<GameEntity> result = gameService.getAllByPlayerName(playerName, pageable);
 
         assertAll("Paged games by player name assertions",
                 () -> assertEquals(2, result.getTotalElements(),
                         "Should return two games"),
-                () -> assertEquals(blackPlayer, result.getContent().getFirst().getBlackPlayerName(),
-                        "Black player name should be " + blackPlayer));
+                () -> assertEquals(playerName, result.getContent().getFirst().getBlackPlayerName(),
+                        "Black player name should be " + playerName));
     }
 
     //TODO: add methods for retrieve player games where player plays with white or black specifically
@@ -217,4 +218,21 @@ public class GameServiceUnitTests {
                 () -> assertEquals(whitePlayer, result.getContent().getFirst().getWhitePlayerName(),
                         "White player name should be " + whitePlayer));
     }
+
+    @Test
+    @DisplayName("Get games where player is black player")
+    public void testGetAllGames_whenPlayerNameProvided_returnGamesWhereIsTheBlackPlayer() {
+        List<GameEntity> allGames = List.of(game, game2);
+        Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
+
+        when(gameRepository.findGameEntitiesByBlackPlayerName(blackPlayer, pageable)).thenReturn(pagedGames);
+
+        Page<GameEntity> result = gameService.getAllGamesByBlackPlayerName(blackPlayer, pageable);
+
+        assertAll("Games where player plays white assertions",
+                () -> assertEquals(2, result.getTotalElements(), "Should return two games"),
+                () -> assertEquals(blackPlayer, result.getContent().getFirst().getBlackPlayerName(),
+                        "White player name should be " + blackPlayer));
+    }
+
 }
