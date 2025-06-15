@@ -36,6 +36,7 @@ public class GameServiceUnitTests {
     private GameEntity game;
     private GameEntity game2;
     private final String blackPlayer = "OwlMight";
+    private final String whitePlayer = "iamsogarbagegod";
 
     @BeforeEach
     public void setup() {
@@ -63,7 +64,6 @@ public class GameServiceUnitTests {
                 dxc5 Bf6 16. Qd2 Bg4 17. Be2 Re8 18. Rfe1 Na5 19. Bd4 Nb3 20. Bxf6 Qxf6 21. Qxd5
                 Nxa1 22. Rxa1 Rxe2 23. Qxb7 Bxf3 24. gxf3 Qg5+ 25. Kf1 Rae8 26. c6 Qd2 27. Kg2
                 Rxf2+ 28. Kg3 Rg2+ 29. Kh3 0-1""";
-        String whitePlayer = "iamsogarbagegod";
         Result result = Result.BlackWon;
         game = GameEntity.builder()
                 .uuid(uuid)
@@ -202,4 +202,19 @@ public class GameServiceUnitTests {
     }
 
     //TODO: add methods for retrieve player games where player plays with white or black specifically
+    @Test
+    @DisplayName("Get games where player is white player")
+    public void testGetAllGames_whenPlayerNameProvided_returnGamesWhereIsTheWhitePlayer() {
+        List<GameEntity> allGames = List.of(game, game2);
+        Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
+
+        when(gameRepository.findGameEntitiesByWhitePlayerName(whitePlayer, pageable)).thenReturn(pagedGames);
+
+        Page<GameEntity> result = gameService.getAllGamesByWhitePlayerName(whitePlayer, pageable);
+
+        assertAll("Games where player plays white assertions",
+                () -> assertEquals(2, result.getTotalElements(), "Should return two games"),
+                () -> assertEquals(whitePlayer, result.getContent().getFirst().getWhitePlayerName(),
+                        "White player name should be " + whitePlayer));
+    }
 }

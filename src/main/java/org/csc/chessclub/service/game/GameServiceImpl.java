@@ -63,6 +63,11 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(playerName, playerName, pageable);
     }
 
+    @Override
+    public Page<GameEntity> getAllGamesByWhitePlayerName(String playerName, Pageable pageable){
+        return gameRepository.findGameEntitiesByWhitePlayerName(playerName, pageable);
+    }
+
     private String setEmptyPlayerNameToNN(String playerName) {
         if (playerName.trim().isEmpty()) {
             return "NN";
