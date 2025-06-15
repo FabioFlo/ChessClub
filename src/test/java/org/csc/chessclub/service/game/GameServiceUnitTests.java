@@ -202,7 +202,6 @@ public class GameServiceUnitTests {
                         "Black player name should be " + playerName));
     }
 
-    //TODO: add methods for retrieve player games where player plays with white or black specifically
     @Test
     @DisplayName("Get games where player is white player")
     public void testGetAllGames_whenPlayerNameProvided_returnGamesWhereIsTheWhitePlayer() {
