@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.game;
 
+import org.aspectj.weaver.Utils;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
@@ -11,7 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,11 +31,19 @@ public class GameServiceUnitTests {
     private GameServiceImpl gameService;
     @Mock
     private GameRepository gameRepository;
+    @Mock
+    private Utils utils;
+    @Mock
+    private Pageable pageable;
+    @Mock
+    Page<GameEntity> page;
 
     private GameEntity game;
 
     @BeforeEach
     public void setup() {
+        pageable = PageRequest.of(0, 10);
+
         UUID uuid = UUID.randomUUID();
         String pgn = """
                 [Event "Live Chess"]
@@ -147,4 +161,23 @@ public class GameServiceUnitTests {
         assertEquals(game.getWhitePlayerName(), updatedGame.getWhitePlayerName(),
                 "Black player name should match");
     }
+
+    @Test
+    @DisplayName("Get all paged games")
+    public void testGetAllGames_whenPageAndSizeProvided_returnPagedGames() {
+        List<GameEntity> allGames = List.of(game);
+        Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
+
+        when(gameRepository.findAll(any(Pageable.class))).thenReturn(pagedGames);
+
+        Page<GameEntity> result = gameService.getAllPaged(pageable);
+
+        assertAll("Page assertions",
+                () -> assertEquals(1, result.getTotalElements()),
+                () -> assertEquals(0, result.getNumber()),
+                () -> assertEquals(10, result.getSize()),
+                () -> assertEquals(game, result.getContent().getFirst()));
+    }
+    //TODO: add methods for retrieve games by player name (black or white side)
+    //TODO: add methods for retrieve player games where player plays with white or black specifically
 }

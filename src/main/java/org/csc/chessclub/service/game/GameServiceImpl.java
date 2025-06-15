@@ -5,6 +5,8 @@ import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.GameServiceException;
 import org.csc.chessclub.model.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -49,6 +51,11 @@ public class GameServiceImpl implements GameService {
         }
         game.get().setAvailable(false);
         return gameRepository.save(game.get());
+    }
+
+    @Override
+    public Page<GameEntity> getAllPaged(Pageable pageable) {
+        return gameRepository.findAll(pageable);
     }
 
     private String setEmptyPlayerNameToNN(String playerName) {
