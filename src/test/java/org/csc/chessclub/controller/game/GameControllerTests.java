@@ -3,6 +3,7 @@ package org.csc.chessclub.controller.game;
 import io.restassured.common.mapper.TypeRef;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.controller.BaseIntegrationTest;
+import org.csc.chessclub.dto.PageResponseDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -114,4 +116,38 @@ public class GameControllerTests extends BaseIntegrationTest {
                 .extracting(ResponseDto::data)
                 .extracting(GameDto::uuid).isEqualTo(gameId);
     }
+
+    @Test
+    @Order(4)
+    @DisplayName("Get all paged")
+    void testGetAll_whenGamesExists_returnsAllGames() {
+        ResponseDto<PageResponseDto<GameDto>> response = given()
+                .when()
+                .get(apiPath)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                        .extracting(PageResponseDto::pageSize).isEqualTo(5);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::content)
+                .extracting(List::size).isEqualTo(1);
+    }
+
+    //TODO: Get all games by player name
+
+    //TODO: Get all games where player name plays is the white player
+
+    //TODO: Get all games where player name plays is the black player
+
+    //TODO: Delete game
 }

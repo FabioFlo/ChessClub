@@ -6,6 +6,7 @@ import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.model.GameEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -21,4 +22,8 @@ public interface GameMapper {
     GameEntity updateGameDtoToGame(UpdateGameDto gameDto);
 
     List<GameDto> listOfGamesToGameDto(List<GameEntity> games);
+
+    default Page<GameDto> listOfGamesToGameDto(Page<GameEntity> games) {
+        return games.map(this::gameToGameDto);
+    }
 }

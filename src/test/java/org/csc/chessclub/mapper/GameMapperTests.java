@@ -8,10 +8,15 @@ import org.csc.chessclub.model.GameEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameMapperTests {
@@ -125,5 +130,28 @@ public class GameMapperTests {
                 "Result should match");
         assertEquals(game.getPgn(), gameDtos.getFirst().pgn(),
                 "Pgn should match");
+    }
+
+    @Test
+    @DisplayName("Correctly map Page GameEntity to Page GameDto")
+    void shouldMapPageGameEntityToGameDto() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<GameEntity> allGames = List.of(game);
+        Page<GameEntity> games = new PageImpl<>(allGames, pageable, allGames.size());
+        Page<GameDto> gamesDto = gameMapper.listOfGamesToGameDto(games);
+
+        assertAll("Page mapper assertions",
+                () -> assertEquals(1, gamesDto.getTotalElements(),
+                        "Total elements should match"),
+                () -> assertEquals(game.getUuid(), gamesDto.getContent().getFirst().uuid(),
+                        "Uuid should match"),
+                () -> assertEquals(game.getWhitePlayerName(), gamesDto.getContent().getFirst().whitePlayerName(),
+                        "White player name should match"),
+                () -> assertEquals(game.getBlackPlayerName(), gamesDto.getContent().getFirst().blackPlayerName(),
+                        "Black player name should match"),
+                () -> assertEquals(game.getResult(), gamesDto.getContent().getFirst().result(),
+                        "Result should match"),
+                () -> assertEquals(game.getPgn(), games.getContent().getFirst().getPgn(),
+                        "Png should match"));
     }
 }
