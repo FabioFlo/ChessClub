@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -70,6 +71,14 @@ public class GameController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), "Player games", true));
+    }
+
+    @DeleteMapping("/{uuid}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<UUID>> deleteGame(@ValidUUID @PathVariable UUID uuid) {
+        gameService.delete(uuid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(uuid, "Game deleted", true));
     }
 }
 

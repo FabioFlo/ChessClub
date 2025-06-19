@@ -181,5 +181,26 @@ public class GameControllerTests extends BaseIntegrationTest {
                 .extracting(GameDto::whitePlayerName).isEqualTo(playerName);
     }
 
-    //TODO: Delete game
+    @Test
+    @Order(6)
+    @DisplayName("Delete game")
+    void testDeleteGame_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
+        ResponseDto<UUID> response = given()
+                .pathParam("uuid", gameId)
+                .header("Authorization", "Bearer " + userToken)
+                .when()
+                .delete(apiPath + "/{uuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(UUID::toString).isEqualTo(gameId.toString());
+    }
 }
