@@ -6,6 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.dto.ResponseDto;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -101,7 +103,7 @@ public abstract class BaseIntegrationTest {
         return postgresContainer != null && postgresContainer.isRunning();
     }
 
-    protected ResponseDto<AuthenticationResponse> loginAndGetResponse (AuthenticationRequest request) {
+    protected ResponseDto<AuthenticationResponse> loginAndGetResponse(AuthenticationRequest request) {
 
         return given()
                 .body(request)
@@ -111,5 +113,18 @@ public abstract class BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().response().as(new TypeRef<>() {
                 });
+    }
+
+    protected RequestSpecification withPageable(Pageable pageable) {
+        RequestSpecification spec = given();
+        if (pageable != null) {
+            spec
+                    .queryParam("page", pageable.getPageNumber())
+                    .queryParam("size", pageable.getPageSize());
+            pageable.getSort().forEach(order ->
+                    spec.queryParam("sort", order.getProperty() + "," + order.getDirection())
+            );
+        }
+        return spec;
     }
 }
