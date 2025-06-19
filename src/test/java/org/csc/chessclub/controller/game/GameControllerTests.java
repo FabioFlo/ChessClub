@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -135,7 +137,7 @@ public class GameControllerTests extends BaseIntegrationTest {
 
         assertThat(response)
                 .extracting(ResponseDto::data)
-                        .extracting(PageResponseDto::pageSize).isEqualTo(5);
+                .extracting(PageResponseDto::pageSize).isEqualTo(10);
 
         assertThat(response)
                 .extracting(ResponseDto::data)
@@ -143,11 +145,41 @@ public class GameControllerTests extends BaseIntegrationTest {
                 .extracting(List::size).isEqualTo(1);
     }
 
-    //TODO: Get all games by player name
+    @Test
+    @Order(5)
+    @DisplayName("Games by player name")
+    void testGamesByPlayerName_whenPlayerNameProvided_returnsGamesByPlayerName() {
+        String playerName = "White player";
+        Pageable pageable = PageRequest.of(0, 5);
 
-    //TODO: Get all games where player name plays is the white player
+        ResponseDto<PageResponseDto<GameDto>> response = withPageable(pageable)
+                .when()
+                .pathParams("player-name", playerName)
+                .get(apiPath + "/player/{player-name}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
 
-    //TODO: Get all games where player name plays is the black player
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::content)
+                .extracting(List::size).isEqualTo(1);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::pageSize).isEqualTo(5);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::content)
+                .extracting(List::getFirst)
+                .extracting(GameDto::whitePlayerName).isEqualTo(playerName);
+    }
 
     //TODO: Delete game
 }
