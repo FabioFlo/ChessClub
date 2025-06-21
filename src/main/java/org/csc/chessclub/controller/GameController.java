@@ -58,7 +58,7 @@ public class GameController {
 
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllGames(@PageableDefault Pageable pageable) {
-        Page<GameDto> pageResult = gameMapper.listOfGamesToGameDto(gameService.getAll(pageable));
+        Page<GameDto> pageResult = gameMapper.pageGameEntityToPageGameDto(gameService.getAll(pageable));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), "Game list", true));
@@ -67,7 +67,7 @@ public class GameController {
     @GetMapping("/player/{player-name}")
     public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllByPlayerName(@PageableDefault Pageable pageable,
                                                                                     @PathVariable("player-name") String playerName) {
-        Page<GameDto> pageResult = gameMapper.listOfGamesToGameDto(gameService.getAllByPlayerName(playerName, pageable));
+        Page<GameDto> pageResult = gameMapper.pageGameEntityToPageGameDto(gameService.getAllByPlayerName(playerName, pageable));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), "Player games", true));

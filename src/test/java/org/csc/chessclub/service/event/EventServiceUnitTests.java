@@ -10,6 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,9 +36,12 @@ public class EventServiceUnitTests {
     private StorageServiceImpl storageService;
 
     private EventEntity event;
+    private Pageable pageable;
 
     @BeforeEach
     public void setUp() {
+        pageable = PageRequest.of(0, 10);
+
         UUID uuid = UUID.randomUUID();
         String title = "Test Event";
         String description = "Test Description";
@@ -126,12 +133,15 @@ public class EventServiceUnitTests {
     @Test
     @DisplayName("Get all events")
     void testGetAllEvents_whenEventsFound_returnAllEvents() {
-        when(eventRepository.findAll()).thenReturn(java.util.List.of(event));
+        List<EventEntity> allEvents = List.of(event);
+        Page<EventEntity> pagedEvents = new PageImpl<>(allEvents, pageable, allEvents.size());
 
-        List<EventEntity> allEvents = eventService.getAll();
+        when(eventRepository.findAll(any(Pageable.class))).thenReturn(pagedEvents);
 
-        assertNotNull(allEvents);
-        assertEquals(1, allEvents.size());
+        Page<EventEntity> result = eventService.getAll(pageable);
+
+        assertNotNull(result, "Page should not be null");
+        assertEquals(1, result.getTotalElements());
     }
 
     @Test

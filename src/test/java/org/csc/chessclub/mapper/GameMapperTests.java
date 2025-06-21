@@ -138,7 +138,7 @@ public class GameMapperTests {
         Pageable pageable = PageRequest.of(0, 10);
         List<GameEntity> allGames = List.of(game);
         Page<GameEntity> games = new PageImpl<>(allGames, pageable, allGames.size());
-        Page<GameDto> gamesDto = gameMapper.listOfGamesToGameDto(games);
+        Page<GameDto> gamesDto = gameMapper.pageGameEntityToPageGameDto(games);
 
         assertAll("Page mapper assertions",
                 () -> assertEquals(1, gamesDto.getTotalElements(),

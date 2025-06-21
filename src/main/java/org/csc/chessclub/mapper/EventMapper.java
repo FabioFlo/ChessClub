@@ -7,6 +7,7 @@ import org.csc.chessclub.model.EventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface EventMapper {
     @Mapping(target = "available", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     EventEntity updateEventDtoToEvent(UpdateEventDto updateEventDto);
+
+    default Page<EventDto> pageEventEntityToPageEventDto(Page<EventEntity> events) {
+        return events.map(this::eventToEventDto);
+    }
 }

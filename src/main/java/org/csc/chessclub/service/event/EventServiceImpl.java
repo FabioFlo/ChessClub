@@ -6,11 +6,12 @@ import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.service.storage.StorageService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,8 +62,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventEntity> getAll() {
-        return eventRepository.findAll();
+    public Page<EventEntity> getAll(Pageable pageable) {
+
+        return eventRepository.findAll(pageable);
     }
 
 }

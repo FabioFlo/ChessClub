@@ -23,7 +23,7 @@ public interface GameMapper {
 
     List<GameDto> listOfGamesToGameDto(List<GameEntity> games);
 
-    default Page<GameDto> listOfGamesToGameDto(Page<GameEntity> games) {
+    default Page<GameDto> pageGameEntityToPageGameDto(Page<GameEntity> games) {
         return games.map(this::gameToGameDto);
     }
 }

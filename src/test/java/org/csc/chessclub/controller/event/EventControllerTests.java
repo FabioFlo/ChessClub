@@ -4,6 +4,7 @@ import io.restassured.common.mapper.TypeRef;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.controller.BaseIntegrationTest;
+import org.csc.chessclub.dto.PageResponseDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
 import java.io.File;
-import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -86,7 +86,7 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Order(3)
     @DisplayName("Get all Events")
     void testGetAllEvents_whenEventsFound_returnsAllEvents() {
-        ResponseDto<List<EventDto>> response = given()
+        ResponseDto<PageResponseDto<EventDto>> response = given()
                 .when()
                 .get("/events")
                 .then()
@@ -97,10 +97,11 @@ public class EventControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::content)
                 .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .isNotEmpty();
 
-        uuid = response.data().getFirst().uuid();
+        uuid = response.data().content().getFirst().uuid();
         assertNotNull(uuid, "UUID should not be null");
     }
 
