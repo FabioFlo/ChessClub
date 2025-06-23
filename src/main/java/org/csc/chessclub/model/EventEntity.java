@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -26,5 +27,7 @@ public class EventEntity {
     private String author;
     private String announcementPDF;
     private boolean available;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private Set<TournamentEntity>  tournaments;
 
 }

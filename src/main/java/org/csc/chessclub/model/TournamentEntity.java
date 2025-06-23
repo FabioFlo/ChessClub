@@ -1,23 +1,35 @@
 package org.csc.chessclub.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Data
 @Table(name = "tournaments")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TournamentEntity {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID uuid;
-    private String firstPlace;
-    private String secondPlace;
-    private String thirdPlace;
+    private String title;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String description;
+    @OneToMany(mappedBy = "tournament")
+    private Set<GameEntity> games;
+    @ManyToOne
+    @JoinColumn(name = "event_uuid")
+    private EventEntity event;
 
+//TODO: category attribute can be useful like CLUB, INTERNATIONAL, HISTORIC
 
 }
