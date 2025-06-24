@@ -16,26 +16,27 @@ public class TournamentRepositoryTest extends TestContainerConfig {
 
     @Autowired
     private TournamentRepository tournamentRepository;
-private TournamentEntity tournament;
-private TournamentEntity tournament1;
+
     @BeforeEach
     void setUp() {
         //TODO: think about a custom repo to get only specific info
         //TODO: Possible views table to summarize the important data from event and tournament
-         tournament = TournamentEntity.builder()
+        TournamentEntity tournament = TournamentEntity.builder()
                 .title("Tournament")
                 .description("Description")
                 .startDate(LocalDate.parse("2018-01-01"))
                 .endDate(LocalDate.parse("2018-01-03"))
                 .build();
 
-         tournament1 = TournamentEntity.builder()
+        TournamentEntity tournament1 = TournamentEntity.builder()
                 .title("Tournament1")
                 .description("Description1")
                 .startDate(LocalDate.parse("2018-01-01"))
                 .endDate(LocalDate.parse("2018-01-03"))
                 .build();
 
+        tournamentRepository.save(tournament);
+        tournamentRepository.save(tournament1);
 
     }
 
@@ -43,10 +44,8 @@ private TournamentEntity tournament1;
     @DisplayName("Find tournament by title")
     void testGetTournamentByTitle_whenTitleProvided_returnTournamentIfExist() {
         String title = "Tournament";
-        tournamentRepository.save(tournament);
-        tournamentRepository.save(tournament1);
-        List<TournamentEntity> result = tournamentRepository.getTournamentEntitiesByTitle(title);
 
+        List<TournamentEntity> result = tournamentRepository.getTournamentEntitiesByTitle(title);
 
         assertAll("Get by title assertions",
                 () -> assertNotNull(result, "Result should not be null"),
