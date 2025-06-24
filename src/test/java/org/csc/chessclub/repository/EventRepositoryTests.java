@@ -76,5 +76,7 @@ public class EventRepositoryTests extends TestContainerConfig {
         assertEquals(AUTHOR, retrievedEvents.getFirst().getAuthor(),
                 "Author of Event should be equal");
     }
+
+    //TODO: return only available entities (this should be default for user)
 }
 

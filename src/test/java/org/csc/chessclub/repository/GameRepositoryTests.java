@@ -122,4 +122,5 @@ public class GameRepositoryTests extends TestContainerConfig {
                 () -> assertEquals(gameTwo, gamesRetrieved.getContent().getFirst(), "Game one should be equal to first"));
     }
 
+    //TODO: return only available entities (this should be default for user)
 }

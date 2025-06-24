@@ -52,6 +52,7 @@ public class TournamentServiceUnitTest {
                 () -> assertNotNull(newTournament, "Tournament should not be null"),
                 () -> assertNotNull(newTournament.getUuid(), "New tournament should not be null"),
                 () -> assertEquals(tournament.getTitle(), newTournament.getTitle(), "Title should be equal"),
+                () -> assertTrue(tournament.isAvailable(), "Tournament should be available"),
                 () -> verify(tournamentRepository, times(1)).save(tournament));
     }
 

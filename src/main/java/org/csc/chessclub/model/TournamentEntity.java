@@ -24,6 +24,7 @@ public class TournamentEntity {
     private LocalDate startDate;
     private LocalDate endDate;
     private String description;
+    private boolean available;
     @OneToMany(mappedBy = "tournament")
     private Set<GameEntity> games;
     @ManyToOne

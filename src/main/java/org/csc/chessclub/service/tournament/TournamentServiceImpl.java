@@ -14,6 +14,7 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public TournamentEntity create(TournamentEntity tournament) {
+        tournament.setAvailable(true);
         return tournamentRepository.save(tournament);
     }
 

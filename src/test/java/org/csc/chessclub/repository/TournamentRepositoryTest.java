@@ -52,4 +52,6 @@ public class TournamentRepositoryTest extends TestContainerConfig {
                 () -> assertEquals(1, result.size(), "Should contain one tournament"),
                 () -> assertEquals(title, result.getFirst().getTitle(), "Title should be equal"));
     }
+
+    //TODO: return only available entities (this should be default for user)
 }
