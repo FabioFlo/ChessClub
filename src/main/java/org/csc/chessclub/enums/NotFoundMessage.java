@@ -9,7 +9,9 @@ public enum NotFoundMessage {
     USER("User not found"),
     USER_WITH_UUID("User with UUID %s not found"),
     GAME("Game not found"),
-    GAME_WITH_UUID("Game with UUID %s not found");
+    GAME_WITH_UUID("Game with UUID %s not found"),
+    TOURNAMENT("Tournament not found"),
+    TOURNAMENT_WITH_UUID("Tournament with UUID %s not found");
 
     private final String message;
 

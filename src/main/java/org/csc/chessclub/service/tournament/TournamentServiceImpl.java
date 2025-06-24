@@ -1,6 +1,8 @@
 package org.csc.chessclub.service.tournament;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.enums.NotFoundMessage;
+import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.model.TournamentEntity;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,14 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public TournamentEntity create(TournamentEntity tournament) {
+        return tournamentRepository.save(tournament);
+    }
+
+    @Override
+    public TournamentEntity update(TournamentEntity tournament) {
+        if (!tournamentRepository.existsById(tournament.getUuid())) {
+            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournament.getUuid()));
+        }
         return tournamentRepository.save(tournament);
     }
 }

@@ -89,8 +89,8 @@ public class EventServiceUnitTests {
     @Test
     @DisplayName("Update Event")
     public void testUpdateEvent_whenEventDetailsProvided_returnUpdatedEvent() throws IOException {
-        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
         when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
 
         event.setTitle("Updated Title");
 

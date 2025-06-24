@@ -54,4 +54,20 @@ public class TournamentServiceUnitTest {
                 () -> assertEquals(tournament.getTitle(), newTournament.getTitle(), "Title should be equal"),
                 () -> verify(tournamentRepository, times(1)).save(tournament));
     }
+
+    @Test
+    @DisplayName("Update tournament")
+    void testUpdateTournament_whenTournamentDetailsProvided_returnTournament() {
+        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
+        when(tournamentRepository.existsById(tournament.getUuid())).thenReturn(true);
+
+        tournament.setTitle("Updated Tournament");
+
+        TournamentEntity updatedTournament = tournamentService.update(tournament);
+
+        assertAll("Update tournament assertions",
+                () -> assertNotNull(updatedTournament, "Tournament should be returned"),
+                () -> assertEquals(tournament.getTitle(), updatedTournament.getTitle(), "Title should be equal"),
+                () -> verify(tournamentRepository, times(1)).save(updatedTournament));
+    }
 }
