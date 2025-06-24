@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,5 +71,19 @@ public class TournamentServiceUnitTest {
                 () -> assertNotNull(updatedTournament, "Tournament should be returned"),
                 () -> assertEquals(tournament.getTitle(), updatedTournament.getTitle(), "Title should be equal"),
                 () -> verify(tournamentRepository, times(1)).save(updatedTournament));
+    }
+
+    @Test
+    @DisplayName("Get tournament by id")
+    void testGetTournamentById_whenTournamentIdProvided_returnTournament() {
+        when(tournamentRepository.findById(tournament.getUuid())).thenReturn(Optional.of(tournament));
+
+        TournamentEntity retrievedTournament = tournamentService.getById(tournament.getUuid());
+
+        assertAll("Get tournament by id assertions",
+                () -> assertNotNull(retrievedTournament, "Tournament should not be null"),
+                () -> assertEquals(tournament, retrievedTournament, "Tournament should be equal"),
+                () -> verify(tournamentRepository, times(1)).findById(tournament.getUuid()));
+
     }
 }
