@@ -44,4 +44,9 @@ public class TournamentServiceImpl implements TournamentService {
     public Page<TournamentEntity> getAll(Pageable pageable) {
         return tournamentRepository.findAll(pageable);
     }
+
+    @Override
+    public Page<TournamentEntity> getAllAvailable(Pageable pageable) {
+        return tournamentRepository.getDistinctByAvailableIsTrue(pageable);
+    }
 }

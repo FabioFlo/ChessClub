@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,9 +62,10 @@ public class TournamentRepositoryTests extends TestContainerConfig {
     @Test
     @DisplayName("Find all available tournaments")
     void testGetAllAvailableTournaments_returnTournamentsWithAvailableTrue() {
-        List<TournamentEntity> result = tournamentRepository.getDistinctByAvailableIsTrue();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<TournamentEntity> result = tournamentRepository.getDistinctByAvailableIsTrue(pageable);
 
-        boolean allAvailable = result.stream().allMatch(TournamentEntity::isAvailable);
+        boolean allAvailable = result.getContent().stream().allMatch(TournamentEntity::isAvailable);
 
         assertAll("Get all available tournaments",
                 () -> assertFalse(result.isEmpty(), "Result should not be null"),

@@ -49,6 +49,7 @@ public class TournamentServiceUnitTest {
                 .build();
 
         tournament1 = TournamentEntity.builder()
+                .uuid(UUID.randomUUID())
                 .title("Tournament1")
                 .description("Description1")
                 .startDate(LocalDate.parse("2018-01-01"))
@@ -57,6 +58,7 @@ public class TournamentServiceUnitTest {
                 .build();
 
         tournament2 = TournamentEntity.builder()
+                .uuid(UUID.randomUUID())
                 .title("Tournament2")
                 .description("Description2")
                 .startDate(LocalDate.parse("2018-01-01"))
@@ -112,7 +114,7 @@ public class TournamentServiceUnitTest {
     @Test
     @DisplayName("Get all tournaments")
     void testGetAll_whenPageableProvided_thenReturnPaginatedTournaments() {
-        List<TournamentEntity> tournaments = List.of(tournament, tournament1,tournament2);
+        List<TournamentEntity> tournaments = List.of(tournament, tournament1, tournament2);
         Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable, tournaments.size());
 
         when(tournamentRepository.findAll(pageable)).thenReturn(pagedTournaments);
@@ -124,7 +126,23 @@ public class TournamentServiceUnitTest {
                 () -> assertEquals(3, result.getTotalElements(), "Result should contain two tournaments"));
     }
 
+    @Test
+    @DisplayName("Get all available tournaments")
+    void testGetAllAvailable_whenPageableProvided_thenReturnPaginatedTournamentsWithAvailableTrue() {
+        List<TournamentEntity> tournaments = List.of(tournament1);
+        Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable, tournaments.size());
+
+        when(tournamentRepository.getDistinctByAvailableIsTrue(pageable)).thenReturn(pagedTournaments);
+
+        Page<TournamentEntity> result = tournamentService.getAllAvailable(pageable);
+
+        assertAll("Get all assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(1, result.getTotalElements(), "Result should contain two tournaments"),
+                () -> assertTrue(result.getContent().getFirst().isAvailable(), "Available should be true"));
+    }
+
     //TODO delete
     //TODO: check if startDate is before endDate in create and update (throw if is not)
-    //TODO: get all available unit test
+
 }

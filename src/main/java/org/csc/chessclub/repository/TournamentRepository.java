@@ -1,6 +1,8 @@
 package org.csc.chessclub.repository;
 
 import org.csc.chessclub.model.TournamentEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +13,5 @@ import java.util.UUID;
 public interface TournamentRepository extends JpaRepository<TournamentEntity, UUID> {
 
     List<TournamentEntity> getTournamentEntitiesByTitleAndAvailableTrue(String title);
-    List<TournamentEntity> getDistinctByAvailableIsTrue();
+    Page<TournamentEntity> getDistinctByAvailableIsTrue(Pageable pageable);
 }
