@@ -142,7 +142,6 @@ public class TournamentServiceUnitTest {
                 () -> assertTrue(result.getContent().getFirst().isAvailable(), "Available should be true"));
     }
 
-    //TODO delete
     @Test
     @DisplayName("Delete tournament")
     void testDeleteTournament_whenTournamentUuidProvided_setAvailableToFalse() {
@@ -159,6 +158,4 @@ public class TournamentServiceUnitTest {
 
 
     }
-    //TODO: check if startDate is before endDate in create and update (throw if is not)
-
 }

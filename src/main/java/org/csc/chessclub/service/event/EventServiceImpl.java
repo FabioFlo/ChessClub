@@ -63,7 +63,6 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventEntity> getAll(Pageable pageable) {
-
         return eventRepository.findAll(pageable);
     }
 
