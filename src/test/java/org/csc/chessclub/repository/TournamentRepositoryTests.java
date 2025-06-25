@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TournamentRepositoryTest extends TestContainerConfig {
+public class TournamentRepositoryTests extends TestContainerConfig {
 
     @Autowired
     private TournamentRepository tournamentRepository;

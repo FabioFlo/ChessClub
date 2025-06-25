@@ -9,9 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,9 +31,14 @@ public class TournamentServiceUnitTest {
     private TournamentServiceImpl tournamentService;
 
     private TournamentEntity tournament;
+    private TournamentEntity tournament1;
+    private TournamentEntity tournament2;
+    private Pageable pageable;
 
     @BeforeEach
     void setUp() {
+        pageable = PageRequest.of(0, 10);
+
         UUID uuid = UUID.randomUUID();
         tournament = TournamentEntity.builder()
                 .uuid(uuid)
@@ -38,9 +47,23 @@ public class TournamentServiceUnitTest {
                 .startDate(LocalDate.parse("2018-01-01"))
                 .endDate(LocalDate.parse("2018-01-03"))
                 .build();
-    }
 
-    //TODO: check if startDate is before endDate in create and update (throw if is not)
+        tournament1 = TournamentEntity.builder()
+                .title("Tournament1")
+                .description("Description1")
+                .startDate(LocalDate.parse("2018-01-01"))
+                .endDate(LocalDate.parse("2018-01-03"))
+                .available(true)
+                .build();
+
+        tournament2 = TournamentEntity.builder()
+                .title("Tournament2")
+                .description("Description2")
+                .startDate(LocalDate.parse("2018-01-01"))
+                .endDate(LocalDate.parse("2018-01-03"))
+                .available(false)
+                .build();
+    }
 
     @Test
     @DisplayName("Create tournament")
@@ -84,6 +107,24 @@ public class TournamentServiceUnitTest {
                 () -> assertNotNull(retrievedTournament, "Tournament should not be null"),
                 () -> assertEquals(tournament, retrievedTournament, "Tournament should be equal"),
                 () -> verify(tournamentRepository, times(1)).findById(tournament.getUuid()));
-
     }
+
+    @Test
+    @DisplayName("Get all tournaments")
+    void testGetAll_whenPageableProvided_thenReturnPaginatedTournaments() {
+        List<TournamentEntity> tournaments = List.of(tournament, tournament1,tournament2);
+        Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable, tournaments.size());
+
+        when(tournamentRepository.findAll(pageable)).thenReturn(pagedTournaments);
+
+        Page<TournamentEntity> result = tournamentService.getAll(pageable);
+
+        assertAll("Get all assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(3, result.getTotalElements(), "Result should contain two tournaments"));
+    }
+
+    //TODO delete
+    //TODO: check if startDate is before endDate in create and update (throw if is not)
+    //TODO: get all available unit test
 }

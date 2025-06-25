@@ -5,6 +5,8 @@ import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.model.TournamentEntity;
 import org.csc.chessclub.repository.TournamentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -36,5 +38,10 @@ public class TournamentServiceImpl implements TournamentService {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
         }
         return tournamentEntity.get();
+    }
+
+    @Override
+    public Page<TournamentEntity> getAll(Pageable pageable) {
+        return tournamentRepository.findAll(pageable);
     }
 }

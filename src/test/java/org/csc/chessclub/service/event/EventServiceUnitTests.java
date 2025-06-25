@@ -140,7 +140,7 @@ public class EventServiceUnitTests {
 
         Page<EventEntity> result = eventService.getAll(pageable);
 
-        assertNotNull(result, "Page should not be null");
+        assertNotNull(result, "Result should not be null");
         assertEquals(1, result.getTotalElements());
     }
 
