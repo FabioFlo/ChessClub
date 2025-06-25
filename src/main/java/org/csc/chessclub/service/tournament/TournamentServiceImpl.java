@@ -49,4 +49,14 @@ public class TournamentServiceImpl implements TournamentService {
     public Page<TournamentEntity> getAllAvailable(Pageable pageable) {
         return tournamentRepository.getDistinctByAvailableIsTrue(pageable);
     }
+
+    @Override
+    public void delete(UUID uuid) {
+        Optional<TournamentEntity> tournamentEntity = tournamentRepository.findById(uuid);
+        if (tournamentEntity.isEmpty()) {
+            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
+        }
+        tournamentEntity.get().setAvailable(false);
+        tournamentRepository.save(tournamentEntity.get());
+    }
 }

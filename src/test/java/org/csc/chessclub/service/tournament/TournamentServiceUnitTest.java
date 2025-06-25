@@ -143,6 +143,22 @@ public class TournamentServiceUnitTest {
     }
 
     //TODO delete
+    @Test
+    @DisplayName("Delete tournament")
+    void testDeleteTournament_whenTournamentUuidProvided_setAvailableToFalse() {
+        when(tournamentRepository.findById(tournament.getUuid())).thenReturn(Optional.ofNullable(tournament));
+        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
+
+        tournament.setAvailable(false);
+        assertAll("Delete tournament assertions",
+                () -> assertFalse(tournament.isAvailable(),
+                        "Available should be false"),
+                () -> assertDoesNotThrow(() -> tournamentService.delete(tournament.getUuid()),
+                        "Should not throw an exception"),
+                () -> verify(tournamentRepository, times(1)).save(tournament));
+
+
+    }
     //TODO: check if startDate is before endDate in create and update (throw if is not)
 
 }

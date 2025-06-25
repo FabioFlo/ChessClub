@@ -16,4 +16,6 @@ public interface TournamentService {
     Page<TournamentEntity> getAll(Pageable pageable);
 
     Page<TournamentEntity> getAllAvailable(Pageable pageable);
+
+    void delete(UUID uuid);
 }
