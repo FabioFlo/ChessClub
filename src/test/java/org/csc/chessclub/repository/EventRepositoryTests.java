@@ -53,6 +53,7 @@ public class EventRepositoryTests extends TestContainerConfig {
     @Test
     @DisplayName("Find event by title")
     void testFindEventByTitle_whenGivenTitle_returnEventWithGivenTitle() {
+        //TODO: result should have available true
         eventRepository.save(event1);
         List<EventEntity> retrievedEvent = eventRepository.findEventEntityByTitle(TITLE_1);
 

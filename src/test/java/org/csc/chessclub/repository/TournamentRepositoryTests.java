@@ -26,6 +26,7 @@ public class TournamentRepositoryTests extends TestContainerConfig {
                 .description("Description")
                 .startDate(LocalDate.parse("2018-01-01"))
                 .endDate(LocalDate.parse("2018-01-03"))
+                .available(true)
                 .build();
 
         TournamentEntity tournament1 = TournamentEntity.builder()
@@ -33,6 +34,7 @@ public class TournamentRepositoryTests extends TestContainerConfig {
                 .description("Description1")
                 .startDate(LocalDate.parse("2018-01-01"))
                 .endDate(LocalDate.parse("2018-01-03"))
+                .available(false)
                 .build();
 
         tournamentRepository.save(tournament);
@@ -45,13 +47,24 @@ public class TournamentRepositoryTests extends TestContainerConfig {
     void testGetTournamentByTitle_whenTitleProvided_returnTournamentIfExist() {
         String title = "Tournament";
 
-        List<TournamentEntity> result = tournamentRepository.getTournamentEntitiesByTitle(title);
+        List<TournamentEntity> result = tournamentRepository.getTournamentEntitiesByTitleAndAvailableTrue(title);
 
         assertAll("Get by title assertions",
                 () -> assertNotNull(result, "Result should not be null"),
                 () -> assertEquals(1, result.size(), "Should contain one tournament"),
+                () -> assertTrue(result.stream().allMatch(TournamentEntity::isAvailable), "Result should be available"),
                 () -> assertEquals(title, result.getFirst().getTitle(), "Title should be equal"));
     }
 
-    //TODO: return only available entities (this should be default for user)
+    @Test
+    @DisplayName("Find all available tournaments")
+    void testGetAllAvailableTournaments_returnTournamentsWithAvailableTrue() {
+        List<TournamentEntity> result = tournamentRepository.getDistinctByAvailableIsTrue();
+
+        boolean allAvailable = result.stream().allMatch(TournamentEntity::isAvailable);
+
+        assertAll("Get all available tournaments",
+                () -> assertFalse(result.isEmpty(), "Result should not be null"),
+                () -> assertTrue(allAvailable, "All tournaments should be available"));
+    }
 }

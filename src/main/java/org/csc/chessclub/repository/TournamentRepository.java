@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface TournamentRepository extends JpaRepository<TournamentEntity, UUID> {
 
-    List<TournamentEntity> getTournamentEntitiesByTitle(String title);
+    List<TournamentEntity> getTournamentEntitiesByTitleAndAvailableTrue(String title);
+    List<TournamentEntity> getDistinctByAvailableIsTrue();
 }

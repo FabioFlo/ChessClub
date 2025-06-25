@@ -67,7 +67,7 @@ public class GameRepositoryTests extends TestContainerConfig {
         gameRepository.save(gameThree);
         gameRepository.save(nnPlayersGame);
     }
-
+    //TODO: result should have available true
     @Test
     @DisplayName("Should return games with the given player name")
     void testFindByPlayerName_whenPlayerNameGiven_returnGamesWithGivenPlayerName() {
