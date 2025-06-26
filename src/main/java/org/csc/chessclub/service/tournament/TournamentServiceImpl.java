@@ -1,10 +1,12 @@
 package org.csc.chessclub.service.tournament;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.TournamentServiceException;
 import org.csc.chessclub.model.TournamentEntity;
+import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +20,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
-    private final String dateExceptionMessage = "Start date must be before end date";
+    private final EventRepository eventRepository;
 
     @Override
     public TournamentEntity create(TournamentEntity tournament) {
         tournament.setAvailable(true);
-        if (startDateNotBeforeEndDate(tournament.getStartDate(), tournament.getEndDate())) {
-            throw new TournamentServiceException(dateExceptionMessage);
-        }
-        return tournamentRepository.save(tournament);
+        return validTournamentDetails(tournament);
     }
 
     @Override
@@ -34,10 +33,7 @@ public class TournamentServiceImpl implements TournamentService {
         if (!tournamentRepository.existsById(tournament.getUuid())) {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournament.getUuid()));
         }
-        if (startDateNotBeforeEndDate(tournament.getStartDate(), tournament.getEndDate())) {
-            throw new TournamentServiceException(dateExceptionMessage);
-        }
-        return tournamentRepository.save(tournament);
+        return validTournamentDetails(tournament);
     }
 
     @Override
@@ -71,5 +67,18 @@ public class TournamentServiceImpl implements TournamentService {
 
     private boolean startDateNotBeforeEndDate(LocalDate startDate, LocalDate endDate) {
         return !startDate.isBefore(endDate);
+    }
+
+    @NotNull
+    private TournamentEntity validTournamentDetails(TournamentEntity tournament) {
+        if (startDateNotBeforeEndDate(tournament.getStartDate(), tournament.getEndDate())) {
+            String dateExceptionMessage = "Start date must be before end date";
+            throw new TournamentServiceException(dateExceptionMessage);
+        }
+        UUID eventId = tournament.getEvent().getUuid();
+        if (eventId != null && !eventRepository.existsById(eventId)) {
+            throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(eventId));
+        }
+        return tournamentRepository.save(tournament);
     }
 }

@@ -156,6 +156,5 @@ public class TournamentServiceUnitTest {
                         "Should not throw an exception"),
                 () -> verify(tournamentRepository, times(1)).save(tournament));
 
-
     }
 }
