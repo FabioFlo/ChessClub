@@ -2,6 +2,7 @@ package org.csc.chessclub.mapper;
 
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.model.EventEntity;
 import org.csc.chessclub.model.TournamentEntity;
 import org.mapstruct.Mapper;
@@ -18,6 +19,9 @@ public interface TournamentMapper {
     TournamentDto tournamentToTournamentDto(TournamentEntity tournament);
 
     @Mapping(target = "event", source = "eventId")
+    TournamentEntity updateTournamentToTournament(UpdateTournamentDto updateTournamentDto);
+
+    @Mapping(target = "event", source = "eventId")
     TournamentEntity createTournamentDtoToTournamentEntity(CreateTournamentDto tournamentDto);
 
     default EventEntity map(UUID eventId) {
@@ -28,6 +32,6 @@ public interface TournamentMapper {
     }
 
     default Page<TournamentDto> pageTournamentEntityToPageTournamentDto(Page<TournamentEntity> pageOfTournament) {
-       return pageOfTournament.map(this::tournamentToTournamentDto);
+        return pageOfTournament.map(this::tournamentToTournamentDto);
     }
 }

@@ -2,6 +2,7 @@ package org.csc.chessclub.mapper;
 
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.model.TournamentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +67,7 @@ public class TournamentMapperTests {
         CreateTournamentDto tournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, DESCRIPTION, EVENT_ID);
         TournamentEntity tournamentEntity = tournamentMapper.createTournamentDtoToTournamentEntity(tournamentDto);
 
-        assertAll("Map tournament to dto assertions",
+        assertAll("Map create tournament dto to entity assertions",
                 () -> assertEquals(tournamentEntity.getTitle(), tournamentDto.title(),
                         "Title should be equal"),
                 () -> assertEquals(tournamentEntity.getStartDate(), tournamentDto.startDate(),
@@ -96,5 +97,23 @@ public class TournamentMapperTests {
                         "Tournament UUID should be equal"));
     }
 
-
+    @Test
+    @DisplayName("Map UpdateTournamentDto to TournamentEntity")
+    void shouldMapUpdateTournamentDtoToTournamentEntity() {
+        UpdateTournamentDto tournamentDto = new UpdateTournamentDto(UUID.randomUUID(), TITLE, START_DATE, END_DATE, DESCRIPTION, EVENT_ID);
+        TournamentEntity tournamentEntity = tournamentMapper.updateTournamentToTournament(tournamentDto);
+        assertAll("Map update tournament to entity assertions",
+                () -> assertEquals(tournamentEntity.getUuid(), tournamentDto.uuid(),
+                        "UUID should be equal"),
+                () -> assertEquals(tournamentEntity.getTitle(), tournamentDto.title(),
+                        "Title should be equal"),
+                () -> assertEquals(tournamentEntity.getStartDate(), tournamentDto.startDate(),
+                        "Start date should be equal"),
+                () -> assertEquals(tournamentEntity.getEndDate(), tournamentDto.endDate(),
+                        "End game should be equal"),
+                () -> assertEquals(tournamentEntity.getDescription(), tournamentDto.description(),
+                        "Description should be equal"),
+                () -> assertEquals(tournamentEntity.getEvent().getUuid(), tournamentDto.eventId(),
+                        "Event Uuid should be equal"));
+    }
 }
