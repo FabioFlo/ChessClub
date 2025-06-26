@@ -7,6 +7,7 @@ import org.csc.chessclub.model.TournamentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.util.UUID;
 
@@ -24,5 +25,9 @@ public interface TournamentMapper {
             return null;
         }
         return EventEntity.builder().uuid(eventId).build();
+    }
+
+    default Page<TournamentDto> pageTournamentEntityToPageTournamentDto(Page<TournamentEntity> pageOfTournament) {
+       return pageOfTournament.map(this::tournamentToTournamentDto);
     }
 }

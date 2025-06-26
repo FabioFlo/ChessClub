@@ -6,12 +6,16 @@ import org.csc.chessclub.model.TournamentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TournamentMapperTests {
     private final TournamentMapper tournamentMapper = TournamentMapper.INSTANCE;
@@ -74,4 +78,23 @@ public class TournamentMapperTests {
                 () -> assertEquals(tournamentEntity.getEvent().getUuid(), tournamentDto.eventId(),
                         "Event Uuid should be equal"));
     }
+
+    @Test
+    @DisplayName("Map page of TournamentEntity to page of TournamentDto")
+    void shouldMapPageOfTournamentEntityToPageOfTournamentDto() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<TournamentEntity> listTournaments = List.of(tournament);
+        Page<TournamentEntity> pageOfTournament = new PageImpl<>(listTournaments, pageable, listTournaments.size());
+
+        Page<TournamentDto> result = tournamentMapper.pageTournamentEntityToPageTournamentDto(pageOfTournament);
+
+        assertAll("Page entity to page dto assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(1, result.getTotalElements(), "Should be one tournament"),
+                () -> assertEquals(0, result.getNumber(), "Page number should be equal to zero"),
+                () -> assertEquals(tournament.getUuid(), result.getContent().getFirst().uuid(),
+                        "Tournament UUID should be equal"));
+    }
+
+
 }

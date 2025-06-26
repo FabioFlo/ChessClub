@@ -99,4 +99,6 @@ public class EventMapperTests {
         assertEquals(DESCRIPTION, updatedEvent.getDescription());
         assertEquals(AUTHOR, updatedEvent.getAuthor());
     }
+
+    //TODO: create a test for page map method
 }
