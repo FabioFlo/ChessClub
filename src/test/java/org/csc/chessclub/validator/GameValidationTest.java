@@ -1,7 +1,6 @@
 package org.csc.chessclub.validator;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.csc.chessclub.dto.game.CreateGameDto;
@@ -9,7 +8,6 @@ import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
 import org.csc.chessclub.exception.validation.result.ResultValidationMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,16 +16,11 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class GameValidationTest {
+public class GameValidationTest extends BaseValidatorConfig {
 
-    private Validator validator;
+    private final Validator validator = getValidator();
     private String propertyPath = "";
     CreateGameDto createGameDto;
-
-    @BeforeEach
-    public void setup() {
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
-    }
 
     @Test
     @DisplayName("Validation - Pgn is blank")

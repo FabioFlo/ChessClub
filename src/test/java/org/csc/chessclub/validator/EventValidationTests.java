@@ -1,14 +1,11 @@
 package org.csc.chessclub.validator;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.exception.validation.messages.EventValidationMessage;
 import org.csc.chessclub.exception.validation.uuid.UuidValidationMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +14,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class EventValidationTests {
+public class EventValidationTests extends BaseValidatorConfig {
 
-    private Validator validator;
+    private final Validator validator = getValidator();
 
     CreateEventDto createEvent;
     private static final String TITLE = "Test Title";
@@ -27,14 +24,6 @@ public class EventValidationTests {
     private static final String AUTHOR = "Test Author";
     private static final String INVALID_STRING_LENGTH = "A";
     private final UUID uuid = UUID.randomUUID();
-
-
-    @BeforeEach
-    void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-
-    }
 
     @Test
     @DisplayName("Validation Event Create Dto - Title is blank")
@@ -94,7 +83,7 @@ public class EventValidationTests {
     }
 
     @Test
-    @DisplayName("Validation Event Update")
+    @DisplayName("Validation Event Update - Is valid")
     void testValidationEventUpdateDto_whenValidEventDetailsProvided_thenValidationSucceeds() {
         UpdateEventDto eventDetails = new UpdateEventDto(
                 uuid, "New test title", DESCRIPTION, AUTHOR );

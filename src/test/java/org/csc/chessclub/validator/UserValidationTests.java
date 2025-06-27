@@ -1,13 +1,10 @@
 package org.csc.chessclub.validator;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.exception.validation.messages.UserValidationMessage;
 import org.csc.chessclub.exception.validation.password.PasswordValidationMassage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,19 +12,13 @@ import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class UserValidationTests {
+public class UserValidationTests extends BaseValidatorConfig{
 
-    private Validator validator;
+    private final Validator validator =  getValidator();
 
     private static final String USERNAME = "Test Username";
     private static final String PASSWORD = "Password1_";
     private static final String EMAIL = "email@email.com";
-
-    @BeforeEach
-    public void setup() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
 
     @Test
     @DisplayName("Validation Register User Request - Username is blank")
