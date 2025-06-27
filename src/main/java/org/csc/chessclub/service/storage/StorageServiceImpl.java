@@ -31,6 +31,7 @@ public class StorageServiceImpl implements StorageService {
                 throw new StorageServiceException("Failed to store empty file.");
             }
             Path destinationFile = this.rootLocation.resolve(
+                    //TODO: check if the file is infected
                             Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
                     .normalize().toAbsolutePath();
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
@@ -38,6 +39,7 @@ public class StorageServiceImpl implements StorageService {
                         "Cannot store file outside current directory.");
             }
             try (InputStream inputStream = file.getInputStream()) {
+                //TODO: check if the file is infected
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }
