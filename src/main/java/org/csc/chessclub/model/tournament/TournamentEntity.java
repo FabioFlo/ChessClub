@@ -1,10 +1,12 @@
-package org.csc.chessclub.model;
+package org.csc.chessclub.model.tournament;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.model.GameEntity;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -20,9 +22,11 @@ public class TournamentEntity {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID uuid;
+    @Column(length = TournamentConstraints.TITLE_MAX_LENGTH)
     private String title;
     private LocalDate startDate;
     private LocalDate endDate;
+    @Column(length = TournamentConstraints.DESCRIPTION_MAX_LENGTH)
     private String description;
     private boolean available;
     @OneToMany(mappedBy = "tournament")

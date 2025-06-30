@@ -58,4 +58,28 @@ public class TournamentValidationTests extends BaseValidatorConfig {
                         v.getMessage().equals(TournamentValidationMessage.DATE_MUST_NOT_BE_NULL));
     }
 
+    @Test
+    @DisplayName("Validation CreateTournamentDto - Title size too short")
+    void testValidationCreateTournamentDto_whenTitleSizeTooShort_thenValidationFails() {
+        createTournamentDto = new CreateTournamentDto("a", START_DATE, END_DATE, DESCRIPTION, null);
+
+        Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("title") &&
+                        v.getMessage().equals(TournamentValidationMessage.TITLE_LENGTH_REQUIRED));
+    }
+
+    @Test
+    @DisplayName("Validation CreateTournamentDto - Title size too long")
+    void testValidationCreateTournamentDto_whenTitleSizeTooLong_thenValidationFails() {
+        String repeatedChar = "a";
+        int length = 51;
+        String tooLongTitle = repeatedChar.repeat(length);
+        createTournamentDto = new CreateTournamentDto(tooLongTitle, START_DATE, END_DATE, DESCRIPTION, null);
+
+        Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("title") &&
+                        v.getMessage().equals(TournamentValidationMessage.TITLE_LENGTH_REQUIRED));
+    }
 }

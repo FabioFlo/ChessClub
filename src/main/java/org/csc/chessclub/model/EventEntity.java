@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventEntity {
-
+//TODO: define max string size with @column(length =)
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;

@@ -1,6 +1,6 @@
 package org.csc.chessclub.service.tournament;
 
-import org.csc.chessclub.model.TournamentEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

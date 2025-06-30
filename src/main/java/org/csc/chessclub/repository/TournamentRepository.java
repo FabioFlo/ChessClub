@@ -1,6 +1,6 @@
 package org.csc.chessclub.repository;
 
-import org.csc.chessclub.model.TournamentEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

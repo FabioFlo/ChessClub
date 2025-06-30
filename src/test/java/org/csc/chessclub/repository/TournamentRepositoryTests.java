@@ -1,7 +1,7 @@
 package org.csc.chessclub.repository;
 
 import org.csc.chessclub.controller.TestContainerConfig;
-import org.csc.chessclub.model.TournamentEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,10 @@ package org.csc.chessclub.exception.validation.messages;
 import lombok.Getter;
 
 @Getter
-public class EventValidationMessage {
+public final class EventValidationMessage {
+    private EventValidationMessage() {
+    }
+
     public static final String TITLE_MUST_NOT_BE_BLANK = "Title must not be blank";
     public static final String DESCRIPTION_MUST_NOT_BE_BLANK = "Description must not be blank";
     public static final String AUTHOR_MUST_NOT_BE_BLANK = "Author must not be blank";

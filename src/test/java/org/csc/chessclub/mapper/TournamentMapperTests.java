@@ -3,7 +3,7 @@ package org.csc.chessclub.mapper;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
-import org.csc.chessclub.model.TournamentEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

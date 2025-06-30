@@ -4,7 +4,7 @@ import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.TournamentServiceException;
 import org.csc.chessclub.model.EventEntity;
-import org.csc.chessclub.model.TournamentEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
