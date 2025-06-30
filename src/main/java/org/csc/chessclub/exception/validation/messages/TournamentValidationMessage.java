@@ -13,4 +13,8 @@ public final class TournamentValidationMessage {
             + TournamentConstraints.TITLE_MIN_LENGTH
             + " and "
             + TournamentConstraints.TITLE_MAX_LENGTH + " characters";
+    public static final String DESCRIPTION_LENGTH_REQUIRED = "Description should be between "
+            + TournamentConstraints.DESCRIPTION_MIN_LENGTH
+            + " and "
+            + TournamentConstraints.DESCRIPTION_MAX_LENGTH + " characters";
 }
