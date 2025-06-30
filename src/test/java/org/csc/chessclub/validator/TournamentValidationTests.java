@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.exception.validation.messages.TournamentValidationMessage;
+import org.csc.chessclub.model.tournament.TournamentConstraints;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +62,11 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @Test
     @DisplayName("Validation CreateTournamentDto - Title size too short")
     void testValidationCreateTournamentDto_whenTitleSizeTooShort_thenValidationFails() {
-        createTournamentDto = new CreateTournamentDto("a", START_DATE, END_DATE, DESCRIPTION, null);
+        String repeatedChar = "a";
+        int length = TournamentConstraints.TITLE_MIN_LENGTH - 1;
+        String tooShortTitle = repeatedChar.repeat(length);
+
+        createTournamentDto = new CreateTournamentDto(tooShortTitle, START_DATE, END_DATE, DESCRIPTION, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
@@ -73,8 +78,9 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @DisplayName("Validation CreateTournamentDto - Title size too long")
     void testValidationCreateTournamentDto_whenTitleSizeTooLong_thenValidationFails() {
         String repeatedChar = "a";
-        int length = 51;
+        int length = TournamentConstraints.TITLE_MAX_LENGTH + 1;
         String tooLongTitle = repeatedChar.repeat(length);
+
         createTournamentDto = new CreateTournamentDto(tooLongTitle, START_DATE, END_DATE, DESCRIPTION, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
@@ -87,8 +93,9 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @DisplayName("Validation CreateTournamentDto - Description size too long")
     void testValidationCreateTournamentDto_whenDescriptionSizeTooLong_thenValidationFails() {
         String repeatedChar = "a";
-        int length = 501;
+        int length = TournamentConstraints.DESCRIPTION_MAX_LENGTH + 1;
         String tooLongDescription = repeatedChar.repeat(length);
+
         createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooLongDescription, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
@@ -100,7 +107,11 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @Test
     @DisplayName("Validation CreateTournamentDto - Description size too short")
     void testValidationCreateTournamentDto_whenDescriptionSizeTooShort_thenValidationFails() {
-        createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, "a", null);
+        String repeatedChar = "a";
+        int length = TournamentConstraints.DESCRIPTION_MIN_LENGTH - 1;
+        String tooShortDescription = repeatedChar.repeat(length);
+
+        createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooShortDescription, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
