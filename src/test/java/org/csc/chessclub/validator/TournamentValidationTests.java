@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TournamentValidationTests extends BaseValidatorConfig {
 
@@ -131,5 +132,14 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("uuid") &&
                         v.getMessage().equals(UuidValidationMessage.UUID_MUST_BE_VALID));
+    }
+
+    @Test
+    @DisplayName("Validation UpdateTournamentDto - Is valid")
+    void testValidationUpdateTournamentDto_whenValidUpdateDtoProvided_thenValidationPasses() {
+        updateTournamentDto = new UpdateTournamentDto(UUID.randomUUID(), TITLE, START_DATE, END_DATE, DESCRIPTION, null);
+
+        Set<ConstraintViolation<UpdateTournamentDto>> violations = validator.validate(updateTournamentDto);
+        assertTrue(violations.isEmpty(), "Validation failed");
     }
 }
