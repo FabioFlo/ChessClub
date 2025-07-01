@@ -2,7 +2,7 @@ package org.csc.chessclub.repository;
 
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.enums.Role;
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package org.csc.chessclub.service.user;
 
 import org.csc.chessclub.enums.Role;
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

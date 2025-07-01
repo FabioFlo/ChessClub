@@ -2,7 +2,7 @@ package org.csc.chessclub.auth;
 
 
 import lombok.RequiredArgsConstructor;
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.csc.chessclub.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;

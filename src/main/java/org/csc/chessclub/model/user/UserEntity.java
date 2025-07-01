@@ -1,4 +1,4 @@
-package org.csc.chessclub.model;
+package org.csc.chessclub.model.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +25,7 @@ public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
+    @Column(length = UserConstraints.USERNAME_MAX_LENGTH)
     private String username;
     private String password;
     private String email;

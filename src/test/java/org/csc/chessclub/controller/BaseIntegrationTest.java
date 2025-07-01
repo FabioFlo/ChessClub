@@ -11,7 +11,7 @@ import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.enums.Role;
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;

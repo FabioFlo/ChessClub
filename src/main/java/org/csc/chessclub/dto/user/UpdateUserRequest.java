@@ -2,8 +2,10 @@ package org.csc.chessclub.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.csc.chessclub.exception.validation.messages.UserValidationMessage;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
+import org.csc.chessclub.model.user.UserConstraints;
 
 import java.util.UUID;
 
@@ -11,8 +13,14 @@ public record UpdateUserRequest(
         @ValidUUID
         UUID uuid,
         @NotBlank(message = UserValidationMessage.USERNAME_MUST_NOT_BE_BLANK)
+        @Size(min = UserConstraints.USERNAME_MIN_LENGTH,
+                max = UserConstraints.USERNAME_MAX_LENGTH,
+                message = UserValidationMessage.USERNAME_LENGTH_REQUIRED)
         String username,
-        @Email
+        @Email(message = UserValidationMessage.EMAIL_MUST_BE_VALID)
+        @Size(min = UserConstraints.EMAIL_MIN_LENGTH,
+                max = UserConstraints.EMAIL_MAX_LENGTH,
+                message = UserValidationMessage.EMAIL_LENGTH_REQUIRED)
         String email
 ) {
 }

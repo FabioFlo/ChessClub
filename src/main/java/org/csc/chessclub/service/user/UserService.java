@@ -1,6 +1,6 @@
 package org.csc.chessclub.service.user;
 
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 
 import java.util.UUID;
 

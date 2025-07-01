@@ -4,7 +4,7 @@ import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

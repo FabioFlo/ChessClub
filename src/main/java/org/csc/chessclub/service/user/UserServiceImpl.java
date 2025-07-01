@@ -6,7 +6,7 @@ import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.CustomAccessDeniedException;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.UserServiceException;
-import org.csc.chessclub.model.UserEntity;
+import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
