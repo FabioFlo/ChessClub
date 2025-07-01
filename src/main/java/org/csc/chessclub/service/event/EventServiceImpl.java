@@ -3,7 +3,7 @@ package org.csc.chessclub.service.event;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
-import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.service.storage.StorageService;
 import org.springframework.data.domain.Page;

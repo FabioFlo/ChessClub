@@ -1,6 +1,6 @@
 package org.csc.chessclub.service.event;
 
-import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.model.event.EventEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

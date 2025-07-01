@@ -3,7 +3,7 @@ package org.csc.chessclub.mapper;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
-import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

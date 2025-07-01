@@ -1,6 +1,6 @@
 package org.csc.chessclub.service.event;
 
-import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.service.storage.StorageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;

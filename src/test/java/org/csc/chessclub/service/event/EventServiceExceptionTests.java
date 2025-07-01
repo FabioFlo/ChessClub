@@ -2,7 +2,7 @@ package org.csc.chessclub.service.event;
 
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
-import org.csc.chessclub.model.EventEntity;
+import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
