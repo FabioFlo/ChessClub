@@ -21,12 +21,12 @@ public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
-    @Column(length = EventConstraints.MAX_TITLE_LENGTH)
+    @Column(length = EventConstraints.TITLE_MAX_LENGTH)
     private String title;
-    @Column(length = EventConstraints.MAX_DESCRIPTION_LENGTH)
+    @Column(length = EventConstraints.DESCRIPTION_MAX_LENGTH)
     private String description;
     private LocalDate createdAt;
-    @Column(length = EventConstraints.MAX_AUTHOR_LENGTH)
+    @Column(length = EventConstraints.AUTHOR_MAX_LENGTH)
     private String author;
     private String announcementPDF;
     private boolean available;

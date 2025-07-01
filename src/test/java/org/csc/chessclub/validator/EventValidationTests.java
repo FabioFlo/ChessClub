@@ -67,7 +67,7 @@ public class EventValidationTests extends BaseValidatorConfig {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("title") &&
-                        v.getMessage().equals(EventValidationMessage.TITLE_MUST_BE_BETWEEN_2_AND_100_CHARACTERS));
+                        v.getMessage().equals(EventValidationMessage.TITLE_LENGTH_REQUIRED));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class EventValidationTests extends BaseValidatorConfig {
         Set<ConstraintViolation<CreateEventDto>> violations = validator.validate(eventDto);
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("author") &&
-                        v.getMessage().equals(EventValidationMessage.AUTHOR_MUST_BE_BETWEEN_2_AND_30_CHARACTERS));
+                        v.getMessage().equals(EventValidationMessage.AUTHOR_LENGTH_REQUIRED));
     }
 
     @Test
