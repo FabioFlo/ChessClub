@@ -19,8 +19,8 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 public class GameValidationTest extends BaseValidatorConfig {
 
     private final Validator validator = getValidator();
-    private String propertyPath = "";
-    CreateGameDto createGameDto;
+    private String propertyPath;
+    private CreateGameDto createGameDto;
 
     @Test
     @DisplayName("Validation - Pgn is blank")
