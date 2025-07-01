@@ -190,7 +190,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
+        when(gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(
                 playerName, playerName, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllByPlayerName(playerName, pageable);
@@ -208,7 +208,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.findGameEntitiesByWhitePlayerName(whitePlayer, pageable)).thenReturn(pagedGames);
+        when(gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameIs(whitePlayer, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllGamesByWhitePlayerName(whitePlayer, pageable);
 
@@ -224,7 +224,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.findGameEntitiesByBlackPlayerName(blackPlayer, pageable)).thenReturn(pagedGames);
+        when(gameRepository.getDistinctByAvailableIsTrueAndBlackPlayerNameIs(blackPlayer, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllGamesByBlackPlayerName(blackPlayer, pageable);
 

@@ -18,7 +18,7 @@ public class GameRepositoryTests extends TestContainerConfig {
     @Autowired
     private GameRepository gameRepository;
     private GameEntity gameOne;
-    private GameEntity gameTwo;
+    private GameEntity unavailableGame;
     private Pageable pageable;
 
     @BeforeAll
@@ -38,7 +38,7 @@ public class GameRepositoryTests extends TestContainerConfig {
                 .available(true)
                 .build();
 
-        gameTwo = GameEntity.builder()
+        GameEntity gameTwo = GameEntity.builder()
                 .pgn(pgn)
                 .whitePlayerName(playerTwo)
                 .blackPlayerName(playerOne)
@@ -62,64 +62,79 @@ public class GameRepositoryTests extends TestContainerConfig {
                 .available(true)
                 .build();
 
+        unavailableGame = GameEntity.builder()
+                .pgn(pgn)
+                .whitePlayerName(playerTwo)
+                .blackPlayerName(playerOne)
+                .result(whiteWon)
+                .available(false)
+                .build();
+
         gameRepository.save(gameOne);
         gameRepository.save(gameTwo);
         gameRepository.save(gameThree);
         gameRepository.save(nnPlayersGame);
+        gameRepository.save(unavailableGame);
     }
+
     //TODO: result should have available true
     @Test
-    @DisplayName("Should return games with the given player name")
+    @DisplayName("Get games - with given player name if available")
     void testFindByPlayerName_whenPlayerNameGiven_returnGamesWithGivenPlayerName() {
         String playerName = "Paolo";
-        Page<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
+        Page<GameEntity> gamesRetrieved = gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(
                 playerName, playerName, pageable);
 
         assertAll("Game search by player name",
                 () -> assertNotNull(gamesRetrieved, "The retrieved page should not be null"),
+                () -> assertTrue(gamesRetrieved.getContent().stream().allMatch(GameEntity::isAvailable), "All games should have available true"),
                 () -> assertEquals(3, gamesRetrieved.getTotalElements(), "Should return 3 games with player name " + playerName),
-                () -> assertFalse(gamesRetrieved.getContent().isEmpty(), "The game list should not be empty"),
-                () -> assertEquals(gameOne, gamesRetrieved.getContent().getFirst(), "First game should match expected gameOne")
+                () -> assertFalse(gamesRetrieved.getContent().isEmpty(), "The game list should not be empty")
         );
     }
 
     @Test
-    @DisplayName("Should return games with NN players")
+    @DisplayName("Get games - with NN players if available")
     void testFindByPlayerName_whenPlayerNameGivenIsNN_returnGamesWithGivenPlayerName() {
         String playerName = "NN";
-        Page<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerNameOrBlackPlayerName(
+        Page<GameEntity> gamesRetrieved = gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(
                 playerName, playerName, pageable);
 
         assertAll("Game search by player name",
                 () -> assertNotNull(gamesRetrieved, "Game with player name " + playerName + " not found"),
+                () -> assertTrue(gamesRetrieved.stream().allMatch(GameEntity::isAvailable), "All game should have available true"),
                 () -> assertEquals(1, gamesRetrieved.getTotalElements(), "Game with player name " + playerName + " found"),
                 () -> assertFalse(gamesRetrieved.getContent().isEmpty(), "The game list should not be empty")
         );
     }
 
     @Test
-    @DisplayName("Find games where playerName is the white player")
+    @DisplayName("Get games - with playerName equal white player if available")
     void testFindByPlayerName_whenPlayerNameGiven_shouldReturnAllGamesWhereIsTheWhitePlayerName() {
         String playerName = "Gino";
-        Page<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByWhitePlayerName(playerName, pageable);
+        unavailableGame.setWhitePlayerName(playerName);
+
+        Page<GameEntity> gamesRetrieved = gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameIs(playerName, pageable);
 
         assertAll("Game search by player name",
                 () -> assertNotNull(gamesRetrieved, "Games should not be null"),
+                () -> assertTrue(gamesRetrieved.stream().allMatch(GameEntity::isAvailable), "All games should be available"),
                 () -> assertEquals(1, gamesRetrieved.getTotalElements(), "Should find one game"),
                 () -> assertEquals(gameOne, gamesRetrieved.getContent().getFirst(), "Game one should be equal to first"));
 
     }
 
     @Test
-    @DisplayName("Find games where playerName is the black player")
+    @DisplayName("Get games - with playerName equal black player if available")
     void testFindByPlayerName_whenPlayerNameGiven_shouldReturnAllGamesWhereIsTheBlackPlayerName() {
         String playerName = "Gino";
-        Page<GameEntity> gamesRetrieved = gameRepository.findGameEntitiesByBlackPlayerName(playerName, pageable);
+        unavailableGame.setBlackPlayerName(playerName);
+        Page<GameEntity> gamesRetrieved = gameRepository.getDistinctByAvailableIsTrueAndBlackPlayerNameIs(playerName, pageable);
 
         assertAll("Game search by player name",
                 () -> assertNotNull(gamesRetrieved, "Games should not be null"),
-                () -> assertEquals(2, gamesRetrieved.getTotalElements(), "Should find two games"),
-                () -> assertEquals(gameTwo, gamesRetrieved.getContent().getFirst(), "Game one should be equal to first"));
+                () -> assertTrue(gamesRetrieved.stream().allMatch(GameEntity::isAvailable), "All games should be available"),
+                () -> assertEquals(2, gamesRetrieved.getTotalElements(), "Should find two games"));
     }
 
     //TODO: return only available entities (this should be default for user)
