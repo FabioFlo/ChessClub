@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.csc.chessclub.model.event.EventEntity;
-import org.csc.chessclub.model.GameEntity;
+import org.csc.chessclub.model.game.GameEntity;
 
 import java.time.LocalDate;
 import java.util.Set;

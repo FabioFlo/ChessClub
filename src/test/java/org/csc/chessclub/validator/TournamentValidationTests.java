@@ -28,6 +28,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     private static final LocalDate START_DATE = LocalDate.parse("2019-01-01");
     private static final LocalDate END_DATE = LocalDate.parse("2018-01-03");
     private static final UUID EVENT_ID = UUID.randomUUID();
+    private String propertyPath;
 
     @Test
     @DisplayName("Validation CreateTournamentDto - Title is blank")
@@ -35,9 +36,10 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         createTournamentDto = new CreateTournamentDto(
                 "", START_DATE, END_DATE, DESCRIPTION, EVENT_ID);
 
+        propertyPath = "title";
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("title") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.TITLE_MUST_NOT_BE_BLANK));
     }
 
@@ -46,9 +48,10 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     void testValidationCreateTournamentDto_whenDescriptionIsBlank_thenValidationFails() {
         createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, "", EVENT_ID);
 
+        propertyPath = "description";
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("description") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.DESCRIPTION_MUST_NOT_BE_BLANK));
     }
 
@@ -57,9 +60,10 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     void testValidationCreateTournamentDto_whenDateIsNull_thenValidationFails() {
         createTournamentDto = new CreateTournamentDto(TITLE, null, END_DATE, DESCRIPTION, null);
 
+        propertyPath = "startDate";
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("startDate") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.DATE_MUST_NOT_BE_NULL));
     }
 
@@ -70,11 +74,12 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         int length = TournamentConstraints.TITLE_MIN_LENGTH - 1;
         String tooShortTitle = repeatedChar.repeat(length);
 
+        propertyPath = "title";
         createTournamentDto = new CreateTournamentDto(tooShortTitle, START_DATE, END_DATE, DESCRIPTION, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("title") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.TITLE_LENGTH_REQUIRED));
     }
 
@@ -85,11 +90,12 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         int length = TournamentConstraints.TITLE_MAX_LENGTH + 1;
         String tooLongTitle = repeatedChar.repeat(length);
 
+        propertyPath = "title";
         createTournamentDto = new CreateTournamentDto(tooLongTitle, START_DATE, END_DATE, DESCRIPTION, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("title") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.TITLE_LENGTH_REQUIRED));
     }
 
@@ -100,11 +106,12 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         int length = TournamentConstraints.DESCRIPTION_MAX_LENGTH + 1;
         String tooLongDescription = repeatedChar.repeat(length);
 
+        propertyPath = "description";
         createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooLongDescription, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("description") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.DESCRIPTION_LENGTH_REQUIRED));
     }
 
@@ -115,11 +122,12 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         int length = TournamentConstraints.DESCRIPTION_MIN_LENGTH - 1;
         String tooShortDescription = repeatedChar.repeat(length);
 
+        propertyPath = "description";
         createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooShortDescription, null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(createTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("description") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(TournamentValidationMessage.DESCRIPTION_LENGTH_REQUIRED));
     }
 
@@ -128,9 +136,10 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     void testValidationUpdateTournamentDto_whenUUIDNotValid_thenValidationFails() {
         updateTournamentDto = new UpdateTournamentDto(null, TITLE, START_DATE, END_DATE, DESCRIPTION, null);
 
+        propertyPath = "uuid";
         Set<ConstraintViolation<UpdateTournamentDto>> violations = validator.validate(updateTournamentDto);
         assertThat(violations).anyMatch(v ->
-                v.getPropertyPath().toString().equals("uuid") &&
+                v.getPropertyPath().toString().equals(propertyPath) &&
                         v.getMessage().equals(UuidValidationMessage.UUID_MUST_BE_VALID));
     }
 
