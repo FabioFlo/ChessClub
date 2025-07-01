@@ -49,7 +49,7 @@ public class EventController {
 
     @GetMapping()
     public ResponseEntity<ResponseDto<PageResponseDto<EventDto>>> getAllEvents(@PageableDefault Pageable pageable) {
-        Page<EventDto> pagedEvent = eventMapper.pageEventEntityToPageEventDto(eventService.getAll(pageable));
+        Page<EventDto> pagedEvent = eventMapper.pageEventEntityToPageEventDto(eventService.getAllAvailable(pageable));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedEvent), "Events found", true));
     }

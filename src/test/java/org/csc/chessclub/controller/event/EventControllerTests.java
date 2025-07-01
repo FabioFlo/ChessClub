@@ -84,7 +84,7 @@ public class EventControllerTests extends BaseIntegrationTest {
 
     @Test
     @Order(3)
-    @DisplayName("Get all Events")
+    @DisplayName("Get all Events available")
     void testGetAllEvents_whenEventsFound_returnsAllEvents() {
         ResponseDto<PageResponseDto<EventDto>> response = given()
                 .when()
