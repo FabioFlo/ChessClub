@@ -184,6 +184,24 @@ public class GameServiceUnitTests {
     }
 
     @Test
+    @DisplayName("Get all paged games available")
+    public void testGetAllGamesAvailable_whenPageAndSizeProvided_returnPagedGames() {
+        game.setAvailable(true);
+        List<GameEntity> allGames = List.of(game);
+        Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
+
+        when(gameRepository.getDistinctByAvailableIsTrue(any(Pageable.class))).thenReturn(pagedGames);
+
+        Page<GameEntity> result = gameService.getAllAvailable(pageable);
+
+        assertAll("Page assertions",
+                () -> assertEquals(1, result.getTotalElements()),
+                () -> assertEquals(0, result.getNumber()),
+                () -> assertEquals(10, result.getSize()),
+                () -> assertEquals(game, result.getContent().getFirst()));
+    }
+
+    @Test
     @DisplayName("Get paged games by player name")
     public void testGetAllGames_whenPageSizeAndPlayerNameProvided_returnPagedGames() {
         String playerName = blackPlayer;

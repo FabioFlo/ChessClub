@@ -59,6 +59,11 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public Page<GameEntity> getAllAvailable(Pageable pageable) {
+        return gameRepository.getDistinctByAvailableIsTrue(pageable);
+    }
+
+    @Override
     public Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable) {
         return gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable);
     }

@@ -17,6 +17,8 @@ public interface GameService {
 
     Page<GameEntity> getAll(Pageable pageable);
 
+    Page<GameEntity> getAllAvailable(Pageable pageable);
+
     Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable);
 
     Page<GameEntity> getAllGamesByWhitePlayerName(String playerName, Pageable pageable);
