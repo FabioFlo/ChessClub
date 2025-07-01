@@ -137,5 +137,16 @@ public class GameRepositoryTests extends TestContainerConfig {
                 () -> assertEquals(2, gamesRetrieved.getTotalElements(), "Should find two games"));
     }
 
-    //TODO: return only available entities (this should be default for user)
+    @Test
+    @DisplayName("Find all available games")
+    void testGetAllAvailableGames_returnGamesWithAvailableTrue() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<GameEntity> result = gameRepository.getDistinctByAvailableIsTrue(pageable);
+
+        boolean allAvailable = result.getContent().stream().allMatch(GameEntity::isAvailable);
+
+        assertAll("Get all available games",
+                () -> assertFalse(result.isEmpty(), "Result should not be null"),
+                () -> assertTrue(allAvailable, "All games should be available"));
+    }
 }

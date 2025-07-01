@@ -19,4 +19,5 @@ public interface GameRepository extends JpaRepository<GameEntity, UUID> {
 
     Page<GameEntity> getDistinctByAvailableIsTrueAndBlackPlayerNameIs(String blackPlayer,
                                                                       Pageable pageable);
+    Page<GameEntity> getDistinctByAvailableIsTrue(Pageable pageable);
 }
