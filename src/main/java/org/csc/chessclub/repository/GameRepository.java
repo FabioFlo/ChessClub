@@ -11,13 +11,13 @@ import java.util.UUID;
 @Repository
 public interface GameRepository extends JpaRepository<GameEntity, UUID> {
 
-    Page<GameEntity> getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(String whitePlayer, String blackPlayer,
-                                                                                       Pageable pageable);
+    Page<GameEntity> getDistinctByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(String whitePlayer, String blackPlayer,
+                                                                                     Pageable pageable);
 
-    Page<GameEntity> getDistinctByAvailableIsTrueAndWhitePlayerNameIs(String whitePlayer,
-                                                                      Pageable pageable);
+    Page<GameEntity> getDistinctByAvailableTrueAndWhitePlayerNameIs(String whitePlayer,
+                                                                    Pageable pageable);
 
-    Page<GameEntity> getDistinctByAvailableIsTrueAndBlackPlayerNameIs(String blackPlayer,
-                                                                      Pageable pageable);
-    Page<GameEntity> getDistinctByAvailableIsTrue(Pageable pageable);
+    Page<GameEntity> getDistinctByAvailableTrueAndBlackPlayerNameIs(String blackPlayer,
+                                                                    Pageable pageable);
+    Page<GameEntity> getDistinctByAvailableTrue(Pageable pageable);
 }

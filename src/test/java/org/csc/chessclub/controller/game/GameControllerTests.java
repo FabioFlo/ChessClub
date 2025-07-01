@@ -34,6 +34,7 @@ public class GameControllerTests extends BaseIntegrationTest {
     private String userPassword;
     private CreateGameDto createGameDto;
     private UUID gameId;
+    private final String whitePlayer = "White player";
 
     @BeforeAll
     public void setUp() {
@@ -72,7 +73,7 @@ public class GameControllerTests extends BaseIntegrationTest {
     @Order(2)
     @DisplayName("Update Game correctly")
     void testUpdateGame_whenUserAuthenticatedAndValidUpdateGameProvided_returnsUpdatedGame() {
-        UpdateGameDto updateGameDto = new UpdateGameDto(gameId, "White player", "Black player", "", Result.WhiteWon);
+        UpdateGameDto updateGameDto = new UpdateGameDto(gameId, whitePlayer, "Black player", "", Result.WhiteWon);
         ResponseDto<GameDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
                 .body(updateGameDto)
@@ -90,7 +91,7 @@ public class GameControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .extracting(ResponseDto::data)
                 .extracting(GameDto::whitePlayerName)
-                .isEqualTo("White player");
+                .isEqualTo(whitePlayer);
 
         assertThat(response)
                 .extracting(ResponseDto::message)
@@ -149,7 +150,7 @@ public class GameControllerTests extends BaseIntegrationTest {
     @Order(5)
     @DisplayName("Games by player name")
     void testGamesByPlayerName_whenPlayerNameProvided_returnsGamesByPlayerName() {
-        String playerName = "White player";
+        String playerName = whitePlayer;
         Pageable pageable = PageRequest.of(0, 5);
 
         ResponseDto<PageResponseDto<GameDto>> response = withPageable(pageable)

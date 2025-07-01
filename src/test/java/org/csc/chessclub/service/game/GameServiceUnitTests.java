@@ -190,7 +190,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableIsTrue(any(Pageable.class))).thenReturn(pagedGames);
+        when(gameRepository.getDistinctByAvailableTrue(any(Pageable.class))).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllAvailable(pageable);
 
@@ -208,7 +208,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(
+        when(gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(
                 playerName, playerName, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllByPlayerName(playerName, pageable);
@@ -226,7 +226,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameIs(whitePlayer, pageable)).thenReturn(pagedGames);
+        when(gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameIs(whitePlayer, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllGamesByWhitePlayerName(whitePlayer, pageable);
 
@@ -242,7 +242,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableIsTrueAndBlackPlayerNameIs(blackPlayer, pageable)).thenReturn(pagedGames);
+        when(gameRepository.getDistinctByAvailableTrueAndBlackPlayerNameIs(blackPlayer, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllGamesByBlackPlayerName(blackPlayer, pageable);
 

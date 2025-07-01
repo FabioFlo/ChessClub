@@ -60,22 +60,22 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Page<GameEntity> getAllAvailable(Pageable pageable) {
-        return gameRepository.getDistinctByAvailableIsTrue(pageable);
+        return gameRepository.getDistinctByAvailableTrue(pageable);
     }
 
     @Override
     public Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable) {
-        return gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable);
+        return gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable);
     }
 
     @Override
     public Page<GameEntity> getAllGamesByWhitePlayerName(String playerName, Pageable pageable) {
-        return gameRepository.getDistinctByAvailableIsTrueAndWhitePlayerNameIs(playerName, pageable);
+        return gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameIs(playerName, pageable);
     }
 
     @Override
     public Page<GameEntity> getAllGamesByBlackPlayerName(String playerName, Pageable pageable) {
-        return gameRepository.getDistinctByAvailableIsTrueAndBlackPlayerNameIs(playerName, pageable);
+        return gameRepository.getDistinctByAvailableTrueAndBlackPlayerNameIs(playerName, pageable);
     }
 
     private String setEmptyPlayerNameToNN(String playerName) {
