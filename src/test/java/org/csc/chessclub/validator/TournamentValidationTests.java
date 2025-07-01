@@ -3,7 +3,9 @@ package org.csc.chessclub.validator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.exception.validation.messages.TournamentValidationMessage;
+import org.csc.chessclub.exception.validation.uuid.UuidValidationMessage;
 import org.csc.chessclub.model.tournament.TournamentConstraints;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     private final Validator validator = getValidator();
 
     private CreateTournamentDto createTournamentDto;
+    private UpdateTournamentDto updateTournamentDto;
     private static final String TITLE = "Tournament";
     private static final String DESCRIPTION = "Description";
     private static final LocalDate START_DATE = LocalDate.parse("2019-01-01");
@@ -117,5 +120,16 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         assertThat(violations).anyMatch(v ->
                 v.getPropertyPath().toString().equals("description") &&
                         v.getMessage().equals(TournamentValidationMessage.DESCRIPTION_LENGTH_REQUIRED));
+    }
+
+    @Test
+    @DisplayName("Validation UpdateTournamentDto - Uuid null or not valid")
+    void testValidationUpdateTournamentDto_whenUUIDNotValid_thenValidationFails() {
+        updateTournamentDto = new UpdateTournamentDto(null, TITLE, START_DATE, END_DATE, DESCRIPTION, null);
+
+        Set<ConstraintViolation<UpdateTournamentDto>> violations = validator.validate(updateTournamentDto);
+        assertThat(violations).anyMatch(v ->
+                v.getPropertyPath().toString().equals("uuid") &&
+                        v.getMessage().equals(UuidValidationMessage.UUID_MUST_BE_VALID));
     }
 }
