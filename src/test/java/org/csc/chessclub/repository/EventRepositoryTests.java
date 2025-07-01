@@ -2,17 +2,20 @@ package org.csc.chessclub.repository;
 
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.model.event.EventEntity;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class EventRepositoryTests extends TestContainerConfig {
 
@@ -30,7 +33,7 @@ public class EventRepositoryTests extends TestContainerConfig {
         String description = "Test Description";
         String announcementPDF = "Test Announcement PDF";
         LocalDate date = LocalDate.now();
-         event1 = EventEntity
+        event1 = EventEntity
                 .builder()
                 .description(description)
                 .announcementPDF(announcementPDF)
@@ -51,33 +54,56 @@ public class EventRepositoryTests extends TestContainerConfig {
     }
 
     @Test
-    @DisplayName("Find event by title")
-    void testFindEventByTitle_whenGivenTitle_returnEventWithGivenTitle() {
-        //TODO: result should have available true
+    @DisplayName("Find event by title with available true")
+    @Order(1)
+    void testFindEventByTitle_whenGivenTitleAndAvailableIsTrue_returnEventWithGivenTitle() {
         eventRepository.save(event1);
-        List<EventEntity> retrievedEvent = eventRepository.findEventEntityByTitle(TITLE_1);
+        List<EventEntity> retrievedEvent = eventRepository.findEventEntityByTitleAndAvailableTrue(TITLE_1);
 
-        assertNotNull(retrievedEvent, "Event should not be null");
-        Assertions.assertEquals(1, retrievedEvent.size(),
-                "List should contain only one element");
-        assertEquals(TITLE_1, retrievedEvent.getFirst().getTitle(),
-                "Title of Event should be equal");
+        assertAll("Find by title assertions",
+                () -> assertNotNull(retrievedEvent,
+                        "Event should not be null"),
+                () -> assertTrue(retrievedEvent.getFirst().isAvailable(),
+                        "Event should be available"),
+                () -> assertEquals(1, retrievedEvent.size(),
+                        "List should contain only one element"),
+                () -> assertEquals(TITLE_1, retrievedEvent.getFirst().getTitle(),
+                        "Title of Event should be equal"));
 
     }
 
     @Test
-    @DisplayName("Find events by author")
+    @DisplayName("Find events by author with available true")
+    @Order(2)
     void testFindEventByAuthor_whenGivenAuthor_returnEventWithGivenAuthor() {
         eventRepository.save(event2);
-        List<EventEntity> retrievedEvents = eventRepository.findEventEntityByAuthor(AUTHOR);
+        List<EventEntity> retrievedEvents = eventRepository.findEventEntityByAuthorAndAvailableTrue(AUTHOR);
 
-        assertNotNull(retrievedEvents, "Event should not be null");
-        Assertions.assertEquals(1, retrievedEvents.size(),
-                "List should contain only one element");
-        assertEquals(AUTHOR, retrievedEvents.getFirst().getAuthor(),
-                "Author of Event should be equal");
+        assertAll("Find event by author assertions",
+                () -> assertNotNull(retrievedEvents,
+                        "Event should not be null"),
+                () -> assertEquals(1, retrievedEvents.size(),
+                        "List should contain only one element"),
+                () -> assertTrue(retrievedEvents.getFirst().isAvailable(),
+                        "Event should be available"),
+                () -> assertEquals(AUTHOR, retrievedEvents.getFirst().getAuthor(),
+                        "Author of Event should be equal"));
     }
 
-    //TODO: return only available entities (this should be default for user)
+    @Test
+    @DisplayName("Find all available events paged")
+    @Order(3)
+    void testFindAllAvailableEvents_whenGivenPageable_returnEventPage() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<EventEntity> result = eventRepository.getDistinctByAvailableTrue(pageable);
+
+        assertAll("Paged events assertions",
+                () -> assertNotNull(result.getContent(),
+                        "Result should not be null"),
+                () -> assertEquals(1, result.getTotalElements(),
+                        "One element should be found"),
+                () -> assertTrue(result.stream().allMatch(EventEntity::isAvailable))
+        );
+    }
 }
 
