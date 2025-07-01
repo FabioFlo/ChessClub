@@ -66,5 +66,9 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<EventEntity> getAllAvailable(Pageable pageable) {
+        return eventRepository.getDistinctByAvailableTrue(pageable);
+    }
 }
 

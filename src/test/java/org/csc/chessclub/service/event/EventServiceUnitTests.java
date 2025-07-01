@@ -36,6 +36,7 @@ public class EventServiceUnitTests {
     private StorageServiceImpl storageService;
 
     private EventEntity event;
+    private EventEntity availableEvent;
     private Pageable pageable;
 
     @BeforeEach
@@ -54,6 +55,15 @@ public class EventServiceUnitTests {
                 .author(author)
                 .createdAt(date)
                 .title(title)
+                .build();
+
+        availableEvent = EventEntity.builder()
+                .uuid(UUID.randomUUID())
+                .description(description)
+                .author(author)
+                .createdAt(date)
+                .title(title)
+                .available(true)
                 .build();
     }
 
@@ -115,7 +125,7 @@ public class EventServiceUnitTests {
         assertNotNull(updatedEvent, "Event should not be null");
         assertNotNull(updatedEvent.getAnnouncementPDF(), "Pdf name should be present");
         assertEquals(filename, updatedEvent.getAnnouncementPDF());
-     verify(eventRepository, times(1)).save(any(EventEntity.class));
+        verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 
     @Test
@@ -142,6 +152,22 @@ public class EventServiceUnitTests {
 
         assertNotNull(result, "Result should not be null");
         assertEquals(1, result.getTotalElements());
+    }
+
+    @Test
+    @DisplayName("Get all events available")
+    void testGetAllEvents_whenEventsFoundWithAvailableTrue_returnAllEvents() {
+        List<EventEntity> allEvents = List.of(availableEvent);
+        Page<EventEntity> pagedEvents = new PageImpl<>(allEvents, pageable, allEvents.size());
+
+        when(eventRepository.getDistinctByAvailableTrue(any(Pageable.class))).thenReturn(pagedEvents);
+
+        Page<EventEntity> result = eventService.getAllAvailable(pageable);
+
+        assertNotNull(result,
+                "Result should not be null");
+        assertEquals(1, result.getTotalElements(),
+                "Should return one event available");
     }
 
     @Test

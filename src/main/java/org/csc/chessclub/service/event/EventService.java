@@ -14,4 +14,6 @@ public interface EventService {
     EventEntity getById(UUID uuid);
     EventEntity delete(UUID uuid);
     Page<EventEntity> getAll(Pageable pageable);
+
+    Page<EventEntity> getAllAvailable(Pageable pageable);
 }
