@@ -3,7 +3,7 @@ package org.csc.chessclub.mapper;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
-import org.csc.chessclub.model.GameEntity;
+import org.csc.chessclub.model.game.GameEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;

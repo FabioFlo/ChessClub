@@ -3,7 +3,7 @@ package org.csc.chessclub.service.game;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.GameServiceException;
-import org.csc.chessclub.model.GameEntity;
+import org.csc.chessclub.model.game.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

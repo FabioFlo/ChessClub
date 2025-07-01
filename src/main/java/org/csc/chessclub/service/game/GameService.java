@@ -1,6 +1,6 @@
 package org.csc.chessclub.service.game;
 
-import org.csc.chessclub.model.GameEntity;
+import org.csc.chessclub.model.game.GameEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

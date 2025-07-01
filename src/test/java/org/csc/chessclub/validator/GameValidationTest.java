@@ -2,12 +2,12 @@ package org.csc.chessclub.validator;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
 import org.csc.chessclub.exception.validation.result.ResultValidationMessage;
+import org.csc.chessclub.model.game.GameConstraints;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,11 +36,13 @@ public class GameValidationTest extends BaseValidatorConfig {
 
     @Test
     @DisplayName("Validation - Player name too long")
-    @SuppressWarnings(value = "deprecation")
     void testValidCreateGameDto_whenPlayerNameTooLong_thenValidationFails() {
-        String generated = RandomStringUtils.randomAlphanumeric(30);
+        String repeatedChar = "a";
+        int length = GameConstraints.PLAYER_MAX_LENGTH + 1;
+        String invalidLength = repeatedChar.repeat(length);
+
         propertyPath = "whitePlayerName";
-        createGameDto = new CreateGameDto(generated, "", "game pgn", Result.BlackWon);
+        createGameDto = new CreateGameDto(invalidLength, "", "game pgn", Result.BlackWon);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).anyMatch(v ->

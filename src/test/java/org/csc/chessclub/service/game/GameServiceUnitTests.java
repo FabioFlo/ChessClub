@@ -1,7 +1,7 @@
 package org.csc.chessclub.service.game;
 
 import org.csc.chessclub.enums.Result;
-import org.csc.chessclub.model.GameEntity;
+import org.csc.chessclub.model.game.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

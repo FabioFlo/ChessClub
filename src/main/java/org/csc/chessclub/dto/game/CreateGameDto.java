@@ -6,12 +6,13 @@ import jakarta.validation.constraints.Size;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.validation.messages.GameValidationMessage;
 import org.csc.chessclub.exception.validation.result.ValidResult;
+import org.csc.chessclub.model.game.GameConstraints;
 
 public record CreateGameDto(
-        @Size(max = 20, message = GameValidationMessage.PLAYER_NAME_TOO_LONG)
+        @Size(max = GameConstraints.PLAYER_MAX_LENGTH, message = GameValidationMessage.PLAYER_NAME_TOO_LONG)
         @NotNull(message = GameValidationMessage.PLAYER_NAME_NULL)
         String whitePlayerName,
-        @Size(max = 20, message = GameValidationMessage.PLAYER_NAME_TOO_LONG)
+        @Size(max = GameConstraints.PLAYER_MAX_LENGTH, message = GameValidationMessage.PLAYER_NAME_TOO_LONG)
         @NotNull(message = GameValidationMessage.PLAYER_NAME_NULL)
         String blackPlayerName,
         @NotBlank(message = GameValidationMessage.PGN_MUST_NOT_BE_BLANK)

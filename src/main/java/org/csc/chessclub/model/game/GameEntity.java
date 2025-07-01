@@ -1,4 +1,4 @@
-package org.csc.chessclub.model;
+package org.csc.chessclub.model.game;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,9 @@ public class GameEntity {
     @Id
     @GeneratedValue
     private UUID uuid;
+    @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
     private String whitePlayerName;
+    @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
     private String blackPlayerName;
     private Result result;
     private String pgn;
