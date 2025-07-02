@@ -1,6 +1,8 @@
 package org.csc.chessclub.service.game;
 
+import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
+import org.csc.chessclub.mapper.GameMapper;
 import org.csc.chessclub.model.game.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class GameServiceUnitTests {
 
+    @Mock
+    private GameMapper gameMapper;
     @InjectMocks
     private GameServiceImpl gameService;
     @Mock
@@ -37,13 +41,16 @@ public class GameServiceUnitTests {
     private GameEntity game2;
     private final String blackPlayer = "OwlMight";
     private final String whitePlayer = "iamsogarbagegod";
+    private final Result result = Result.BlackWon;
+    private String pgn;
+    private UUID uuid;
 
     @BeforeEach
     public void setup() {
         pageable = PageRequest.of(0, 10);
 
-        UUID uuid = UUID.randomUUID();
-        String pgn = """
+        uuid = UUID.randomUUID();
+        pgn = """
                 [Event "Live Chess"]
                 [Site "Chess.com"]
                 [Date "2025.06.04"]
@@ -64,7 +71,6 @@ public class GameServiceUnitTests {
                 dxc5 Bf6 16. Qd2 Bg4 17. Be2 Re8 18. Rfe1 Na5 19. Bd4 Nb3 20. Bxf6 Qxf6 21. Qxd5
                 Nxa1 22. Rxa1 Rxe2 23. Qxb7 Bxf3 24. gxf3 Qg5+ 25. Kf1 Rae8 26. c6 Qd2 27. Kg2
                 Rxf2+ 28. Kg3 Rg2+ 29. Kh3 0-1""";
-        Result result = Result.BlackWon;
         game = GameEntity.builder()
                 .uuid(uuid)
                 .pgn(pgn)
@@ -82,6 +88,8 @@ public class GameServiceUnitTests {
                 .build();
     }
 
+    //TODO: in case a tournament id is passed, verify if exists (create and update methods)
+
     @Test
     @DisplayName("Should Create game")
     public void testCreateGame_whenGameEntityProvided_returnGame() {
@@ -98,19 +106,25 @@ public class GameServiceUnitTests {
     @DisplayName("Should update game")
     public void testUpdateGame_whenGameEntityProvided_returnGame() {
         String newPlayerName = "newPlayerName";
-        when(gameRepository.existsById(game.getUuid())).thenReturn(true);
-        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+        when(gameRepository.save(any(GameEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(gameRepository.findById(uuid)).thenReturn(Optional.ofNullable(game));
 
-        game.setBlackPlayerName(newPlayerName);
+        UpdateGameDto gameDto = new UpdateGameDto(uuid, whitePlayer, newPlayerName, "", result, null);
 
-        GameEntity updatedGame = gameService.update(game);
+        doAnswer(inv -> {
+            GameEntity entity = inv.getArgument(1);
+            entity.setBlackPlayerName(gameDto.blackPlayerName());
+            return null;
+        }).when(gameMapper).updateGameDtoToGame(gameDto, game);
+
+        GameEntity updatedGame = gameService.update(gameDto);
 
         assertNotNull(updatedGame, "Game should not be null");
         assertEquals(newPlayerName, updatedGame.getBlackPlayerName(), "Black player name should match");
         assertNotNull(game.getUuid(), "Uuid should not be null");
 
         verify(gameRepository, Mockito.times(1)).save(Mockito.any());
-
     }
 
     @Test
@@ -155,10 +169,13 @@ public class GameServiceUnitTests {
     @DisplayName("Update game - empty player name set to NN")
     public void testUpdateGame_whenGameWithEmptyWhiteOrBlackPlayerNameProvided_thenPlayerNameShouldBeSetToNN() {
         game.setBlackPlayerName("");
-        when(gameRepository.existsById(game.getUuid())).thenReturn(true);
-        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+        when(gameRepository.save(any(GameEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(gameRepository.findById(uuid)).thenReturn(Optional.ofNullable(game));
 
-        GameEntity updatedGame = gameService.update(game);
+        UpdateGameDto gameDto = new UpdateGameDto(uuid, whitePlayer, "", pgn, result, null);
+
+        GameEntity updatedGame = gameService.update(gameDto);
 
         assertEquals("NN", updatedGame.getBlackPlayerName(),
                 "White player name should be NN");
@@ -190,7 +207,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableTrue(any(Pageable.class))).thenReturn(pagedGames);
+        when(gameRepository.findAllByAvailableTrue(any(Pageable.class))).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllAvailable(pageable);
 
@@ -208,7 +225,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(
+        when(gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(
                 playerName, playerName, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllByPlayerName(playerName, pageable);
@@ -226,7 +243,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameIs(whitePlayer, pageable)).thenReturn(pagedGames);
+        when(gameRepository.findByAvailableTrueAndWhitePlayerNameIs(whitePlayer, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllGamesByWhitePlayerName(whitePlayer, pageable);
 
@@ -242,7 +259,7 @@ public class GameServiceUnitTests {
         List<GameEntity> allGames = List.of(game, game2);
         Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
 
-        when(gameRepository.getDistinctByAvailableTrueAndBlackPlayerNameIs(blackPlayer, pageable)).thenReturn(pagedGames);
+        when(gameRepository.findByAvailableTrueAndBlackPlayerNameIs(blackPlayer, pageable)).thenReturn(pagedGames);
 
         Page<GameEntity> result = gameService.getAllGamesByBlackPlayerName(blackPlayer, pageable);
 

@@ -22,6 +22,8 @@ public record UpdateGameDto(
         @NotNull(message = GameValidationMessage.PGN_MUST_NOT_BE_BLANK)
         String pgn,
         @ValidResult
-        Result result
+        Result result,
+        UUID tournamentId
+
 ) {
 }

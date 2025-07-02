@@ -30,6 +30,7 @@ public class GameController {
     private final GameMapper gameMapper;
     private final PageUtils<GameDto> pageUtils;
 
+    //TODO: Pass the dto into the service and manage there the mapping
     @PostMapping
     public ResponseEntity<ResponseDto<GameDto>> createGame(@Valid @RequestBody CreateGameDto createGameDto) {
         GameDto gameDto = gameMapper.gameToGameDto(
@@ -41,8 +42,7 @@ public class GameController {
 
     @PatchMapping
     public ResponseEntity<ResponseDto<GameDto>> updateGame(@Valid @RequestBody UpdateGameDto updateGameDto) {
-        GameDto gameDto = gameMapper.gameToGameDto(
-                gameService.update(gameMapper.updateGameDtoToGame(updateGameDto)));
+        GameDto gameDto = gameMapper.gameToGameDto(gameService.update(updateGameDto));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(gameDto, "Game updated", true));

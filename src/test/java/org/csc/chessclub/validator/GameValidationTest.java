@@ -25,7 +25,7 @@ public class GameValidationTest extends BaseValidatorConfig {
     @Test
     @DisplayName("Validation - Pgn is blank")
     void testValidCreateGameDto_whenPngIsBlank_thenValidationFails() {
-        createGameDto = new CreateGameDto("", "", "", Result.BlackWon);
+        createGameDto = new CreateGameDto("", "", "", Result.BlackWon, null);
         propertyPath = "pgn";
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
@@ -42,7 +42,7 @@ public class GameValidationTest extends BaseValidatorConfig {
         String invalidLength = repeatedChar.repeat(length);
 
         propertyPath = "whitePlayerName";
-        createGameDto = new CreateGameDto(invalidLength, "", "game pgn", Result.BlackWon);
+        createGameDto = new CreateGameDto(invalidLength, "", "game pgn", Result.BlackWon, null);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).anyMatch(v ->
@@ -54,7 +54,7 @@ public class GameValidationTest extends BaseValidatorConfig {
     @DisplayName("Validation - Player name is null")
     void testValidCreateGameDto_whenPlayerNameIsNull_thenValidationFails() {
         propertyPath = "whitePlayerName";
-        createGameDto = new CreateGameDto(null, "", "game pgn", Result.BlackWon);
+        createGameDto = new CreateGameDto(null, "", "game pgn", Result.BlackWon, null);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).anyMatch(v ->
@@ -65,7 +65,7 @@ public class GameValidationTest extends BaseValidatorConfig {
     @Test
     @DisplayName("Validation - Result is not valid")
     void testValidCreateGameDto_whenResultIsNotValid_thenValidationFails() {
-        createGameDto = new CreateGameDto("", "", "game pgn", null);
+        createGameDto = new CreateGameDto("", "", "game pgn", null, null);
         String propertyPath = "result";
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
@@ -77,7 +77,7 @@ public class GameValidationTest extends BaseValidatorConfig {
     @Test
     @DisplayName("Valid CreateGameDto")
     void testValidCreateGameDto_whenValidCreateGameDto_thenSuccess() {
-        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon);
+        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon, null);
 
         Set<ConstraintViolation<CreateGameDto>> violations = validator.validate(createGameDto);
         assertThat(violations).isEmpty();
@@ -86,7 +86,7 @@ public class GameValidationTest extends BaseValidatorConfig {
     @Test
     @DisplayName("Valid UpdateGameDto")
     void testValidUpdateGameDto_whenValidUpdateGameDto_thenSuccess() {
-        UpdateGameDto updateGameDto = new UpdateGameDto(UUID.randomUUID(), "", "", "game pgn", Result.BlackWon);
+        UpdateGameDto updateGameDto = new UpdateGameDto(UUID.randomUUID(), "", "", "game pgn", Result.BlackWon, null);
 
         Set<ConstraintViolation<UpdateGameDto>> violations = validator.validate(updateGameDto);
         assertThat(violations).isEmpty();

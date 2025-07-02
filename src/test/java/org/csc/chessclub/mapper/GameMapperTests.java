@@ -16,8 +16,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameMapperTests {
 
@@ -81,7 +80,7 @@ public class GameMapperTests {
     @Test
     @DisplayName("Correctly map CreateGameDto to GameEntity")
     void shouldMapCreateGameDtoToGameEntity() {
-        CreateGameDto gameDto = new CreateGameDto(whitePlayerName, blackPlayerName, pgn, result);
+        CreateGameDto gameDto = new CreateGameDto(whitePlayerName, blackPlayerName, pgn, result, null);
         GameEntity game = gameMapper.createGameDtoToGame(gameDto);
 
         assertEquals(game.getWhitePlayerName(), gameDto.whitePlayerName(),
@@ -97,8 +96,8 @@ public class GameMapperTests {
     @Test
     @DisplayName("Correctly map UpdateGameDto to GameEntity")
     void shouldMapUpdateGameDtoToGameEntity() {
-        UpdateGameDto gameDto = new UpdateGameDto(gameId, whitePlayerName, blackPlayerName, pgn, result);
-        GameEntity game = gameMapper.updateGameDtoToGame(gameDto);
+        UpdateGameDto gameDto = new UpdateGameDto(gameId, whitePlayerName, blackPlayerName, pgn, result, null);
+        GameEntity game = gameMapper.updateGameDtoToGame(gameDto, GameEntity.builder().uuid(gameId).build());
 
         assertEquals(game.getUuid(), gameDto.uuid(),
                 "Uuid should match");
@@ -152,6 +151,7 @@ public class GameMapperTests {
                 () -> assertEquals(game.getResult(), gamesDto.getContent().getFirst().result(),
                         "Result should match"),
                 () -> assertEquals(game.getPgn(), games.getContent().getFirst().getPgn(),
-                        "Png should match"));
+                        "Png should match"),
+                () -> assertNull(game.getTournament(), "Tournament should be null"));
     }
 }

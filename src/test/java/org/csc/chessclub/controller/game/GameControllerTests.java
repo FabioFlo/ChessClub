@@ -38,7 +38,7 @@ public class GameControllerTests extends BaseIntegrationTest {
 
     @BeforeAll
     public void setUp() {
-        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon);
+        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon, null);
 
         AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
         userToken = loginAndGetResponse(userLogin).data().token();
@@ -73,7 +73,7 @@ public class GameControllerTests extends BaseIntegrationTest {
     @Order(2)
     @DisplayName("Update Game correctly")
     void testUpdateGame_whenUserAuthenticatedAndValidUpdateGameProvided_returnsUpdatedGame() {
-        UpdateGameDto updateGameDto = new UpdateGameDto(gameId, whitePlayer, "Black player", "", Result.WhiteWon);
+        UpdateGameDto updateGameDto = new UpdateGameDto(gameId, whitePlayer, "Black player", "", Result.WhiteWon, null);
         ResponseDto<GameDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
                 .body(updateGameDto)

@@ -1,8 +1,10 @@
 package org.csc.chessclub.service.game;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.GameServiceException;
+import org.csc.chessclub.mapper.GameMapper;
 import org.csc.chessclub.model.game.GameEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Service
 public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
+    private final GameMapper gameMapper;
 
     @Override
     public GameEntity create(GameEntity gameEntity) {
@@ -27,12 +30,15 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameEntity update(GameEntity gameEntity) {
-        if (!gameRepository.existsById(gameEntity.getUuid())) {
-            throw new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(gameEntity.getUuid()));
-        }
+    public GameEntity update(UpdateGameDto gameDto) {
+        GameEntity gameEntity = gameRepository.findById(gameDto.uuid())
+                .orElseThrow(() -> new GameServiceException(NotFoundMessage.GAME_WITH_UUID.format(gameDto.uuid())));
+
+        gameMapper.updateGameDtoToGame(gameDto, gameEntity);
+
         gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
         gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
+
         return gameRepository.save(gameEntity);
     }
 
@@ -60,22 +66,22 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Page<GameEntity> getAllAvailable(Pageable pageable) {
-        return gameRepository.getDistinctByAvailableTrue(pageable);
+        return gameRepository.findAllByAvailableTrue(pageable);
     }
 
     @Override
     public Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable) {
-        return gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable);
+        return gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable);
     }
 
     @Override
     public Page<GameEntity> getAllGamesByWhitePlayerName(String playerName, Pageable pageable) {
-        return gameRepository.getDistinctByAvailableTrueAndWhitePlayerNameIs(playerName, pageable);
+        return gameRepository.findByAvailableTrueAndWhitePlayerNameIs(playerName, pageable);
     }
 
     @Override
     public Page<GameEntity> getAllGamesByBlackPlayerName(String playerName, Pageable pageable) {
-        return gameRepository.getDistinctByAvailableTrueAndBlackPlayerNameIs(playerName, pageable);
+        return gameRepository.findByAvailableTrueAndBlackPlayerNameIs(playerName, pageable);
     }
 
     private String setEmptyPlayerNameToNN(String playerName) {
