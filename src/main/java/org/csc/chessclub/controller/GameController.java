@@ -30,7 +30,7 @@ public class GameController {
     private final GameMapper gameMapper;
     private final PageUtils<GameDto> pageUtils;
 
-    //TODO: Pass the dto into the service and manage there the mapping
+    //TODO: Pass the dto into the service and manage there the mapping?
     @PostMapping
     public ResponseEntity<ResponseDto<GameDto>> createGame(@Valid @RequestBody CreateGameDto createGameDto) {
         GameDto gameDto = gameMapper.gameToGameDto(

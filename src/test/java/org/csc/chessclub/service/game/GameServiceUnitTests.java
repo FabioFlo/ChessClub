@@ -34,7 +34,7 @@ public class GameServiceUnitTests {
     private GameServiceImpl gameService;
     @Mock
     private GameRepository gameRepository;
-    @Mock
+
     private Pageable pageable;
 
     private GameEntity game;
@@ -88,7 +88,7 @@ public class GameServiceUnitTests {
                 .build();
     }
 
-    //TODO: in case a tournament id is passed, verify if exists (create and update methods)
+    //TODO: in case a tournament id is passed, verify if is correctly set (create and update methods)
 
     @Test
     @DisplayName("Should Create game")
