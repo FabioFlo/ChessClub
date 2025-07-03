@@ -1,8 +1,11 @@
 package org.csc.chessclub.service.event;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.event.EventDto;
+import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
+import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.service.storage.StorageService;
@@ -20,6 +23,7 @@ import java.util.UUID;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final StorageService storageService;
+    private final EventMapper eventMapper;
 
     @Override
     public EventEntity create(EventEntity event, MultipartFile file) throws IOException {
@@ -32,17 +36,21 @@ public class EventServiceImpl implements EventService {
         return eventRepository.save(event);
     }
 
+    //TODO: fix the update issue that set available to false
     @Override
-    public EventEntity update(EventEntity event, MultipartFile file) throws IOException {
-        if (!eventRepository.existsById(event.getUuid())) {
-            throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()));
-        }
+    public EventDto update(UpdateEventDto eventDto, MultipartFile file) throws IOException {
+        EventEntity eventEntity = eventRepository.findById(eventDto.uuid())
+                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(eventDto.uuid())));
+
+        eventMapper.updateEventDtoToEvent(eventDto, eventEntity);
+
         String filename = null;
         if (file != null && !file.isEmpty()) {
             filename = storageService.store(file);
         }
-        event.setAnnouncementPDF(filename);
-        return eventRepository.save(event);
+        eventEntity.setAnnouncementPDF(filename);
+
+        return eventMapper.eventToEventDto(eventRepository.save(eventEntity));
     }
 
     @Override
@@ -68,7 +76,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventEntity> getAllAvailable(Pageable pageable) {
-        return eventRepository.getDistinctByAvailableTrue(pageable);
+        return eventRepository.findAllByAvailableTrue(pageable);
     }
 }
 

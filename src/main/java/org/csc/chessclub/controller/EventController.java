@@ -63,13 +63,13 @@ public class EventController {
 
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseDto<UpdateEventDto>> updateEvent(
+    public ResponseEntity<ResponseDto<EventDto>> updateEvent(
             @Valid @RequestPart(value = "event") UpdateEventDto updateEventDto,
             @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
 
-        eventService.update(eventMapper.updateEventDtoToEvent(updateEventDto), file);
+        EventDto eventDto = eventService.update(updateEventDto, file);
 
-        return ResponseEntity.ok(new ResponseDto<>(updateEventDto, "Event updated", true));
+        return ResponseEntity.ok(new ResponseDto<>(eventDto, "Event updated", true));
     }
 
     @DeleteMapping("/{uuid}")

@@ -1,5 +1,8 @@
 package org.csc.chessclub.service.event;
 
+import org.csc.chessclub.dto.event.EventDto;
+import org.csc.chessclub.dto.event.UpdateEventDto;
+import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.service.storage.StorageServiceImpl;
@@ -7,8 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,19 +39,24 @@ public class EventServiceUnitTests {
     private EventRepository eventRepository;
     @Mock
     private StorageServiceImpl storageService;
+    @Spy
+    private EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
 
     private EventEntity event;
     private EventEntity availableEvent;
     private Pageable pageable;
+
+    private final String description = "Test Description";
+    private final String author = "Test Author";
+    private final String title = "Test Event";
 
     @BeforeEach
     public void setUp() {
         pageable = PageRequest.of(0, 10);
 
         UUID uuid = UUID.randomUUID();
-        String title = "Test Event";
-        String description = "Test Description";
-        String author = "Test Author";
+
+
         LocalDate date = LocalDate.now();
         event = EventEntity
                 .builder()
@@ -99,15 +109,17 @@ public class EventServiceUnitTests {
     @Test
     @DisplayName("Update Event")
     public void testUpdateEvent_whenEventDetailsProvided_returnUpdatedEvent() throws IOException {
-        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
-        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
+        String newTitle = "Updated Title";
+        when(eventRepository.save(any(EventEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(eventRepository.findById(availableEvent.getUuid())).thenReturn(Optional.ofNullable(availableEvent));
 
-        event.setTitle("Updated Title");
+        UpdateEventDto eventDto = new UpdateEventDto(availableEvent.getUuid(), newTitle, description, author);
 
-        EventEntity updatedEvent = eventService.update(event, null);
+        EventDto updatedEvent = eventService.update(eventDto, null);
 
         assertNotNull(updatedEvent, "Event should not be null");
-        assertEquals(event.getTitle(), updatedEvent.getTitle(), "Title of Event should be equal");
+        assertEquals(eventDto.title(), updatedEvent.title(), "Title of Event should be equal");
         verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 
@@ -117,14 +129,17 @@ public class EventServiceUnitTests {
         String filename = "announcement.pdf";
         MultipartFile mockFile = mock(MultipartFile.class);
         when(storageService.store(mockFile)).thenReturn(filename);
-        when(eventRepository.existsById(event.getUuid())).thenReturn(true);
-        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
+        when(eventRepository.findById(event.getUuid())).thenReturn(Optional.ofNullable(event));
+        when(eventRepository.save(any(EventEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        EventEntity updatedEvent = eventService.update(event, mockFile);
+        UpdateEventDto eventDto = new UpdateEventDto(event.getUuid(), title, description, author);
+
+        EventDto updatedEvent = eventService.update(eventDto, mockFile);
 
         assertNotNull(updatedEvent, "Event should not be null");
-        assertNotNull(updatedEvent.getAnnouncementPDF(), "Pdf name should be present");
-        assertEquals(filename, updatedEvent.getAnnouncementPDF());
+        assertNotNull(updatedEvent.announcementPDF(), "Pdf name should be present");
+        assertEquals(filename, updatedEvent.announcementPDF(), "Pdf name should be equal");
         verify(eventRepository, times(1)).save(any(EventEntity.class));
     }
 
@@ -160,7 +175,7 @@ public class EventServiceUnitTests {
         List<EventEntity> allEvents = List.of(availableEvent);
         Page<EventEntity> pagedEvents = new PageImpl<>(allEvents, pageable, allEvents.size());
 
-        when(eventRepository.getDistinctByAvailableTrue(any(Pageable.class))).thenReturn(pagedEvents);
+        when(eventRepository.findAllByAvailableTrue(any(Pageable.class))).thenReturn(pagedEvents);
 
         Page<EventEntity> result = eventService.getAllAvailable(pageable);
 

@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.event;
 
+import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.model.event.EventEntity;
@@ -29,6 +30,7 @@ public class EventServiceExceptionTests {
     private EventRepository eventRepository;
 
     private EventEntity event;
+    private UpdateEventDto updateEventDto;
 
     @BeforeEach
     public void setUp() {
@@ -47,12 +49,16 @@ public class EventServiceExceptionTests {
                 .createdAt(date)
                 .title(title)
                 .build();
+
+        updateEventDto = new UpdateEventDto(uuid, title, description, author);
+
     }
 
     @Test
     @DisplayName("Get by id - Throw when Event Not Found")
     void testEventService_whenEventByIdNotFound_shouldThrowWhenEventNotFound() {
-        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.getById(event.getUuid()));
+        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
+                () -> eventService.getById(event.getUuid()));
 
         assertEquals(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid()), exception.getMessage());
 
@@ -70,7 +76,8 @@ public class EventServiceExceptionTests {
     @Test
     @DisplayName("Update - Throw when Event Not Found")
     void testEventService_whenTryToUpdateEvent_shouldThrowWhenEventNotFound() {
-        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class, () -> eventService.update(event, null));
+        CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
+                () -> eventService.update(updateEventDto, null));
 
         assertTrue(exception.getMessage().contains(NotFoundMessage.EVENT_WITH_UUID.format(event.getUuid())));
     }

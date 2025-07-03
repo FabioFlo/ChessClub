@@ -15,5 +15,5 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
 
     List<EventEntity> findEventEntityByAuthorAndAvailableTrue(String author);
 
-    Page<EventEntity> getDistinctByAvailableTrue(Pageable pageable);
+    Page<EventEntity> findAllByAvailableTrue(Pageable pageable);
 }

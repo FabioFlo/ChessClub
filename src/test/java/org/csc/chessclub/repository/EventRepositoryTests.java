@@ -95,7 +95,7 @@ public class EventRepositoryTests extends TestContainerConfig {
     @Order(3)
     void testFindAllAvailableEvents_whenGivenPageable_returnEventPage() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<EventEntity> result = eventRepository.getDistinctByAvailableTrue(pageable);
+        Page<EventEntity> result = eventRepository.findAllByAvailableTrue(pageable);
 
         assertAll("Paged events assertions",
                 () -> assertNotNull(result.getContent(),

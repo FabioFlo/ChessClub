@@ -96,7 +96,7 @@ public class EventMapperTests {
     void shouldMapUpdateEventDtoToEventEntityCorrectly() {
         String updatedTitle = "Updated Title";
         EventEntity updatedEvent = eventMapper.updateEventDtoToEvent(new UpdateEventDto(uuid,
-                updatedTitle, DESCRIPTION, AUTHOR));
+                updatedTitle, DESCRIPTION, AUTHOR), event);
 
         assertEquals(uuid, updatedEvent.getUuid());
         assertEquals(updatedTitle, updatedEvent.getTitle());

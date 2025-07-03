@@ -1,5 +1,7 @@
 package org.csc.chessclub.service.event;
 
+import org.csc.chessclub.dto.event.EventDto;
+import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.model.event.EventEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +12,7 @@ import java.util.UUID;
 
 public interface EventService {
     EventEntity create(EventEntity event, MultipartFile file) throws IOException;
-    EventEntity update(EventEntity event, MultipartFile file) throws IOException;
+    EventDto update(UpdateEventDto event, MultipartFile file) throws IOException;
     EventEntity getById(UUID uuid);
     EventEntity delete(UUID uuid);
     Page<EventEntity> getAll(Pageable pageable);
