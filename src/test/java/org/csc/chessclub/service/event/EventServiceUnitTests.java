@@ -128,6 +128,7 @@ public class EventServiceUnitTests {
     public void testUpdateEvent_whenUpdateEventDtoProvidedWithPdf_returnUpdatedEvent() throws IOException {
         String filename = "announcement.pdf";
         MultipartFile mockFile = mock(MultipartFile.class);
+
         when(storageService.store(mockFile)).thenReturn(filename);
         when(eventRepository.findById(event.getUuid())).thenReturn(Optional.ofNullable(event));
         when(eventRepository.save(any(EventEntity.class)))

@@ -36,7 +36,6 @@ public class EventServiceImpl implements EventService {
         return eventRepository.save(event);
     }
 
-    //TODO: fix the update issue that set available to false
     @Override
     public EventDto update(UpdateEventDto eventDto, MultipartFile file) throws IOException {
         EventEntity eventEntity = eventRepository.findById(eventDto.uuid())
