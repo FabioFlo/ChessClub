@@ -1,13 +1,18 @@
 package org.csc.chessclub.service.tournament;
 
+import org.csc.chessclub.dto.tournament.TournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
+import org.csc.chessclub.mapper.TournamentMapper;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,10 +34,15 @@ public class TournamentServiceUnitTest {
     private TournamentRepository tournamentRepository;
     @InjectMocks
     private TournamentServiceImpl tournamentService;
+    @Spy
+    private final TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
+
 
     private TournamentEntity tournament;
-    private TournamentEntity tournament1;
+    private TournamentEntity availableTournament;
     private TournamentEntity tournament2;
+    private static final LocalDate START_DATE = LocalDate.parse("2018-01-01");
+    private static final LocalDate END_DATE = LocalDate.parse("2018-01-03");
     private Pageable pageable;
 
     @BeforeEach
@@ -44,16 +54,16 @@ public class TournamentServiceUnitTest {
                 .uuid(uuid)
                 .title("Tournament")
                 .description("Description")
-                .startDate(LocalDate.parse("2018-01-01"))
-                .endDate(LocalDate.parse("2018-01-03"))
+                .startDate(START_DATE)
+                .endDate(END_DATE)
                 .build();
 
-        tournament1 = TournamentEntity.builder()
+        availableTournament = TournamentEntity.builder()
                 .uuid(UUID.randomUUID())
                 .title("Tournament1")
                 .description("Description1")
-                .startDate(LocalDate.parse("2018-01-01"))
-                .endDate(LocalDate.parse("2018-01-03"))
+                .startDate(START_DATE)
+                .endDate(END_DATE)
                 .available(true)
                 .build();
 
@@ -61,8 +71,8 @@ public class TournamentServiceUnitTest {
                 .uuid(UUID.randomUUID())
                 .title("Tournament2")
                 .description("Description2")
-                .startDate(LocalDate.parse("2018-01-01"))
-                .endDate(LocalDate.parse("2018-01-03"))
+                .startDate(START_DATE)
+                .endDate(END_DATE)
                 .available(false)
                 .build();
     }
@@ -85,17 +95,22 @@ public class TournamentServiceUnitTest {
     @Test
     @DisplayName("Update tournament")
     void testUpdateTournament_whenTournamentDetailsProvided_returnTournament() {
-        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
-        when(tournamentRepository.existsById(tournament.getUuid())).thenReturn(true);
+        String newTitle = "Updated Tournament";
+        UpdateTournamentDto tournamentDto = new UpdateTournamentDto(availableTournament.getUuid(), newTitle, START_DATE, END_DATE, "Description", null);
 
-        tournament.setTitle("Updated Tournament");
+        when(tournamentRepository.save(any(TournamentEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(tournamentRepository.findById(tournamentDto.uuid()))
+                .thenReturn(Optional.ofNullable(availableTournament));
 
-        TournamentEntity updatedTournament = tournamentService.update(tournament);
+
+        TournamentDto updatedTournament = tournamentService.update(tournamentDto);
 
         assertAll("Update tournament assertions",
                 () -> assertNotNull(updatedTournament, "Tournament should be returned"),
-                () -> assertEquals(tournament.getTitle(), updatedTournament.getTitle(), "Title should be equal"),
-                () -> verify(tournamentRepository, times(1)).save(updatedTournament));
+                () -> assertEquals(availableTournament.getTitle(), updatedTournament.title(), "Title should be equal"),
+                () -> assertTrue(availableTournament.isAvailable(), "Tournament should be available"),
+                () -> verify(tournamentRepository, times(1)).save(any(TournamentEntity.class)));
     }
 
     @Test
@@ -114,7 +129,7 @@ public class TournamentServiceUnitTest {
     @Test
     @DisplayName("Get all tournaments")
     void testGetAll_whenPageableProvided_thenReturnPaginatedTournaments() {
-        List<TournamentEntity> tournaments = List.of(tournament, tournament1, tournament2);
+        List<TournamentEntity> tournaments = List.of(tournament, availableTournament, tournament2);
         Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable, tournaments.size());
 
         when(tournamentRepository.findAll(pageable)).thenReturn(pagedTournaments);
@@ -129,7 +144,7 @@ public class TournamentServiceUnitTest {
     @Test
     @DisplayName("Get all available tournaments")
     void testGetAllAvailable_whenPageableProvided_thenReturnPaginatedTournamentsWithAvailableTrue() {
-        List<TournamentEntity> tournaments = List.of(tournament1);
+        List<TournamentEntity> tournaments = List.of(availableTournament);
         Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable, tournaments.size());
 
         when(tournamentRepository.getDistinctByAvailableIsTrue(pageable)).thenReturn(pagedTournaments);

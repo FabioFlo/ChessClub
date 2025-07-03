@@ -101,7 +101,7 @@ public class TournamentMapperTests {
     @DisplayName("Map UpdateTournamentDto to TournamentEntity")
     void shouldMapUpdateTournamentDtoToTournamentEntity() {
         UpdateTournamentDto tournamentDto = new UpdateTournamentDto(UUID.randomUUID(), TITLE, START_DATE, END_DATE, DESCRIPTION, EVENT_ID);
-        TournamentEntity tournamentEntity = tournamentMapper.updateTournamentToTournament(tournamentDto);
+        TournamentEntity tournamentEntity = tournamentMapper.updateTournamentToTournament(tournamentDto, tournament);
         assertAll("Map update tournament to entity assertions",
                 () -> assertEquals(tournamentEntity.getUuid(), tournamentDto.uuid(),
                         "UUID should be equal"),

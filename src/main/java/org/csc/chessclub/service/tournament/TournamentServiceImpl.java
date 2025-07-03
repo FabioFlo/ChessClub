@@ -2,9 +2,12 @@ package org.csc.chessclub.service.tournament;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.tournament.TournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.TournamentServiceException;
+import org.csc.chessclub.mapper.TournamentMapper;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.EventRepository;
 import org.csc.chessclub.repository.TournamentRepository;
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
     private final EventRepository eventRepository;
+    private final TournamentMapper tournamentMapper;
 
     @Override
     public TournamentEntity create(TournamentEntity tournament) {
@@ -29,11 +33,13 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentEntity update(TournamentEntity tournament) {
-        if (!tournamentRepository.existsById(tournament.getUuid())) {
-            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournament.getUuid()));
-        }
-        return validTournamentDetails(tournament);
+    public TournamentDto update(UpdateTournamentDto tournamentDto) {
+        TournamentEntity tournament = tournamentRepository.findById(tournamentDto.uuid())
+                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentDto.uuid())));
+
+        tournamentMapper.updateTournamentToTournament(tournamentDto, tournament);
+
+        return tournamentMapper.tournamentToTournamentDto(validTournamentDetails(tournament));
     }
 
     @Override
@@ -75,7 +81,7 @@ public class TournamentServiceImpl implements TournamentService {
             String dateExceptionMessage = "Start date must be before end date";
             throw new TournamentServiceException(dateExceptionMessage);
         }
-        UUID eventId = tournament.getEvent().getUuid();
+        UUID eventId = tournament.getEvent() == null ? null : tournament.getEvent().getUuid();
         if (eventId != null && !eventRepository.existsById(eventId)) {
             throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(eventId));
         }

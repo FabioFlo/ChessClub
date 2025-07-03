@@ -7,19 +7,21 @@ import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
 import java.util.UUID;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface TournamentMapper {
     TournamentMapper INSTANCE = Mappers.getMapper(TournamentMapper.class);
 
     TournamentDto tournamentToTournamentDto(TournamentEntity tournament);
 
     @Mapping(target = "event", source = "eventId")
-    TournamentEntity updateTournamentToTournament(UpdateTournamentDto updateTournamentDto);
+    TournamentEntity updateTournamentToTournament(UpdateTournamentDto updateTournamentDto, @MappingTarget TournamentEntity tournament);
 
     @Mapping(target = "event", source = "eventId")
     TournamentEntity createTournamentDtoToTournamentEntity(CreateTournamentDto tournamentDto);

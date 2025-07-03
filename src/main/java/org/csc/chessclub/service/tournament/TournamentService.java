@@ -1,5 +1,7 @@
 package org.csc.chessclub.service.tournament;
 
+import org.csc.chessclub.dto.tournament.TournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +11,7 @@ import java.util.UUID;
 public interface TournamentService {
     TournamentEntity create(TournamentEntity tournament);
 
-    TournamentEntity update(TournamentEntity tournament);
+    TournamentDto update(UpdateTournamentDto tournamentDto);
 
     TournamentEntity getById(UUID uuid);
 
