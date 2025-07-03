@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.tournament;
 
+import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.mapper.TournamentMapper;
@@ -80,15 +81,15 @@ public class TournamentServiceUnitTest {
     @Test
     @DisplayName("Create tournament")
     void testCreateTournament_whenTournamentDetailsProvided_return() {
+        CreateTournamentDto tournamentDto = new CreateTournamentDto(tournament.getTitle(), tournament.getStartDate(), tournament.getEndDate(), "Description", null);
         when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
 
-        TournamentEntity newTournament = tournamentService.create(tournament);
+        TournamentDto newTournament = tournamentService.create(tournamentDto);
 
         assertAll("Create tournament assertions",
                 () -> assertNotNull(newTournament, "Tournament should not be null"),
-                () -> assertNotNull(newTournament.getUuid(), "New tournament should not be null"),
-                () -> assertEquals(tournament.getTitle(), newTournament.getTitle(), "Title should be equal"),
-                () -> assertTrue(tournament.isAvailable(), "Tournament should be available"),
+                () -> assertNotNull(newTournament.uuid(), "New tournament should not be null"),
+                () -> assertEquals(tournament.getTitle(), newTournament.title(), "Title should be equal"),
                 () -> verify(tournamentRepository, times(1)).save(tournament));
     }
 

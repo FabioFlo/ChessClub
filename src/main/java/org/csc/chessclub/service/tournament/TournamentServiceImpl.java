@@ -2,6 +2,7 @@ package org.csc.chessclub.service.tournament;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.enums.NotFoundMessage;
@@ -27,9 +28,11 @@ public class TournamentServiceImpl implements TournamentService {
     private final TournamentMapper tournamentMapper;
 
     @Override
-    public TournamentEntity create(TournamentEntity tournament) {
-        tournament.setAvailable(true);
-        return validTournamentDetails(tournament);
+    public TournamentDto create(CreateTournamentDto tournamentDto) {
+        TournamentEntity entity = tournamentMapper.createTournamentDtoToTournamentEntity(tournamentDto);
+        entity.setAvailable(true);
+
+        return tournamentMapper.tournamentToTournamentDto(validTournamentDetails(entity));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.tournament;
 
+import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.model.tournament.TournamentEntity;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface TournamentService {
-    TournamentEntity create(TournamentEntity tournament);
+    TournamentDto create(CreateTournamentDto tournament);
 
     TournamentDto update(UpdateTournamentDto tournamentDto);
 

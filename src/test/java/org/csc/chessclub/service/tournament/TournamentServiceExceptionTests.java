@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.tournament;
 
+import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
@@ -40,12 +41,13 @@ public class TournamentServiceExceptionTests {
     private final TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
 
     private TournamentEntity tournament;
-    private UpdateTournamentDto tournamentDto;
+    private UpdateTournamentDto updateDto;
+    private CreateTournamentDto createDto;
 
-    private UUID uuid = UUID.randomUUID();
-    private String title = "Tournament";
-    private String description = "description";
-    private LocalDate endDate = LocalDate.parse("2019-01-01");
+    private UUID uuid;
+    private String title;
+    private String description;
+    private LocalDate endDate;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +56,7 @@ public class TournamentServiceExceptionTests {
         description = "description";
         LocalDate startDate = LocalDate.parse("2018-01-01");
         endDate = LocalDate.parse("2019-01-01");
+        UUID eventId = UUID.randomUUID();
 
         tournament = TournamentEntity.builder()
                 .uuid(uuid)
@@ -64,17 +67,18 @@ public class TournamentServiceExceptionTests {
                 .event(EventEntity.builder().uuid(uuid).build())
                 .build();
 
-        tournamentDto = new UpdateTournamentDto(uuid, title, startDate, endDate, description, UUID.randomUUID());
+        updateDto = new UpdateTournamentDto(uuid, title, startDate, endDate, description, eventId);
+        createDto = new CreateTournamentDto(title, startDate, endDate, description, eventId);
     }
 
     @Test
     @DisplayName("Create Tournament - Throw if end date is before start date")
     void testCreateTournament_whenEndDateIsBeforeStartDate_throwCustomTournamentException() {
         LocalDate invalidStartDate = LocalDate.parse("2019-01-01");
-        tournament.setStartDate(invalidStartDate);
+        createDto = new CreateTournamentDto(title, invalidStartDate, endDate, description, UUID.randomUUID());
 
         TournamentServiceException exception = assertThrows(TournamentServiceException.class,
-                () -> tournamentService.create(tournament));
+                () -> tournamentService.create(createDto));
 
         assertEquals("Start date must be before end date", exception.getMessage());
     }
@@ -83,13 +87,13 @@ public class TournamentServiceExceptionTests {
     @DisplayName("Update Tournament - Throw if end date is before start date")
     void testUpdateTournament_whenEndDateIsBeforeStartDate_throwCustomTournamentException() {
         LocalDate invalidStartDate = LocalDate.parse("2019-01-01");
-        tournamentDto = new UpdateTournamentDto(uuid, title, invalidStartDate, endDate, description, UUID.randomUUID());
+        updateDto = new UpdateTournamentDto(uuid, title, invalidStartDate, endDate, description, UUID.randomUUID());
 
-        when(tournamentRepository.findById(tournamentDto.uuid()))
+        when(tournamentRepository.findById(updateDto.uuid()))
                 .thenReturn(Optional.ofNullable(tournament));
 
         TournamentServiceException exception = assertThrows(TournamentServiceException.class,
-                () -> tournamentService.update(tournamentDto));
+                () -> tournamentService.update(updateDto));
 
         assertEquals("Start date must be before end date", exception.getMessage());
     }
@@ -97,25 +101,24 @@ public class TournamentServiceExceptionTests {
     @Test
     @DisplayName("Create tournament - throw if event id does not exist")
     void testCreateTournament_whenEventUuidPassedNotExists_thenThrowCustomNotFoundException() {
-        tournament.setEvent(EventEntity.builder().uuid(UUID.randomUUID()).build());
-        when(eventRepository.existsById(tournament.getEvent().getUuid())).thenReturn(false);
+        when(eventRepository.existsById(createDto.eventId())).thenReturn(false);
 
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
-                () -> tournamentService.create(tournament));
+                () -> tournamentService.create(createDto));
 
         assertEquals(NotFoundMessage.EVENT_WITH_UUID.format(
-                tournament.getEvent().getUuid()), exception.getMessage());
+                createDto.eventId()), exception.getMessage());
     }
 
     @Test
     @DisplayName("Update tournament - throw if event id does not exist")
     void testUpdateTournament_whenEventUuidPassedNotExists_thenThrowCustomNotFoundException() {
-        when(tournamentRepository.findById(tournamentDto.uuid()))
+        when(tournamentRepository.findById(updateDto.uuid()))
                 .thenReturn(Optional.ofNullable(tournament));
-        when(eventRepository.existsById(tournamentDto.eventId())).thenReturn(false);
+        when(eventRepository.existsById(updateDto.eventId())).thenReturn(false);
 
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
-                () -> tournamentService.update(tournamentDto));
+                () -> tournamentService.update(updateDto));
 
         assertEquals(NotFoundMessage.EVENT_WITH_UUID.format(
                 tournament.getEvent().getUuid()), exception.getMessage());
