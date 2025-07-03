@@ -24,8 +24,11 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameEntity create(GameEntity gameEntity) {
-        UUID tournamentUuid = gameEntity.getTournament().getUuid();
-        if (tournamentUuid != null && !tournamentRepository.existsById(tournamentUuid)) {
+        UUID tournamentUuid = gameEntity.getTournament() == null
+                ? null
+                : gameEntity.getTournament().getUuid();
+
+        if (gameEntity.getTournament() != null && !tournamentRepository.existsById(tournamentUuid)) {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentUuid));
         }
         gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));

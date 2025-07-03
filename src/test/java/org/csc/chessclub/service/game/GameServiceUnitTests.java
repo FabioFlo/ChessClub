@@ -88,8 +88,6 @@ public class GameServiceUnitTests {
                 .build();
     }
 
-    //TODO: in case a tournament id is passed, verify if is correctly set (create and update methods)
-
     @Test
     @DisplayName("Should Create game")
     public void testCreateGame_whenGameEntityProvided_returnGame() {
