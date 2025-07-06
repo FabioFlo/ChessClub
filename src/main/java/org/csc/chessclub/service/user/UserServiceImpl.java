@@ -1,11 +1,14 @@
 package org.csc.chessclub.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.user.UpdateUserRequest;
+import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.CustomAccessDeniedException;
 import org.csc.chessclub.exception.CustomNotFoundException;
 import org.csc.chessclub.exception.UserServiceException;
+import org.csc.chessclub.mapper.UserMapper;
 import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     public UserEntity create(UserEntity user) {
@@ -36,23 +40,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity update(UserEntity user) {
+    public UserDto update(UpdateUserRequest userRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity currentUser = (UserEntity) authentication.getPrincipal();
 
-        if (!currentUser.getUuid().equals(user.getUuid()) &&
+        if (!currentUser.getUuid().equals(userRequest.uuid()) &&
                 !currentUser.getRole().equals(Role.ADMIN)) {
             throw new CustomAccessDeniedException("You are not allowed to update this user");
         }
 
-        Optional<UserEntity> existingUser = userRepository.findByUsernameOrEmailAndUuidNot(user.getUsername(), user.getEmail(), user.getUuid());
+        Optional<UserEntity> existingUser = userRepository
+                .findByUsernameOrEmailAndUuidNot(userRequest.username(), userRequest.email(), userRequest.uuid());
         if (existingUser.isPresent()) {
             throw new UserServiceException("Email or username already taken");
         }
-        if (userRepository.existsById(user.getUuid())) {
-            return userRepository.save(user);
-        }
-        throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(user.getUuid()));
+        UserEntity user = userRepository.findById(userRequest.uuid())
+                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(userRequest.uuid())));
+
+        userMapper.updateUserRequestToUser(userRequest, user);
+
+        return userMapper.userToUserDto(userRepository.save(user));
+
     }
 
     @Override

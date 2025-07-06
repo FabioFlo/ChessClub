@@ -6,11 +6,13 @@ import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.model.user.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
@@ -26,5 +28,5 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     UserEntity registerUserRequestToUser(RegisterUserRequest userRequest);
 
-    UserEntity updateUserRequestToUser(UpdateUserRequest updateUserRequest);
+    UserEntity updateUserRequestToUser(UpdateUserRequest updateUserRequest, @MappingTarget UserEntity user);
 }

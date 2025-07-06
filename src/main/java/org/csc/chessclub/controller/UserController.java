@@ -45,11 +45,11 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated")
     @PatchMapping()
-    public ResponseEntity<ResponseDto<UpdateUserRequest>> updateUser(@Valid @RequestBody UpdateUserRequest userRequest) {
-        userService.update(userMapper.updateUserRequestToUser(userRequest));
+    public ResponseEntity<ResponseDto<UserDto>> updateUser(@Valid @RequestBody UpdateUserRequest userRequest) {
+        UserDto userDto = userService.update(userRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(userRequest, "User updated", true));
+                .body(new ResponseDto<>(userDto, "User updated", true));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

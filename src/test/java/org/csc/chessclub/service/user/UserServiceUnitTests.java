@@ -1,6 +1,9 @@
 package org.csc.chessclub.service.user;
 
+import org.csc.chessclub.dto.user.UpdateUserRequest;
+import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
+import org.csc.chessclub.mapper.UserMapper;
 import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -8,10 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mapstruct.factory.Mappers;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -33,6 +34,9 @@ public class UserServiceUnitTests {
     private UserRepository userRepository;
     @Mock
     PasswordEncoder passwordEncoder;
+    @Spy
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+
 
     private static final String USERNAME = "Test Username";
     private static final String PASSWORD = "password";
@@ -65,7 +69,8 @@ public class UserServiceUnitTests {
         String encodedPassword = "$2a$10$encodedPassword";
 
         ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
-        when(userRepository.save(userCaptor.capture())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.save(userCaptor.capture()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
         when(passwordEncoder.encode(PASSWORD)).thenReturn(encodedPassword);
 
         UserEntity createdUser = userService.create(user);
@@ -90,16 +95,18 @@ public class UserServiceUnitTests {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        when(userRepository.existsById(user.getUuid())).thenReturn(true);
-        when(userRepository.save(Mockito.any())).thenReturn(user);
+        String newUsername = "Updated Username";
+        UpdateUserRequest userRequest = new UpdateUserRequest(user.getUuid(), newUsername, user.getEmail());
+        when(userRepository.save(Mockito.any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.findById(user.getUuid())).thenReturn(Optional.ofNullable(user));
 
-        user.setUsername("Updated Username");
 
-        UserEntity updatedUser = userService.update(user);
+        UserDto updatedUser = userService.update(userRequest);
 
         assertNotNull(updatedUser,
                 "User should not be null");
-        assertEquals(user.getUsername(), updatedUser.getUsername(),
+        assertEquals(user.getUsername(), updatedUser.username(),
                 "Username of User should be equal");
         verify(userRepository, times(1)).save(Mockito.any());
     }
@@ -107,7 +114,7 @@ public class UserServiceUnitTests {
     @Test
     @DisplayName("Admin can update user")
     void testAdminCanUpdateUser_whenAuthenticatedUserAndValidUserProvided_returnUpdatedUser() {
-        UserEntity admin =  UserEntity
+        UserEntity admin = UserEntity
                 .builder()
                 .uuid(UUID.randomUUID())
                 .username("admin")
@@ -122,18 +129,19 @@ public class UserServiceUnitTests {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        when(userRepository.existsById(user.getUuid())).thenReturn(true);
-        when(userRepository.save(Mockito.any())).thenReturn(user);
+        String newUsername = "Updated Username";
+        UpdateUserRequest userRequest = new UpdateUserRequest(user.getUuid(), newUsername, user.getEmail());
+        when(userRepository.save(Mockito.any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.findById(user.getUuid())).thenReturn(Optional.ofNullable(user));
 
-        user.setUsername("Updated Username");
-
-        UserEntity updatedUser = userService.update(user);
+        UserDto updatedUser = userService.update(userRequest);
 
         assertNotNull(updatedUser,
                 "User should not be null");
-        assertEquals(user.getUsername(), updatedUser.getUsername(),
+        assertEquals(user.getUsername(), updatedUser.username(),
                 "Username of User should be equal");
-        assertNotNull(updatedUser.getRole(), "Role should not be null");
+        assertNotNull(updatedUser.role(), "Role should not be null");
         verify(userRepository, times(1)).save(Mockito.any());
     }
 

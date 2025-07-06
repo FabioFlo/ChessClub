@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.user;
 
+import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.CustomAccessDeniedException;
@@ -84,9 +85,11 @@ public class UserServiceExceptionTests {
         SecurityContextHolder.setContext(securityContext);
 
         when(userRepository.findByUsernameOrEmailAndUuidNot(USERNAME, EMAIL, user.getUuid())).thenReturn(Optional.ofNullable(user));
+        UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL);
+
 
         UserServiceException exception = assertThrows(UserServiceException.class,
-                () -> userService.update(user));
+                () -> userService.update(updateUser));
 
         assertTrue(exception.getMessage().contains("Email or username already taken"));
     }
@@ -100,8 +103,10 @@ public class UserServiceExceptionTests {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
+
+        UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL);
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
-                () -> userService.update(user));
+                () -> userService.update(updateUser));
 
         assertTrue(exception.getMessage().contains(
                 NotFoundMessage.USER_WITH_UUID.format((user.getUuid()))));
@@ -112,6 +117,9 @@ public class UserServiceExceptionTests {
     void testUpdateUser_whenUserIdDoNotMatchAndIsNotAdmin_shouldThrowAccessDeniedException() {
         UUID userUUID = UUID.randomUUID();
         UUID notAllowedUserUUID = UUID.randomUUID();
+        String newUsername = "new username";
+        String newEmail = "newEmail@email.com";
+
 
         UserEntity notAllowedUser = new UserEntity();
         notAllowedUser.setUuid(notAllowedUserUUID);
@@ -123,12 +131,10 @@ public class UserServiceExceptionTests {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        UserEntity request = new UserEntity();
-        request.setUuid(userUUID);
-        request.setUsername("new username");
-        request.setEmail("newEmail@email.com");
 
-        assertThatThrownBy(() -> userService.update(request))
+        UpdateUserRequest updateUser = new UpdateUserRequest(userUUID, newUsername, newEmail);
+
+        assertThatThrownBy(() -> userService.update(updateUser))
                 .isInstanceOf(CustomAccessDeniedException.class)
                 .hasMessageContaining("You are not allowed to update this user");
     }
