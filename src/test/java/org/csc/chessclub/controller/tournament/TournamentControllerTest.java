@@ -105,7 +105,27 @@ public class TournamentControllerTest extends BaseIntegrationTest {
                 .extracting(ResponseDto::message)
                 .isEqualTo(expectedMessage);
     }
-    //TODO: get by id
+
+    @Test
+    @Order(3)
+    @DisplayName("Get by id")
+    void getTournamentById_whenValidIdProvided_returnGetTournamentDtoIfExists() {
+        ResponseDto<TournamentDto> response = given()
+                .pathParam("uuid", uuid)
+                .when()
+                .get(apiPath + "/{uuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response.data().uuid())
+                .isEqualTo(uuid);
+    }
     //TODO: get all paged
     //TODO: delete
 }
