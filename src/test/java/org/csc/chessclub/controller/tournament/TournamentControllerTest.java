@@ -6,6 +6,7 @@ import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
+import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -27,15 +28,20 @@ public class TournamentControllerTest extends BaseIntegrationTest {
     private String userUsername;
     @Value("${user.password}")
     private String userPassword;
+
     private CreateTournamentDto createTournamentDto;
-    private UUID id;
+    private UUID uuid;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @BeforeAll
     public void beforeAll() {
+        startDate = LocalDate.parse("2020-01-01");
+        endDate = LocalDate.parse("2020-01-03");
         createTournamentDto = new CreateTournamentDto(
                 "New tournament",
-                LocalDate.parse("2020-01-01"),
-                LocalDate.parse("2020-01-03"),
+                startDate,
+                endDate,
                 "Description",
                 null);
 
@@ -64,14 +70,41 @@ public class TournamentControllerTest extends BaseIntegrationTest {
                 .extracting(ResponseDto::success)
                 .isEqualTo(true);
 
-        id = response.data().uuid();
+        uuid = response.data().uuid();
 
         assertThat(response)
                 .extracting(ResponseDto::message)
                 .isEqualTo(expectedMessage);
     }
 
-    //TODO: update
+    @Test
+    @Order(2)
+    @DisplayName("Update tournament")
+    void testUpdateTournament_whenUserAuthenticatedAndValidUpdateTournamentProvided_returnUpdateTournamentDto() {
+        String expectedMessage = "Tournament successfully updated";
+        String newTitle = "New test title";
+        UpdateTournamentDto updateTournamentDto = new UpdateTournamentDto(uuid, newTitle, startDate, endDate, "Description", null);
+        ResponseDto<TournamentDto> response = given()
+                .header("Authorization", "Bearer " + userToken)
+                .body(updateTournamentDto)
+                .when()
+                .patch(apiPath)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response.data().title())
+                .isEqualTo(newTitle);
+
+        assertThat(response)
+                .extracting(ResponseDto::message)
+                .isEqualTo(expectedMessage);
+    }
     //TODO: get by id
     //TODO: get all paged
     //TODO: delete
