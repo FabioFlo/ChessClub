@@ -154,5 +154,27 @@ public class TournamentControllerTest extends BaseIntegrationTest {
                 .extracting(List::size).isEqualTo(1);
 
     }
-    //TODO: delete
+
+    @Test
+    @Order(5)
+    @DisplayName("Delete tournament")
+    void testDeleteTournament_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
+        ResponseDto<UUID> response = given()
+                .pathParam("uuid", uuid)
+                .header("Authorization", "Bearer " + userToken)
+                .when()
+                .delete(apiPath + "/{uuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(UUID::toString).isEqualTo(uuid.toString());
+    }
 }
