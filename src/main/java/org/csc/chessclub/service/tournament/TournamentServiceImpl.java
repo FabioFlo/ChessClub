@@ -46,22 +46,22 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentEntity getById(UUID uuid) {
+    public TournamentDto getById(UUID uuid) {
         Optional<TournamentEntity> tournamentEntity = tournamentRepository.findById(uuid);
         if (tournamentEntity.isEmpty()) {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
         }
-        return tournamentEntity.get();
+        return tournamentMapper.tournamentToTournamentDto(tournamentEntity.get());
     }
 
     @Override
-    public Page<TournamentEntity> getAll(Pageable pageable) {
-        return tournamentRepository.findAll(pageable);
+    public Page<TournamentDto> getAll(Pageable pageable) {
+        return tournamentMapper.pageTournamentEntityToPageTournamentDto(tournamentRepository.findAll(pageable));
     }
 
     @Override
-    public Page<TournamentEntity> getAllAvailable(Pageable pageable) {
-        return tournamentRepository.getDistinctByAvailableIsTrue(pageable);
+    public Page<TournamentDto> getAllAvailable(Pageable pageable) {
+        return tournamentMapper.pageTournamentEntityToPageTournamentDto(tournamentRepository.findByAvailableIsTrue(pageable));
     }
 
     @Override

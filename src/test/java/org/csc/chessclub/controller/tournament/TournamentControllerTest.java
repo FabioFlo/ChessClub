@@ -70,4 +70,9 @@ public class TournamentControllerTest extends BaseIntegrationTest {
                 .extracting(ResponseDto::message)
                 .isEqualTo(expectedMessage);
     }
+
+    //TODO: update
+    //TODO: get by id
+    //TODO: get all paged
+    //TODO: delete
 }

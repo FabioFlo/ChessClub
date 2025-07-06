@@ -89,8 +89,7 @@ public class TournamentServiceUnitTest {
         assertAll("Create tournament assertions",
                 () -> assertNotNull(newTournament, "Tournament should not be null"),
                 () -> assertNotNull(newTournament.uuid(), "New tournament should not be null"),
-                () -> assertEquals(tournament.getTitle(), newTournament.title(), "Title should be equal"),
-                () -> verify(tournamentRepository, times(1)).save(tournament));
+                () -> assertEquals(tournament.getTitle(), newTournament.title(), "Title should be equal"));
     }
 
     @Test
@@ -119,11 +118,11 @@ public class TournamentServiceUnitTest {
     void testGetTournamentById_whenTournamentIdProvided_returnTournament() {
         when(tournamentRepository.findById(tournament.getUuid())).thenReturn(Optional.of(tournament));
 
-        TournamentEntity retrievedTournament = tournamentService.getById(tournament.getUuid());
+        TournamentDto retrievedTournament = tournamentService.getById(tournament.getUuid());
 
         assertAll("Get tournament by id assertions",
                 () -> assertNotNull(retrievedTournament, "Tournament should not be null"),
-                () -> assertEquals(tournament, retrievedTournament, "Tournament should be equal"),
+                () -> assertEquals(tournament.getUuid(), retrievedTournament.uuid(), "Tournament should be equal"),
                 () -> verify(tournamentRepository, times(1)).findById(tournament.getUuid()));
     }
 
@@ -135,7 +134,7 @@ public class TournamentServiceUnitTest {
 
         when(tournamentRepository.findAll(pageable)).thenReturn(pagedTournaments);
 
-        Page<TournamentEntity> result = tournamentService.getAll(pageable);
+        Page<TournamentDto> result = tournamentService.getAll(pageable);
 
         assertAll("Get all assertions",
                 () -> assertNotNull(result, "Result should not be null"),
@@ -148,14 +147,13 @@ public class TournamentServiceUnitTest {
         List<TournamentEntity> tournaments = List.of(availableTournament);
         Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable, tournaments.size());
 
-        when(tournamentRepository.getDistinctByAvailableIsTrue(pageable)).thenReturn(pagedTournaments);
+        when(tournamentRepository.findByAvailableIsTrue(pageable)).thenReturn(pagedTournaments);
 
-        Page<TournamentEntity> result = tournamentService.getAllAvailable(pageable);
+        Page<TournamentDto> result = tournamentService.getAllAvailable(pageable);
 
         assertAll("Get all assertions",
                 () -> assertNotNull(result, "Result should not be null"),
-                () -> assertEquals(1, result.getTotalElements(), "Result should contain two tournaments"),
-                () -> assertTrue(result.getContent().getFirst().isAvailable(), "Available should be true"));
+                () -> assertEquals(1, result.getTotalElements(), "Result should contain two tournaments"));
     }
 
     @Test

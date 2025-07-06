@@ -13,5 +13,5 @@ import java.util.UUID;
 public interface TournamentRepository extends JpaRepository<TournamentEntity, UUID> {
 
     List<TournamentEntity> getTournamentEntitiesByTitleAndAvailableTrue(String title);
-    Page<TournamentEntity> getDistinctByAvailableIsTrue(Pageable pageable);
+    Page<TournamentEntity> findByAvailableIsTrue(Pageable pageable);
 }
