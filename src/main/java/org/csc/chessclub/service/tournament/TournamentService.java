@@ -3,7 +3,6 @@ package org.csc.chessclub.service.tournament;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
-import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,11 +13,11 @@ public interface TournamentService {
 
     TournamentDto update(UpdateTournamentDto tournamentDto);
 
-    TournamentEntity getById(UUID uuid);
+    TournamentDto getById(UUID uuid);
 
-    Page<TournamentEntity> getAll(Pageable pageable);
+    Page<TournamentDto> getAll(Pageable pageable);
 
-    Page<TournamentEntity> getAllAvailable(Pageable pageable);
+    Page<TournamentDto> getAllAvailable(Pageable pageable);
 
     void delete(UUID uuid);
 }

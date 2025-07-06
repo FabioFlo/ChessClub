@@ -63,7 +63,7 @@ public class TournamentRepositoryTests extends TestContainerConfig {
     @DisplayName("Find all available tournaments")
     void testGetAllAvailableTournaments_returnTournamentsWithAvailableTrue() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<TournamentEntity> result = tournamentRepository.getDistinctByAvailableIsTrue(pageable);
+        Page<TournamentEntity> result = tournamentRepository.findByAvailableIsTrue(pageable);
 
         boolean allAvailable = result.getContent().stream().allMatch(TournamentEntity::isAvailable);
 
