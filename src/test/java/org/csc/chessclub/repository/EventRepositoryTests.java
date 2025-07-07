@@ -1,5 +1,6 @@
 package org.csc.chessclub.repository;
 
+import jakarta.transaction.Transactional;
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.model.event.EventEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,6 +105,17 @@ public class EventRepositoryTests extends TestContainerConfig {
                         "One element should be found"),
                 () -> assertTrue(result.stream().allMatch(EventEntity::isAvailable))
         );
+    }
+
+    @Test
+    @DisplayName("Correctly set available to false")
+    @Order(4)
+    @Transactional
+    void testSetAvailableFalse_whenGivenUuid_returnResultTrue() {
+        eventRepository.save(event1);
+        int result = eventRepository.setAvailableFalse(event1.getUuid());
+
+        assertEquals(1, result);
     }
 }
 
