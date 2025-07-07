@@ -14,7 +14,7 @@ public interface EventService {
     EventEntity create(EventEntity event, MultipartFile file) throws IOException;
     EventDto update(UpdateEventDto event, MultipartFile file) throws IOException;
     EventEntity getById(UUID uuid);
-    EventEntity delete(UUID uuid);
+    void delete(UUID uuid);
     Page<EventEntity> getAll(Pageable pageable);
 
     Page<EventEntity> getAllAvailable(Pageable pageable);

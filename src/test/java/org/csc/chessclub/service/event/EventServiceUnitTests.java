@@ -189,13 +189,9 @@ public class EventServiceUnitTests {
     @Test
     @DisplayName("Delete event")
     void testDeleteEvent_whenEventFound_availableShouldBeSetToFalse() {
-        when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
-        when(eventRepository.save(any(EventEntity.class))).thenReturn(event);
-
-        event.setAvailable(false);
+        when(eventRepository.setAvailableFalse(event.getUuid())).thenReturn(1);
 
         assertDoesNotThrow(() -> eventService.delete(event.getUuid()));
-        assertFalse(event.isAvailable());
     }
 
     @Test

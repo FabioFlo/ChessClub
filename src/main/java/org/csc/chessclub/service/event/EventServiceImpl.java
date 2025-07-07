@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -59,13 +58,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventEntity delete(UUID uuid) {
-        Optional<EventEntity> event = eventRepository.findById(uuid);
-        if (event.isPresent()) {
-            event.get().setAvailable(false);
-            return eventRepository.save(event.get());
+    public void delete(UUID uuid) {
+        int result = eventRepository.setAvailableFalse(uuid);
+
+        if (result == 0) {
+            throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid));
         }
-        throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid));
     }
 
     @Override
