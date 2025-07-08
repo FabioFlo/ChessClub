@@ -128,8 +128,10 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Order(5)
     @DisplayName("Update event")
     void testUpdateEvent_whenUserAuthenticatedAndValidEventDetailsProvided_returnsUpdatedEvent() {
-        UpdateEventDto updateEventDto = new UpdateEventDto(uuid, "New test title", DESCRIPTION, AUTHOR);
-        ResponseDto<UpdateEventDto> response = given()
+        String newTitle = "New test title";
+        UpdateEventDto updateEventDto = new UpdateEventDto(uuid, newTitle, DESCRIPTION, AUTHOR);
+
+        ResponseDto<EventDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
                 .multiPart("event", "event.json", updateEventDto, "application/json")
                 .multiPart("pdfFile", new File(storageFolder + "/announcement.pdf"))
@@ -143,13 +145,14 @@ public class EventControllerTests extends BaseIntegrationTest {
 
         assertThat(response)
                 .isNotNull()
-                .extracting(ResponseDto::data)
-                .isEqualTo(updateEventDto);
+                .extracting(ResponseDto::data).extracting(EventDto::title)
+                .isEqualTo(newTitle);
     }
 
     @Test
     @Order(6)
     @DisplayName("Delete event")
+
     void testDeleteEvent_whenUserAuthenticatedAndEventFound_returnsResponseDtoWithSuccessAndMessage() {
         ResponseDto<UUID> responseDto = given()
                 .pathParam("uuid", uuid)

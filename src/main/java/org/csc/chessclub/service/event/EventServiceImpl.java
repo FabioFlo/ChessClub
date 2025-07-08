@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.event;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
@@ -58,6 +59,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID uuid) {
         int result = eventRepository.setAvailableFalse(uuid);
 
