@@ -55,9 +55,8 @@ public class EventController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ResponseDto<EventDto>> getEventById(@ValidUUID @PathVariable UUID uuid) {
-        return ResponseEntity.ok(new ResponseDto<>(
-                eventMapper.eventToEventDto(eventService.getById(uuid)), "Event found", true));
-
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(eventService.getById(uuid), "Event found", true));
     }
 
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

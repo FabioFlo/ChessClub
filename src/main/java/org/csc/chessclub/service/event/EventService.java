@@ -16,7 +16,7 @@ public interface EventService {
 
     EventDto update(UpdateEventDto event, MultipartFile file) throws IOException;
 
-    EventEntity getById(UUID uuid);
+    EventDto getById(UUID uuid);
 
     void delete(UUID uuid);
 

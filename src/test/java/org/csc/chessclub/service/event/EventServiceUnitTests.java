@@ -99,7 +99,7 @@ public class EventServiceUnitTests {
         String filename = "announcement.pdf";
         MultipartFile mockFile = mock(MultipartFile.class);
         when(eventRepository.save(any(EventEntity.class)))
-                 .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> invocation.getArgument(0));
         when(storageService.store(mockFile)).thenReturn(filename);
 
         EventDto eventDto = eventService.create(createEventDto, mockFile);
@@ -153,10 +153,10 @@ public class EventServiceUnitTests {
     void testGetEvent_whenEventFoundById_returnEvent() {
         when(eventRepository.findById(event.getUuid())).thenReturn(Optional.of(event));
 
-        EventEntity retrievedEvent = eventService.getById(event.getUuid());
+        EventDto retrievedEvent = eventService.getById(event.getUuid());
 
         assertNotNull(retrievedEvent, "Event should not be null");
-        assertEquals(event, retrievedEvent, "Event should be equal");
+        assertEquals(event.getUuid(), retrievedEvent.uuid(), "Event should be equal");
         verify(eventRepository, times(1)).findById(event.getUuid());
     }
 

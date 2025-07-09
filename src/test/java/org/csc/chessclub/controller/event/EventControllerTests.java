@@ -152,7 +152,6 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Test
     @Order(6)
     @DisplayName("Delete event")
-
     void testDeleteEvent_whenUserAuthenticatedAndEventFound_returnsResponseDtoWithSuccessAndMessage() {
         ResponseDto<UUID> responseDto = given()
                 .pathParam("uuid", uuid)

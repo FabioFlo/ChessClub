@@ -55,9 +55,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventEntity getById(UUID uuid) {
-        return eventRepository.findById(uuid)
+    public EventDto getById(UUID uuid) {
+        EventEntity event = eventRepository.findById(uuid)
                 .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid)));
+        return eventMapper.eventToEventDto(event);
     }
 
     @Override
