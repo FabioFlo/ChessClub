@@ -72,13 +72,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventEntity> getAll(Pageable pageable) {
-        return eventRepository.findAll(pageable);
+    public Page<EventDto> getAll(Pageable pageable) {
+        return eventMapper.pageEventEntityToPageEventDto(eventRepository.findAll(pageable));
     }
 
     @Override
-    public Page<EventEntity> getAllAvailable(Pageable pageable) {
-        return eventRepository.findAllByAvailableTrue(pageable);
+    public Page<EventDto> getAllAvailable(Pageable pageable) {
+        return eventMapper.pageEventEntityToPageEventDto(eventRepository.findAllByAvailableTrue(pageable));
     }
 }
 

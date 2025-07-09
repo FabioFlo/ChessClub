@@ -8,7 +8,6 @@ import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
-import org.csc.chessclub.mapper.EventMapper;
 import org.csc.chessclub.service.event.EventService;
 import org.csc.chessclub.utils.PageUtils;
 import org.springframework.data.domain.Page;
@@ -31,7 +30,6 @@ import java.util.UUID;
 @Validated
 public class EventController {
     private final EventService eventService;
-    private final EventMapper eventMapper;
     private final PageUtils<EventDto> pageUtils;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -48,7 +46,7 @@ public class EventController {
 
     @GetMapping()
     public ResponseEntity<ResponseDto<PageResponseDto<EventDto>>> getAllEvents(@PageableDefault Pageable pageable) {
-        Page<EventDto> pagedEvent = eventMapper.pageEventEntityToPageEventDto(eventService.getAllAvailable(pageable));
+        Page<EventDto> pagedEvent = eventService.getAllAvailable(pageable);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedEvent), "Events found", true));
     }

@@ -3,7 +3,6 @@ package org.csc.chessclub.service.event;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
-import org.csc.chessclub.model.event.EventEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +19,7 @@ public interface EventService {
 
     void delete(UUID uuid);
 
-    Page<EventEntity> getAll(Pageable pageable);
+    Page<EventDto> getAll(Pageable pageable);
 
-    Page<EventEntity> getAllAvailable(Pageable pageable);
+    Page<EventDto> getAllAvailable(Pageable pageable);
 }

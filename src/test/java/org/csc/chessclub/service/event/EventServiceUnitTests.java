@@ -168,7 +168,7 @@ public class EventServiceUnitTests {
 
         when(eventRepository.findAll(any(Pageable.class))).thenReturn(pagedEvents);
 
-        Page<EventEntity> result = eventService.getAll(pageable);
+        Page<EventDto> result = eventService.getAll(pageable);
 
         assertNotNull(result, "Result should not be null");
         assertEquals(1, result.getTotalElements());
@@ -182,7 +182,7 @@ public class EventServiceUnitTests {
 
         when(eventRepository.findAllByAvailableTrue(any(Pageable.class))).thenReturn(pagedEvents);
 
-        Page<EventEntity> result = eventService.getAllAvailable(pageable);
+        Page<EventDto> result = eventService.getAllAvailable(pageable);
 
         assertNotNull(result,
                 "Result should not be null");
