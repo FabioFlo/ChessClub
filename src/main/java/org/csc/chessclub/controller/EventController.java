@@ -40,8 +40,7 @@ public class EventController {
             @Valid @RequestPart(value = "event") CreateEventDto createEventDto,
             @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
 
-        EventDto createdEvent = eventMapper.eventToEventDto(
-                eventService.create(eventMapper.createEventDtoToEvent(createEventDto), file));
+        EventDto createdEvent = eventService.create(createEventDto, file);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto<>(createdEvent, "Event created", true));

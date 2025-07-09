@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.event;
 
+import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.model.event.EventEntity;
@@ -11,10 +12,14 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface EventService {
-    EventEntity create(EventEntity event, MultipartFile file) throws IOException;
+    EventDto create(CreateEventDto eventDto, MultipartFile file) throws IOException;
+
     EventDto update(UpdateEventDto event, MultipartFile file) throws IOException;
+
     EventEntity getById(UUID uuid);
+
     void delete(UUID uuid);
+
     Page<EventEntity> getAll(Pageable pageable);
 
     Page<EventEntity> getAllAvailable(Pageable pageable);

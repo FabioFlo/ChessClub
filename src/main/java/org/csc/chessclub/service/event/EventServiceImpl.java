@@ -2,6 +2,7 @@ package org.csc.chessclub.service.event;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
 import org.csc.chessclub.enums.NotFoundMessage;
@@ -26,14 +27,15 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
 
     @Override
-    public EventEntity create(EventEntity event, MultipartFile file) throws IOException {
+    public EventDto create(CreateEventDto eventDto, MultipartFile file) throws IOException {
         String filename = null;
         if (file != null && !file.isEmpty()) {
             filename = storageService.store(file);
         }
+        EventEntity event = eventMapper.createEventDtoToEvent(eventDto);
         event.setAnnouncementPDF(filename);
         event.setAvailable(true);
-        return eventRepository.save(event);
+        return eventMapper.eventToEventDto(eventRepository.save(event));
     }
 
     @Override
