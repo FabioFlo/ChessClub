@@ -33,8 +33,7 @@ public class GameController {
     //TODO: Pass the dto into the service and manage there the mapping?
     @PostMapping
     public ResponseEntity<ResponseDto<GameDto>> createGame(@Valid @RequestBody CreateGameDto createGameDto) {
-        GameDto gameDto = gameMapper.gameToGameDto(
-                gameService.create(gameMapper.createGameDtoToGame(createGameDto)));
+        GameDto gameDto = gameService.create(createGameDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto<>(gameDto, "Game created", true));
@@ -50,7 +49,7 @@ public class GameController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ResponseDto<GameDto>> getGame(@ValidUUID @PathVariable UUID uuid) {
-        GameDto gameDto = gameMapper.gameToGameDto(gameService.getByUuid(uuid));
+        GameDto gameDto = gameService.getByUuid(uuid);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(gameDto, "Game found", true));

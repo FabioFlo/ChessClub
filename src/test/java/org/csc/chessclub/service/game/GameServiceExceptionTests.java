@@ -1,10 +1,10 @@
 package org.csc.chessclub.service.game;
 
+import org.csc.chessclub.dto.game.CreateGameDto;
+import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.exception.CustomNotFoundException;
-import org.csc.chessclub.model.game.GameEntity;
-import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,15 +31,19 @@ public class GameServiceExceptionTests {
     @Mock
     private TournamentRepository tournamentRepository;
 
-    private GameEntity game;
+    private CreateGameDto createGame;
+    private UpdateGameDto updateGame;
 
-    private final Result result = Result.BlackWon;
+    private Result result;
     private UUID uuid;
+    private String pgn;
+    private String whitePlayer;
+    private String blackPlayer;
 
     @BeforeEach
     public void setup() {
         uuid = UUID.randomUUID();
-        String pgn = """
+        pgn = """
                 [Event "Live Chess"]
                 [Site "Chess.com"]
                 [Date "2025.06.04"]
@@ -60,16 +64,9 @@ public class GameServiceExceptionTests {
                 dxc5 Bf6 16. Qd2 Bg4 17. Be2 Re8 18. Rfe1 Na5 19. Bd4 Nb3 20. Bxf6 Qxf6 21. Qxd5
                 Nxa1 22. Rxa1 Rxe2 23. Qxb7 Bxf3 24. gxf3 Qg5+ 25. Kf1 Rae8 26. c6 Qd2 27. Kg2
                 Rxf2+ 28. Kg3 Rg2+ 29. Kh3 0-1""";
-        String blackPlayer = "OwlMight";
-        String whitePlayer = "iamsogarbagegod";
-        game = GameEntity.builder()
-                .uuid(uuid)
-                .pgn(pgn)
-                .whitePlayerName(whitePlayer)
-                .blackPlayerName(blackPlayer)
-                .result(result)
-                .build();
-
+        blackPlayer = "OwlMight";
+        whitePlayer = "iamsogarbagegod";
+        result = Result.BlackWon;
     }
 
     @Test
@@ -85,24 +82,26 @@ public class GameServiceExceptionTests {
     @Test
     @DisplayName("Create game - throw id tournament inserted not found")
     void testGameServiceCreate_whenTournamentNotFound_thenThrowNotFoundException() {
-        game.setTournament(TournamentEntity.builder().uuid(UUID.randomUUID()).build());
-        when(tournamentRepository.existsById(game.getTournament().getUuid())).thenReturn(false);
+        createGame = new CreateGameDto(whitePlayer, blackPlayer, pgn, result, UUID.randomUUID());
+
+        when(tournamentRepository.existsById(createGame.tournamentId())).thenReturn(false);
 
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
-                () -> gameService.create(game));
+                () -> gameService.create(createGame));
 
-        assertEquals(NotFoundMessage.TOURNAMENT_WITH_UUID.format(game.getTournament().getUuid()), exception.getMessage());
+        assertEquals(NotFoundMessage.TOURNAMENT_WITH_UUID.format(createGame.tournamentId()), exception.getMessage());
     }
 
     @Test
     @DisplayName("Update game - throw id tournament inserted not found")
     void testGameServiceUpdate_whenTournamentNotFound_thenThrowNotFoundException() {
-        game.setTournament(TournamentEntity.builder().uuid(UUID.randomUUID()).build());
-        when(tournamentRepository.existsById(game.getTournament().getUuid())).thenReturn(false);
+        updateGame = new UpdateGameDto(uuid, whitePlayer, blackPlayer, pgn, result, UUID.randomUUID());
+
+        when(tournamentRepository.existsById(updateGame.tournamentId())).thenReturn(false);
 
         CustomNotFoundException exception = assertThrows(CustomNotFoundException.class,
-                () -> gameService.create(game));
+                () -> gameService.update(updateGame));
 
-        assertEquals(NotFoundMessage.TOURNAMENT_WITH_UUID.format(game.getTournament().getUuid()), exception.getMessage());
+        assertEquals(NotFoundMessage.TOURNAMENT_WITH_UUID.format(updateGame.tournamentId()), exception.getMessage());
     }
 }

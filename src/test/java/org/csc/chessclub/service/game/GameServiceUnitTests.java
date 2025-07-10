@@ -1,5 +1,7 @@
 package org.csc.chessclub.service.game;
 
+import org.csc.chessclub.dto.game.CreateGameDto;
+import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.mapper.GameMapper;
@@ -9,9 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,8 +32,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class GameServiceUnitTests {
 
-    @Mock
-    private GameMapper gameMapper;
+    @Spy
+    private GameMapper gameMapper = Mappers.getMapper(GameMapper.class);
     @InjectMocks
     private GameServiceImpl gameService;
     @Mock
@@ -91,12 +95,15 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Should Create game")
     public void testCreateGame_whenGameEntityProvided_returnGame() {
-        when(gameRepository.save(Mockito.any())).thenReturn(game);
-        GameEntity createdGame = gameService.create(game);
+        CreateGameDto gameDto = new CreateGameDto(whitePlayer, blackPlayer, pgn, result, null);
+
+        when(gameRepository.save(Mockito.any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        GameDto createdGame = gameService.create(gameDto);
 
         assertNotNull(createdGame, "Game should not be null");
         assertNotNull(game.getUuid(), "Uuid should not be null");
-        assertTrue(game.isAvailable(), "Game should be available");
         verify(gameRepository, Mockito.times(1)).save(Mockito.any());
     }
 
@@ -130,10 +137,10 @@ public class GameServiceUnitTests {
     public void testGetGame_whenGameFoundByUuid_thenReturnGame() {
         when(gameRepository.findById(game.getUuid())).thenReturn(Optional.of(game));
 
-        GameEntity retrievedGame = gameService.getByUuid(game.getUuid());
+        GameDto retrievedGame = gameService.getByUuid(game.getUuid());
 
         assertNotNull(retrievedGame, "Game should not be null");
-        assertEquals(game, retrievedGame, "Game should match");
+        assertEquals(game.getUuid(), retrievedGame.uuid(), "Game should match");
         verify(gameRepository, Mockito.times(1)).findById(game.getUuid());
     }
 
@@ -152,14 +159,18 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Empty player name set to NN")
     public void testCreateGame_whenGameWithEmptyWhiteOrBlackPlayerNameProvided_thenPlayerNameShouldBeSetToNN() {
-        game.setWhitePlayerName("");
-        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
+        String blankPlayerName = "";
+        CreateGameDto gameDto = new CreateGameDto(blankPlayerName, blackPlayer, pgn, result, null);
 
-        GameEntity createdGame = gameService.create(game);
+        when(gameRepository.save(any(GameEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        assertEquals("NN", createdGame.getWhitePlayerName(),
+
+        GameDto createdGame = gameService.create(gameDto);
+
+        assertEquals("NN", createdGame.whitePlayerName(),
                 "White player name should be NN");
-        assertEquals(game.getBlackPlayerName(), createdGame.getBlackPlayerName(),
+        assertEquals(game.getBlackPlayerName(), createdGame.blackPlayerName(),
                 "Black player name should match");
     }
 

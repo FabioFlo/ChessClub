@@ -1,6 +1,8 @@
 package org.csc.chessclub.service.game;
 
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.game.CreateGameDto;
+import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.CustomNotFoundException;
@@ -23,30 +25,29 @@ public class GameServiceImpl implements GameService {
     private final TournamentRepository tournamentRepository;
 
     @Override
-    public GameEntity create(GameEntity gameEntity) {
-        UUID tournamentUuid = gameEntity.getTournament() == null
-                ? null
-                : gameEntity.getTournament().getUuid();
+    public GameDto create(CreateGameDto gameDto) {
 
-        if (gameEntity.getTournament() != null && !tournamentRepository.existsById(tournamentUuid)) {
-            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentUuid));
+        if (gameDto.tournamentId() != null && !tournamentRepository.existsById(gameDto.tournamentId())) {
+            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(gameDto.tournamentId()));
         }
+
+        GameEntity gameEntity = gameMapper.createGameDtoToGame(gameDto);
         gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
         gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
         gameEntity.setAvailable(true);
 
-        return gameRepository.save(gameEntity);
+        return gameMapper.gameToGameDto(gameRepository.save(gameEntity));
     }
 
     @Override
     public GameEntity update(UpdateGameDto gameDto) {
-        GameEntity gameEntity = gameRepository.findById(gameDto.uuid())
-                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(gameDto.uuid())));
-
         UUID tournamentUuid = gameDto.tournamentId();
         if (tournamentUuid != null && !tournamentRepository.existsById(tournamentUuid)) {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentUuid));
         }
+
+        GameEntity gameEntity = gameRepository.findById(gameDto.uuid())
+                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(gameDto.uuid())));
         gameMapper.updateGameDtoToGame(gameDto, gameEntity);
 
         gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
@@ -56,10 +57,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameEntity getByUuid(UUID uuid) {
-        return gameRepository.findById(uuid)
+    public GameDto getByUuid(UUID uuid) {
+        return gameMapper.gameToGameDto(gameRepository.findById(uuid)
                 .orElseThrow(()
-                        -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid)));
+                        -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid))));
     }
 
     @Override
