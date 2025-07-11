@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.tournament;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
@@ -65,13 +66,13 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID uuid) {
-        Optional<TournamentEntity> tournamentEntity = tournamentRepository.findById(uuid);
-        if (tournamentEntity.isEmpty()) {
+        int result = tournamentRepository.setAvailableFalse(uuid);
+
+        if (result == 0) {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
         }
-        tournamentEntity.get().setAvailable(false);
-        tournamentRepository.save(tournamentEntity.get());
     }
 
     private boolean startDateNotBeforeEndDate(LocalDate startDate, LocalDate endDate) {

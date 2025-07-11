@@ -159,16 +159,8 @@ public class TournamentServiceUnitTest {
     @Test
     @DisplayName("Delete tournament")
     void testDeleteTournament_whenTournamentUuidProvided_setAvailableToFalse() {
-        when(tournamentRepository.findById(tournament.getUuid())).thenReturn(Optional.ofNullable(tournament));
-        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
+        when(tournamentRepository.setAvailableFalse(tournament.getUuid())).thenReturn(1);
 
-        tournament.setAvailable(false);
-        assertAll("Delete tournament assertions",
-                () -> assertFalse(tournament.isAvailable(),
-                        "Available should be false"),
-                () -> assertDoesNotThrow(() -> tournamentService.delete(tournament.getUuid()),
-                        "Should not throw an exception"),
-                () -> verify(tournamentRepository, times(1)).save(tournament));
-
+        assertDoesNotThrow(() -> tournamentService.delete(tournament.getUuid()));
     }
 }

@@ -1,5 +1,6 @@
 package org.csc.chessclub.repository;
 
+import jakarta.transaction.Transactional;
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +20,13 @@ public class TournamentRepositoryTests extends TestContainerConfig {
 
     @Autowired
     private TournamentRepository tournamentRepository;
+    private TournamentEntity tournament;
 
     @BeforeEach
     void setUp() {
         //TODO: think about a custom repo to get only specific info
         //TODO: Possible views table to summarize the important data from event and tournament
-        TournamentEntity tournament = TournamentEntity.builder()
+        tournament = TournamentEntity.builder()
                 .title("Tournament")
                 .description("Description")
                 .startDate(LocalDate.parse("2018-01-01"))
@@ -71,4 +73,15 @@ public class TournamentRepositoryTests extends TestContainerConfig {
                 () -> assertFalse(result.isEmpty(), "Result should not be null"),
                 () -> assertTrue(allAvailable, "All tournaments should be available"));
     }
+
+    @Test
+    @DisplayName("Set available to false")
+    @Transactional
+    void testSetAvailableFalse_whenGivenUuid_returnResult() {
+        int result = tournamentRepository.setAvailableFalse(tournament.getUuid());
+
+        assertEquals(1, result, "Should return 1");
+    }
+
+    //TODO: set all tournament available false where event uuid = eventUuid
 }
