@@ -74,13 +74,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Page<GameEntity> getAll(Pageable pageable) {
-        return gameRepository.findAll(pageable);
+    public Page<GameDto> getAll(Pageable pageable) {
+        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findAll(pageable));
     }
 
     @Override
-    public Page<GameEntity> getAllAvailable(Pageable pageable) {
-        return gameRepository.findAllByAvailableTrue(pageable);
+    public Page<GameDto> getAllAvailable(Pageable pageable) {
+        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findAllByAvailableTrue(pageable));
     }
 
     @Override

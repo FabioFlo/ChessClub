@@ -200,13 +200,13 @@ public class GameServiceUnitTests {
 
         when(gameRepository.findAll(any(Pageable.class))).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAll(pageable);
+        Page<GameDto> result = gameService.getAll(pageable);
 
         assertAll("Page assertions",
                 () -> assertEquals(1, result.getTotalElements()),
                 () -> assertEquals(0, result.getNumber()),
                 () -> assertEquals(10, result.getSize()),
-                () -> assertEquals(game, result.getContent().getFirst()));
+                () -> assertEquals(game.getUuid(), result.getContent().getFirst().uuid()));
     }
 
     @Test
@@ -218,13 +218,13 @@ public class GameServiceUnitTests {
 
         when(gameRepository.findAllByAvailableTrue(any(Pageable.class))).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAllAvailable(pageable);
+        Page<GameDto> result = gameService.getAllAvailable(pageable);
 
         assertAll("Page assertions",
                 () -> assertEquals(1, result.getTotalElements()),
                 () -> assertEquals(0, result.getNumber()),
                 () -> assertEquals(10, result.getSize()),
-                () -> assertEquals(game, result.getContent().getFirst()));
+                () -> assertEquals(game.getUuid(), result.getContent().getFirst().uuid()));
     }
 
     @Test

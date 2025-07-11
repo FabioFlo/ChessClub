@@ -57,7 +57,7 @@ public class GameController {
 
     @GetMapping
     public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllGames(@PageableDefault Pageable pageable) {
-        Page<GameDto> pageResult = gameMapper.pageGameEntityToPageGameDto(gameService.getAllAvailable(pageable));
+        Page<GameDto> pageResult = gameService.getAllAvailable(pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), "Game list", true));
