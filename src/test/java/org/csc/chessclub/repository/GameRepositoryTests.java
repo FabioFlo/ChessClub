@@ -1,5 +1,6 @@
 package org.csc.chessclub.repository;
 
+import jakarta.transaction.Transactional;
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.game.GameEntity;
@@ -147,5 +148,14 @@ public class GameRepositoryTests extends TestContainerConfig {
         assertAll("Get all available games",
                 () -> assertFalse(result.isEmpty(), "Result should not be null"),
                 () -> assertTrue(allAvailable, "All games should be available"));
+    }
+
+    @Test
+    @DisplayName("Correctly set available to false")
+    @Transactional
+    void testSetAvailableFalse_whenGivenUuid_returnResult() {
+        int result = gameRepository.setAvailableFalse(gameOne.getUuid());
+
+        assertEquals(1, result, "Result should be equal to 1");
     }
 }

@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.game;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -64,13 +64,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameEntity delete(UUID uuid) {
-        Optional<GameEntity> game = gameRepository.findById(uuid);
-        if (game.isEmpty()) {
+    @Transactional
+    public void delete(UUID uuid) {
+        int result = gameRepository.setAvailableFalse(uuid);
+
+        if (result == 0) {
             throw new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid));
         }
-        game.get().setAvailable(false);
-        return gameRepository.save(game.get());
     }
 
     @Override

@@ -147,13 +147,9 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Should delete by setting available false")
     public void testDeleteGame_whenGameUuidProvided_shouldSetAvailableFalse() {
-        when(gameRepository.findById(game.getUuid())).thenReturn(Optional.of(game));
-        when(gameRepository.save(any(GameEntity.class))).thenReturn(game);
-
-        game.setAvailable(false);
+        when(gameRepository.setAvailableFalse(game.getUuid())).thenReturn(1);
 
         assertDoesNotThrow(() -> gameService.delete(game.getUuid()));
-        assertFalse(game.isAvailable(), "Game should not be available");
     }
 
     @Test

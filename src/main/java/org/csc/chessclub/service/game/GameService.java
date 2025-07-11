@@ -16,7 +16,7 @@ public interface GameService {
 
     GameDto getByUuid(UUID uuid);
 
-    GameEntity delete(UUID uuid);
+    void delete(UUID uuid);
 
     Page<GameDto> getAll(Pageable pageable);
 

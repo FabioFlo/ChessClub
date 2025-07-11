@@ -111,7 +111,7 @@ public class EventRepositoryTests extends TestContainerConfig {
     @DisplayName("Correctly set available to false")
     @Order(4)
     @Transactional
-    void testSetAvailableFalse_whenGivenUuid_returnResultTrue() {
+    void testSetAvailableFalse_whenGivenUuid_returnResult() {
         eventRepository.save(event1);
         int result = eventRepository.setAvailableFalse(event1.getUuid());
 
