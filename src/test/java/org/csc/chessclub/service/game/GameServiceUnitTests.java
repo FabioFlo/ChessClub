@@ -173,12 +173,12 @@ public class GameServiceUnitTests {
     @Test
     @DisplayName("Update game - empty player name set to NN")
     public void testUpdateGame_whenGameWithEmptyWhiteOrBlackPlayerNameProvided_thenPlayerNameShouldBeSetToNN() {
-        game.setBlackPlayerName("");
+       String blankPlayerName= "";
         when(gameRepository.save(any(GameEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         when(gameRepository.findById(uuid)).thenReturn(Optional.ofNullable(game));
 
-        UpdateGameDto gameDto = new UpdateGameDto(uuid, whitePlayer, "", pgn, result, null);
+        UpdateGameDto gameDto = new UpdateGameDto(uuid, whitePlayer, blankPlayerName, pgn, result, null);
 
         GameEntity updatedGame = gameService.update(gameDto);
 
@@ -250,11 +250,11 @@ public class GameServiceUnitTests {
 
         when(gameRepository.findByAvailableTrueAndWhitePlayerNameIs(whitePlayer, pageable)).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAllGamesByWhitePlayerName(whitePlayer, pageable);
+        Page<GameDto> result = gameService.getAllGamesByWhitePlayerName(whitePlayer, pageable);
 
         assertAll("Games where player plays white assertions",
                 () -> assertEquals(2, result.getTotalElements(), "Should return two games"),
-                () -> assertEquals(whitePlayer, result.getContent().getFirst().getWhitePlayerName(),
+                () -> assertEquals(whitePlayer, result.getContent().getFirst().whitePlayerName(),
                         "White player name should be " + whitePlayer));
     }
 
@@ -266,11 +266,11 @@ public class GameServiceUnitTests {
 
         when(gameRepository.findByAvailableTrueAndBlackPlayerNameIs(blackPlayer, pageable)).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAllGamesByBlackPlayerName(blackPlayer, pageable);
+        Page<GameDto> result = gameService.getAllGamesByBlackPlayerName(blackPlayer, pageable);
 
         assertAll("Games where player plays white assertions",
                 () -> assertEquals(2, result.getTotalElements(), "Should return two games"),
-                () -> assertEquals(blackPlayer, result.getContent().getFirst().getBlackPlayerName(),
+                () -> assertEquals(blackPlayer, result.getContent().getFirst().blackPlayerName(),
                         "White player name should be " + blackPlayer));
     }
 
