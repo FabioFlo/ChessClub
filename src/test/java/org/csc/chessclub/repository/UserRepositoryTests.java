@@ -1,5 +1,6 @@
 package org.csc.chessclub.repository;
 
+import jakarta.transaction.Transactional;
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.user.UserEntity;
@@ -35,6 +36,7 @@ public class UserRepositoryTests extends TestContainerConfig {
                 .username(USERNAME1)
                 .password(password1)
                 .email(EMAIL1)
+                .available(true)
                 .role(Role.USER)
                 .build();
 
@@ -44,6 +46,7 @@ public class UserRepositoryTests extends TestContainerConfig {
                 .username(USERNAME2)
                 .password(password2)
                 .email(EMAIL2)
+                .available(true)
                 .role(Role.ADMIN)
                 .build();
 
@@ -71,5 +74,15 @@ public class UserRepositoryTests extends TestContainerConfig {
                 "Username should be equal");
         assertEquals(EMAIL2, retrievedUser.get().getEmail(),
                 "Email should be equal");
+    }
+
+    @Test
+    @DisplayName("Set available false")
+    @Transactional
+    void testSetAvailableFalse_whenGivenUuid_resultShouldBeOne() {
+        userRepository.save(user1);
+        int result = userRepository.setAvailableFalse(user1.getUuid());
+
+        assertEquals(1, result, "Result should be 1");
     }
 }

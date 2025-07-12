@@ -77,7 +77,7 @@ public class TournamentRepositoryTests extends TestContainerConfig {
     @Test
     @DisplayName("Set available to false")
     @Transactional
-    void testSetAvailableFalse_whenGivenUuid_returnResult() {
+    void testSetAvailableFalse_whenGivenUuid_resultShouldBeOne() {
         int result = tournamentRepository.setAvailableFalse(tournament.getUuid());
 
         assertEquals(1, result, "Should return 1");
