@@ -159,13 +159,8 @@ public class UserServiceUnitTests {
     @Test
     @DisplayName("Delete user by Id set available false")
     void testDeleteUser_whenUserFoundById_availableShouldBeSetToFalse() {
-        when(userRepository.findById(user.getUuid())).thenReturn(Optional.of(user));
-        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
-
-        user.setAvailable(false);
+        when(userRepository.setAvailableFalse(user.getUuid())).thenReturn(1);
 
         assertDoesNotThrow(() -> userService.delete(user.getUuid()));
-        assertFalse(user.isAvailable());
-        verify(userRepository, times(1)).save(any(UserEntity.class));
     }
 }

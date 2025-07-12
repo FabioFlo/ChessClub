@@ -164,7 +164,7 @@ public class UserControllerTests extends BaseIntegrationTest {
     void testUpdateUser_whenAuthenticatedAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, "NewUsername", EMAIL);
 
-        ResponseDto<UpdateUserRequest> response = given()
+        ResponseDto<UserDto> response = given()
                 .header("Authorization", "Bearer " + userToken)
                 .body(updateUser)
                 .when()
@@ -207,7 +207,7 @@ public class UserControllerTests extends BaseIntegrationTest {
     void testUpdateUser_whenAuthenticatedAdminAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, USERNAME, EMAIL);
 
-        ResponseDto<UpdateUserRequest> response = given()
+        ResponseDto<UserDto> response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .body(updateUser)
                 .when()
@@ -227,7 +227,7 @@ public class UserControllerTests extends BaseIntegrationTest {
     @Order(10)
     @DisplayName("Admin can delete user")
     void testDeleteUser_whenAuthenticatedAdminAndValidUuidProvided_returnsDeletedUser() {
-        ResponseDto<UserDto> response = given()
+        ResponseDto<UUID> response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .pathParam("uuid", userUuid)
                 .when()
@@ -242,10 +242,6 @@ public class UserControllerTests extends BaseIntegrationTest {
                 .extracting(ResponseDto::message)
                 .isEqualTo("User deleted");
 
-        UserDto userDto = response.data();
-        assertThat(userDto)
-                .isNotNull()
-                .extracting(UserDto::available).isEqualTo(false);
     }
 
     @Test

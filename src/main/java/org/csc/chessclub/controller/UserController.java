@@ -61,8 +61,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<ResponseDto<UserDto>> deleteUser(@ValidUUID @PathVariable UUID uuid) {
+    public ResponseEntity<ResponseDto<UUID>> deleteUser(@ValidUUID @PathVariable UUID uuid) {
+        userService.delete(uuid);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
-                userMapper.userToUserDto(userService.delete(uuid)), "User deleted", true));
+                uuid, "User deleted", true));
     }
 }

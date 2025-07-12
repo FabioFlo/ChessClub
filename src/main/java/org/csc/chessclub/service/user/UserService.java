@@ -13,6 +13,6 @@ public interface UserService {
 
     UserEntity getById(UUID uuid);
 
-    UserEntity delete(UUID uuid);
+    void delete(UUID uuid);
 
 }

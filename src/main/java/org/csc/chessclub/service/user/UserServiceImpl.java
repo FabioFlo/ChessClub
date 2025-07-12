@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.user;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
@@ -71,12 +72,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity delete(UUID uuid) {
-        Optional<UserEntity> user = userRepository.findById(uuid);
-        if (user.isPresent()) {
-            user.get().setAvailable(false);
-            return userRepository.save(user.get());
+    @Transactional
+    public void delete(UUID uuid) {
+        int result = userRepository.setAvailableFalse(uuid);
+        if (result == 0) {
+            throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid));
         }
-        throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid));
+
     }
 }
