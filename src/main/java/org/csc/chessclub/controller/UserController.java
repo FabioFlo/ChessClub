@@ -10,7 +10,6 @@ import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
-import org.csc.chessclub.mapper.UserMapper;
 import org.csc.chessclub.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final UserMapper userMapper;
     private final AuthenticationService authService;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -45,17 +43,15 @@ public class UserController {
     @PreAuthorize("isAuthenticated")
     @PatchMapping()
     public ResponseEntity<ResponseDto<UserDto>> updateUser(@Valid @RequestBody UpdateUserRequest userRequest) {
-        UserDto userDto = userService.update(userRequest);
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(userDto, "User updated", true));
+                .body(new ResponseDto<>(userService.update(userRequest), "User updated", true));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{uuid}")
     public ResponseEntity<ResponseDto<UserDto>> getUser(@ValidUUID @PathVariable UUID uuid) {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
-                userMapper.userToUserDto(userService.getById(uuid)), "User found", true));
+                userService.getById(uuid), "User found", true));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -67,10 +67,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getById(UUID uuid) {
-        Optional<UserEntity> user = userRepository.findById(uuid);
-        return user.orElseThrow(
-                () -> new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid)));
+    public UserDto getById(UUID uuid) {
+        return userMapper.userToUserDto(userRepository.findById(uuid)
+                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid))));
     }
 
     @Override

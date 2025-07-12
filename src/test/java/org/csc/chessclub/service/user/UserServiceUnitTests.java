@@ -155,10 +155,10 @@ public class UserServiceUnitTests {
     @DisplayName("Get User By Id")
     void testGetUser_whenUserFoundById_returnUser() {
         when(userRepository.findById(user.getUuid())).thenReturn(Optional.of(user));
-        UserEntity retrievedUser = userService.getById(user.getUuid());
+        UserDto userDto = userService.getById(user.getUuid());
 
-        assertNotNull(retrievedUser, "User should not be null");
-        assertEquals(user, retrievedUser, "User should be equal");
+        assertNotNull(userDto, "User should not be null");
+        assertEquals(user.getUuid(), userDto.uuid(), "User should be equal");
         verify(userRepository, times(1)).findById(user.getUuid());
     }
 
