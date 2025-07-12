@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.user;
 
+import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
@@ -67,23 +68,28 @@ public class UserServiceUnitTests {
     @DisplayName("Create User")
     public void testCreateUser_whenUserProvided_returnUser() {
         String encodedPassword = "$2a$10$encodedPassword";
+        RegisterUserRequest userRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
 
         ArgumentCaptor<UserEntity> userCaptor = ArgumentCaptor.forClass(UserEntity.class);
         when(userRepository.save(userCaptor.capture()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> {
+                    UserEntity user = invocation.getArgument(0);
+                    user.setUuid(UUID.randomUUID()); // Simulate DB-generated UUID
+                    return user;
+                });
         when(passwordEncoder.encode(PASSWORD)).thenReturn(encodedPassword);
 
-        UserEntity createdUser = userService.create(user);
+        UserDto createdUser = userService.create(userRequest);
         UserEntity savedUser = userCaptor.getValue();
 
         assertNotNull(createdUser, "User should not be null");
-        assertNotNull(createdUser.getUuid(), "UUID should not be null");
-        assertEquals(Role.USER, createdUser.getRole(), "Role should be equal");
-        assertTrue(createdUser.isAvailable(), "User should be available");
+        assertNotNull(savedUser.getUuid(), "UUID should not be null");
+        assertEquals(Role.USER, createdUser.role(), "Role should be equal");
+        assertTrue(savedUser.isAvailable(), "User should be available");
         assertNotEquals(PASSWORD, savedUser.getPassword(), "Password should not be equal");
         assertEquals(encodedPassword, savedUser.getPassword(), "Encoded password mismatch");
 
-        verify(userRepository, times(1)).save(Mockito.any());
+        verify(userRepository).save(Mockito.any());
     }
 
     @Test

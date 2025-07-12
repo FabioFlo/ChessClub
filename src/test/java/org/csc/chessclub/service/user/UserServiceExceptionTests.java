@@ -1,5 +1,6 @@
 package org.csc.chessclub.service.user;
 
+import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
@@ -65,10 +66,12 @@ public class UserServiceExceptionTests {
     @Test
     @DisplayName("Create User - Throw when User Already Exists")
     void testCreateUser_whenUserProvided_shouldThrowUserExceptionIfEmailOrUsernameAlreadyTaken() {
+        RegisterUserRequest userRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
+
         when(userRepository.findUserEntityByUsernameOrEmail(USERNAME, EMAIL)).thenReturn(Optional.ofNullable(user));
 
         UserServiceException exception = assertThrows(UserServiceException.class,
-                () -> userService.create(user));
+                () -> userService.create(userRequest));
 
         assertTrue(exception.getMessage().contains("Email or username already taken"));
 

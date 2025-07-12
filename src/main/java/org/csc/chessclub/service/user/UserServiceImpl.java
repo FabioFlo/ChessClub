@@ -2,6 +2,7 @@ package org.csc.chessclub.service.user;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.NotFoundMessage;
@@ -28,16 +29,17 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserEntity create(UserEntity user) {
-        Optional<UserEntity> existingUser = userRepository.findUserEntityByUsernameOrEmail(user.getUsername(), user.getEmail());
+    public UserDto create(RegisterUserRequest request) {
+        Optional<UserEntity> existingUser = userRepository.findUserEntityByUsernameOrEmail(request.username(), request.email());
         if (existingUser.isPresent()) {
             throw new UserServiceException("Email or username already taken");
         }
+        UserEntity user = userMapper.registerUserRequestToUser(request);
         user.setAvailable(true);
         user.setRole(Role.USER);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(request.password()));
 
-        return userRepository.save(user);
+        return userMapper.userToUserDto(userRepository.save(user));
     }
 
     @Override
