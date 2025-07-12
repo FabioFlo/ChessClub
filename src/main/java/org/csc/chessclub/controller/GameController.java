@@ -8,7 +8,6 @@ import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
-import org.csc.chessclub.mapper.GameMapper;
 import org.csc.chessclub.service.game.GameService;
 import org.csc.chessclub.utils.PageUtils;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GameController {
     private final GameService gameService;
-    private final GameMapper gameMapper;
     private final PageUtils<GameDto> pageUtils;
 
     //TODO: Pass the dto into the service and manage there the mapping?
@@ -41,10 +39,8 @@ public class GameController {
 
     @PatchMapping
     public ResponseEntity<ResponseDto<GameDto>> updateGame(@Valid @RequestBody UpdateGameDto updateGameDto) {
-        GameDto gameDto = gameMapper.gameToGameDto(gameService.update(updateGameDto));
-
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(gameDto, "Game updated", true));
+                .body(new ResponseDto<>(gameService.update(updateGameDto), "Game updated", true));
     }
 
     @GetMapping("/{uuid}")
@@ -66,7 +62,7 @@ public class GameController {
     @GetMapping("/player/{player-name}")
     public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllByPlayerName(@PageableDefault Pageable pageable,
                                                                                     @PathVariable("player-name") String playerName) {
-        Page<GameDto> pageResult = gameMapper.pageGameEntityToPageGameDto(gameService.getAllByPlayerName(playerName, pageable));
+        Page<GameDto> pageResult = gameService.getAllByPlayerName(playerName, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), "Player games", true));

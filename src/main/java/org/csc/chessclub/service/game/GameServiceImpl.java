@@ -40,7 +40,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameEntity update(UpdateGameDto gameDto) {
+    public GameDto update(UpdateGameDto gameDto) {
         UUID tournamentUuid = gameDto.tournamentId();
         if (tournamentUuid != null && !tournamentRepository.existsById(tournamentUuid)) {
             throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentUuid));
@@ -53,7 +53,7 @@ public class GameServiceImpl implements GameService {
         gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
         gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
 
-        return gameRepository.save(gameEntity);
+        return gameMapper.gameToGameDto(gameRepository.save(gameEntity));
     }
 
     @Override
@@ -84,8 +84,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Page<GameEntity> getAllByPlayerName(String playerName, Pageable pageable) {
-        return gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable);
+    public Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable) {
+        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable));
     }
 
     @Override

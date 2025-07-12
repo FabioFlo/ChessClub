@@ -123,10 +123,10 @@ public class GameServiceUnitTests {
             return null;
         }).when(gameMapper).updateGameDtoToGame(gameDto, game);
 
-        GameEntity updatedGame = gameService.update(gameDto);
+        GameDto updatedGame = gameService.update(gameDto);
 
         assertNotNull(updatedGame, "Game should not be null");
-        assertEquals(newPlayerName, updatedGame.getBlackPlayerName(), "Black player name should match");
+        assertEquals(newPlayerName, updatedGame.blackPlayerName(), "Black player name should match");
         assertNotNull(game.getUuid(), "Uuid should not be null");
 
         verify(gameRepository, Mockito.times(1)).save(Mockito.any());
@@ -180,11 +180,11 @@ public class GameServiceUnitTests {
 
         UpdateGameDto gameDto = new UpdateGameDto(uuid, whitePlayer, blankPlayerName, pgn, result, null);
 
-        GameEntity updatedGame = gameService.update(gameDto);
+        GameDto updatedGame = gameService.update(gameDto);
 
-        assertEquals("NN", updatedGame.getBlackPlayerName(),
+        assertEquals("NN", updatedGame.blackPlayerName(),
                 "White player name should be NN");
-        assertEquals(game.getWhitePlayerName(), updatedGame.getWhitePlayerName(),
+        assertEquals(game.getWhitePlayerName(), updatedGame.whitePlayerName(),
                 "Black player name should match");
     }
 
@@ -233,12 +233,12 @@ public class GameServiceUnitTests {
         when(gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(
                 playerName, playerName, pageable)).thenReturn(pagedGames);
 
-        Page<GameEntity> result = gameService.getAllByPlayerName(playerName, pageable);
+        Page<GameDto> result = gameService.getAllByPlayerName(playerName, pageable);
 
         assertAll("Paged games by player name assertions",
                 () -> assertEquals(2, result.getTotalElements(),
                         "Should return two games"),
-                () -> assertEquals(playerName, result.getContent().getFirst().getBlackPlayerName(),
+                () -> assertEquals(playerName, result.getContent().getFirst().blackPlayerName(),
                         "Black player name should be " + playerName));
     }
 
