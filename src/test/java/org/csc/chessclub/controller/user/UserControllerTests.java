@@ -33,6 +33,11 @@ public class UserControllerTests extends BaseIntegrationTest {
     private String userToken = "";
     private UUID userUuid = UUID.randomUUID();
 
+    private static final String CREATED = "User successfully created";
+    private static final String LOGGED_IN = "User successfully logged in";
+    private static final String UPDATED = "User successfully updated";
+    private static final String DELETED = "User deleted";
+
     @Autowired
     private JwtService service;
 
@@ -57,7 +62,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::message)
-                .isEqualTo("User logged in");
+                .isEqualTo(LOGGED_IN);
 
         assertNotNull(adminToken);
         assertThat(response)
@@ -90,7 +95,7 @@ public class UserControllerTests extends BaseIntegrationTest {
 
         assertThat(response)
                 .extracting(ResponseDto::message)
-                .isEqualTo("User registered");
+                .isEqualTo(CREATED);
     }
 
     @Test
@@ -108,7 +113,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::message)
-                .isEqualTo("User logged in");
+                .isEqualTo(LOGGED_IN);
 
         String usernameOrEmail = service.extractUsernameOrEmail(userToken);
         assertEquals(USERNAME, usernameOrEmail);
@@ -177,7 +182,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::message)
-                .isEqualTo("User updated");
+                .isEqualTo(UPDATED);
 
     }
 
@@ -220,7 +225,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::message)
-                .isEqualTo("User updated");
+                .isEqualTo(UPDATED);
     }
 
     @Test
@@ -240,7 +245,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         assertThat(response)
                 .isNotNull()
                 .extracting(ResponseDto::message)
-                .isEqualTo("User deleted");
+                .isEqualTo(DELETED);
 
     }
 
