@@ -24,7 +24,6 @@ public class TournamentRepositoryTests extends TestContainerConfig {
 
     @BeforeEach
     void setUp() {
-        //TODO: think about a custom repo to get only specific info
         //TODO: Possible views table to summarize the important data from event and tournament
         tournament = TournamentEntity.builder()
                 .title("Tournament")
@@ -82,6 +81,4 @@ public class TournamentRepositoryTests extends TestContainerConfig {
 
         assertEquals(1, result, "Should return 1");
     }
-
-    //TODO: set all tournament available false where event uuid = eventUuid
 }

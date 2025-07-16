@@ -34,7 +34,4 @@ public class TournamentEntity {
     @ManyToOne
     @JoinColumn(name = "event_uuid")
     private EventEntity event;
-
-//TODO: category attribute can be useful like CLUB, INTERNATIONAL, HISTORIC
-
 }
