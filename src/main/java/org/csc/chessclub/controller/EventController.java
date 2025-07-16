@@ -32,6 +32,12 @@ public class EventController {
     private final EventService eventService;
     private final PageUtils<EventDto> pageUtils;
 
+    private static final String CREATED = "Event successfully created";
+    private static final String UPDATED = "Event successfully updated";
+    private static final String FOUND = "Event found";
+    private static final String LIST_FOUND = "Events found";
+    private static final String DELETED = "Event deleted";
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<EventDto>> createEvent(
@@ -41,20 +47,20 @@ public class EventController {
         EventDto createdEvent = eventService.create(createEventDto, file);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseDto<>(createdEvent, "Event created", true));
+                .body(new ResponseDto<>(createdEvent, CREATED, true));
     }
 
     @GetMapping()
     public ResponseEntity<ResponseDto<PageResponseDto<EventDto>>> getAllEvents(@PageableDefault Pageable pageable) {
         Page<EventDto> pagedEvent = eventService.getAllAvailable(pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedEvent), "Events found", true));
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedEvent), LIST_FOUND, true));
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ResponseDto<EventDto>> getEventById(@ValidUUID @PathVariable UUID uuid) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(eventService.getById(uuid), "Event found", true));
+                .body(new ResponseDto<>(eventService.getById(uuid), FOUND, true));
     }
 
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -65,14 +71,14 @@ public class EventController {
 
         EventDto eventDto = eventService.update(updateEventDto, file);
 
-        return ResponseEntity.ok(new ResponseDto<>(eventDto, "Event updated", true));
+        return ResponseEntity.ok(new ResponseDto<>(eventDto, UPDATED, true));
     }
 
     @DeleteMapping("/{uuid}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<UUID>> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
         eventService.delete(uuid);
-        return ResponseEntity.ok(new ResponseDto<>(uuid, "Event deleted", true));
+        return ResponseEntity.ok(new ResponseDto<>(uuid, DELETED, true));
     }
 
 }

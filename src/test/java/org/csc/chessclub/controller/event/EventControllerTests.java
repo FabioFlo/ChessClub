@@ -39,6 +39,8 @@ public class EventControllerTests extends BaseIntegrationTest {
     @Value("${storage.pdf-folder}")
     String storageFolder;
 
+    private static final String CREATED = "Event successfully created";
+    private static final String DELETED = "Event deleted";
 
     @BeforeAll
     void setup() {
@@ -78,7 +80,7 @@ public class EventControllerTests extends BaseIntegrationTest {
 
         assertThat(response)
                 .extracting(ResponseDto::message)
-                .isEqualTo("Event created");
+                .isEqualTo(CREATED);
 
     }
 
@@ -166,7 +168,7 @@ public class EventControllerTests extends BaseIntegrationTest {
         assertThat(responseDto)
                 .isNotNull()
                 .extracting(ResponseDto::message)
-                .isEqualTo("Event deleted");
+                .isEqualTo(DELETED);
 
         assertThat(responseDto)
                 .extracting(ResponseDto::data)
