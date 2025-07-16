@@ -36,6 +36,9 @@ public class GameControllerTests extends BaseIntegrationTest {
     private UUID gameId;
     private final String whitePlayer = "White player";
 
+    private static final String CREATED = "Game successfully created";
+    private static final String UPDATED = "Game successfully updated";
+
     @BeforeAll
     public void setUp() {
         createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon, null);
@@ -66,7 +69,7 @@ public class GameControllerTests extends BaseIntegrationTest {
 
         assertThat(response)
                 .extracting(ResponseDto::message)
-                .isEqualTo("Game created");
+                .isEqualTo(CREATED);
     }
 
     @Test
@@ -95,7 +98,7 @@ public class GameControllerTests extends BaseIntegrationTest {
 
         assertThat(response)
                 .extracting(ResponseDto::message)
-                .isEqualTo("Game updated");
+                .isEqualTo(UPDATED);
     }
 
     @Test
