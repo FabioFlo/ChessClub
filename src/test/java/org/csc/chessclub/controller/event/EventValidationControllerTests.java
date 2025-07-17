@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
+import java.io.File;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -28,6 +29,9 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
     private String userUsername;
     @Value("${user.password}")
     private String userPassword;
+    @Value("${storage.pdf-folder}")
+    String storageFolder;
+
 
     @BeforeAll
     void setup() {
@@ -122,4 +126,31 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
                 .extracting(ValidErrorMessage::errors)
                 .hasFieldOrProperty("uuid");
     }
+
+
+    @Test
+    @DisplayName("Update event with file - fails if format not allowed")
+    void testUpdateEvent_whenFormatNotAllowed_thenValidationFails() {
+        UpdateEventDto updEventDto = new UpdateEventDto(UUID.randomUUID(), "title", "description", "author");
+        String notAllowedFormat = "notAllowedFormat.jpeg";
+
+        ResponseDto<ValidErrorMessage> response = given()
+                .header("Authorization", "Bearer " + userToken)
+                .multiPart("event", "event.json", updEventDto, "application/json")
+                .multiPart("file", new File(storageFolder + "/" + notAllowedFormat))
+                .contentType("multipart/form-data")
+                .when()
+                .patch("/events")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::data)
+                .extracting(ValidErrorMessage::errors)
+                .hasFieldOrProperty("file");
+    }
+
 }

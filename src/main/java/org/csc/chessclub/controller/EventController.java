@@ -7,6 +7,7 @@ import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
+import org.csc.chessclub.exception.validation.file.ValidFile;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.csc.chessclub.service.event.EventService;
 import org.csc.chessclub.utils.PageUtils;
@@ -67,7 +68,7 @@ public class EventController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<EventDto>> updateEvent(
             @Valid @RequestPart(value = "event") UpdateEventDto updateEventDto,
-            @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
+            @RequestPart(value = "file", required = false) @ValidFile MultipartFile file) throws IOException {
 
         EventDto eventDto = eventService.update(updateEventDto, file);
 
