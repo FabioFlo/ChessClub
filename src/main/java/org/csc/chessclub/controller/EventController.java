@@ -43,7 +43,7 @@ public class EventController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<EventDto>> createEvent(
             @Valid @RequestPart(value = "event") CreateEventDto createEventDto,
-            @RequestPart(value = "pdfFile", required = false) MultipartFile file) throws IOException {
+            @RequestPart(value = "pdfFile", required = false) @ValidFile MultipartFile file) throws IOException {
 
         EventDto createdEvent = eventService.create(createEventDto, file);
 
