@@ -32,7 +32,6 @@ public class EventValidationControllerTests extends BaseIntegrationTest {
     @Value("${storage.pdf-folder}")
     String storageFolder;
 
-
     @BeforeAll
     void setup() {
         AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
