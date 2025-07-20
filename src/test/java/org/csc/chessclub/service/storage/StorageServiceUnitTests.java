@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class StorageServiceUnitTests {
 
     private StorageServiceImpl storageService;
-    private final String rootPath = "src/main/resources/pdf-folder";
+    private final String rootPath = "src/test/resources/pdf-folder";
 
     @BeforeEach
     public void setUp() {
