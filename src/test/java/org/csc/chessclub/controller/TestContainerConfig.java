@@ -23,7 +23,7 @@ public abstract class TestContainerConfig {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgresContainer
-            = new PostgreSQLContainer<>("postgres:latest");
+            = new PostgreSQLContainer<>("postgres:17.5");
 
     @LocalServerPort
     private int port;
