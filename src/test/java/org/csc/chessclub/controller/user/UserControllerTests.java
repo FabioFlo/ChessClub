@@ -20,7 +20,8 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class UserControllerTests extends BaseIntegrationTest {
 
@@ -41,12 +42,6 @@ public class UserControllerTests extends BaseIntegrationTest {
     @Autowired
     private JwtService service;
 
-    @Test
-    @Order(1)
-    void connectionTest() {
-        assertTrue(isContainerNotNullAndRunning(),
-                "Container should be not null and running");
-    }
 
     @Test
     @Order(2)

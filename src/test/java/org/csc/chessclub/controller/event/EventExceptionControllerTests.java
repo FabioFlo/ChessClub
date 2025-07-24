@@ -16,18 +16,12 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventExceptionControllerTests extends BaseIntegrationTest {
 
     private final UUID notFoundUuid = UUID.randomUUID();
 
-    @Test
-    @Order(1)
-    void connectionTest() {
-        assertTrue(isContainerNotNullAndRunning(),
-                "Container should be not null and running");
-    }
+
 
     @Test
     @Order(2)

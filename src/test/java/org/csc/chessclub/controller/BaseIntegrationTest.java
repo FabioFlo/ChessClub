@@ -7,6 +7,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.csc.chessclub.TestcontainersConfiguration;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.dto.ResponseDto;
@@ -21,13 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.given;
@@ -37,12 +36,15 @@ import static io.restassured.RestAssured.given;
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 public abstract class BaseIntegrationTest {
 
+/*
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgresContainer
             = new PostgreSQLContainer<>("postgres:17.5");
+*/
 
     @LocalServerPort
     private int port;
@@ -81,6 +83,8 @@ public abstract class BaseIntegrationTest {
                 .setAccept(ContentType.JSON)
                 .build();
 
+        userRepository.deleteAll();
+
         userRepository.save(UserEntity.
                 builder()
                 .username(adminUsername)
@@ -99,10 +103,10 @@ public abstract class BaseIntegrationTest {
                 .build());
     }
 
-    protected boolean isContainerNotNullAndRunning() {
+   /* protected boolean isContainerNotNullAndRunning() {
         return postgresContainer != null && postgresContainer.isRunning();
     }
-
+*/
     protected ResponseDto<AuthenticationResponse> loginAndGetResponse(AuthenticationRequest request) {
 
         return given()

@@ -9,10 +9,7 @@ import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.dto.event.EventDto;
 import org.csc.chessclub.dto.event.UpdateEventDto;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
@@ -49,13 +46,6 @@ public class EventControllerTests extends BaseIntegrationTest {
 
         AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
         userToken = loginAndGetResponse(userLogin).data().token();
-    }
-
-    @Test
-    @Order(1)
-    void connectionTest() {
-        assertTrue(isContainerNotNullAndRunning(),
-                "Container should be not null and running");
     }
 
     @Test
