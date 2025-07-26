@@ -13,9 +13,7 @@ public class ChessClubApplication {
     public static void main(String[] args) {
         SpringApplication.run(ChessClubApplication.class, args);
     }
-    //TODO: add swagger - pom plugin that generate swagger
     //TODO: add cache
-    //TODO: define dependency versions
 
     //TODO: create docker compose
     //TODO: write documentation .md file, flowchart, commands for test, test percentage etc
