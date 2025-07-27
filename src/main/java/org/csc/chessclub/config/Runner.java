@@ -51,10 +51,11 @@ public class Runner implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    log.info(
-        "Skipping fake admin creation - fake admin create flag set to " + fakeAdminCreateFlag);
     if (fakeAdminCreateFlag) {
       createFakeAdmin();
+    } else {
+      log.info(
+          "Skipping fake admin creation - fake admin create flag set to " + fakeAdminCreateFlag);
     }
   }
 }
