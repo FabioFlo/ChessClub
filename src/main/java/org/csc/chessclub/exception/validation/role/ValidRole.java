@@ -7,7 +7,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.csc.chessclub.exception.validation.result.ResultValidationMessage;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -15,7 +14,7 @@ import org.csc.chessclub.exception.validation.result.ResultValidationMessage;
 @Constraint(validatedBy = CustomRoleValidator.class)
 public @interface ValidRole {
 
-  String message() default ResultValidationMessage.RESULT_MUST_BE_VALID;
+  String message() default RoleValidationMessage.ROLE_MUST_BE_VALID;
 
   Class<?>[] groups() default {};
 
