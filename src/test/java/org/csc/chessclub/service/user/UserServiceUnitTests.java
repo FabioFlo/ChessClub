@@ -1,6 +1,19 @@
 package org.csc.chessclub.service.user;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.UUID;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateRoleDto;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.Role;
@@ -13,18 +26,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceUnitTests {
@@ -75,7 +86,7 @@ public class UserServiceUnitTests {
     when(userRepository.save(userCaptor.capture()))
         .thenAnswer(invocation -> {
           UserEntity user = invocation.getArgument(0);
-          user.setUuid(UUID.randomUUID()); // Simulate DB-generated UUID
+          user.setUuid(UUID.randomUUID());
           return user;
         });
     when(passwordEncoder.encode(PASSWORD)).thenReturn(encodedPassword);
@@ -170,5 +181,21 @@ public class UserServiceUnitTests {
     when(userRepository.setAvailableFalse(user.getUuid())).thenReturn(1);
 
     assertDoesNotThrow(() -> userService.delete(user.getUuid()));
+  }
+
+  @Test
+  @DisplayName("Update user role")
+  void testUpdateUserRole_whenUpdateRoleDtoProvided_returnUpdatedUserRole() {
+    Role oldRole = Role.USER;
+    Role newRole = Role.ADMIN;
+    UpdateRoleDto updateRole = new UpdateRoleDto(user.getUuid(), oldRole, newRole);
+
+    when(userRepository.updateRole(user.getUuid(), oldRole, newRole)).thenReturn(1);
+
+    Role result = userService.updateUserRole(updateRole);
+    
+    assertAll("Update role assertions",
+        () -> assertNotNull(result, "Role should not be null"),
+        () -> assertEquals(newRole, result, "Role should be equal"));
   }
 }

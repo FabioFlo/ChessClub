@@ -1,8 +1,11 @@
 package org.csc.chessclub.service.user;
 
 import jakarta.transaction.Transactional;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateRoleDto;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
 import org.csc.chessclub.enums.NotFoundMessage;
@@ -17,9 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -85,5 +85,17 @@ public class UserServiceImpl implements UserService {
       throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid));
     }
 
+  }
+
+  @Override
+  @Transactional
+  public Role updateUserRole(UpdateRoleDto updateRoleDto) {
+    int result = userRepository.updateRole(updateRoleDto.uuid(), updateRoleDto.oldRole(),
+        updateRoleDto.newRole());
+    if (result == 0) {
+      throw new CustomNotFoundException(
+          NotFoundMessage.USER_WITH_UUID.format(updateRoleDto.uuid()));
+    }
+    return updateRoleDto.newRole();
   }
 }
