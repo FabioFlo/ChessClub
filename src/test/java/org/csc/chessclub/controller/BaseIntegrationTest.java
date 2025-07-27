@@ -39,13 +39,6 @@ import static io.restassured.RestAssured.given;
 @Import(TestcontainersConfiguration.class)
 public abstract class BaseIntegrationTest {
 
-/*
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgresContainer
-            = new PostgreSQLContainer<>("postgres:17.5");
-*/
-
   @LocalServerPort
   private int port;
 
@@ -103,10 +96,6 @@ public abstract class BaseIntegrationTest {
         .build());
   }
 
-  /* protected boolean isContainerNotNullAndRunning() {
-       return postgresContainer != null && postgresContainer.isRunning();
-   }
-*/
   protected ResponseDto<AuthenticationResponse> loginAndGetResponse(AuthenticationRequest request) {
 
     return given()

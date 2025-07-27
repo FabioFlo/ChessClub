@@ -21,11 +21,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Import(TestcontainersConfiguration.class)
 public abstract class TestContainerConfig {
 
-  /*   @Container
-     @ServiceConnection
-     static PostgreSQLContainer<?> postgresContainer
-             = new PostgreSQLContainer<>("postgres:17.5");
- */
   @LocalServerPort
   private int port;
 
