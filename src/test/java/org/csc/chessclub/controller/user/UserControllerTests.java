@@ -1,13 +1,21 @@
 package org.csc.chessclub.controller.user;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import io.restassured.common.mapper.TypeRef;
+import java.util.UUID;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateRoleDto;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.ErrorMessage;
 import org.csc.chessclub.security.JwtService;
 import org.junit.jupiter.api.DisplayName;
@@ -16,14 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.UUID;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class UserControllerTests extends BaseIntegrationTest {
+
+  String apiPath = "/users";
 
   private final RegisterUserRequest registerUserRequest = new RegisterUserRequest(USERNAME, EMAIL,
       PASSWORD);
@@ -39,6 +42,7 @@ public class UserControllerTests extends BaseIntegrationTest {
   private static final String LOGGED_IN = "User successfully logged in";
   private static final String UPDATED = "User successfully updated";
   private static final String DELETED = "User deleted";
+  private static final String UPDATED_ROLE = "Role successfully updated";
 
   @Autowired
   private JwtService service;
@@ -77,7 +81,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         .header("Authorization", "Bearer " + adminToken)
         .body(registerUserRequest)
         .when()
-        .post("/users")
+        .post(apiPath)
         .then()
         .statusCode(HttpStatus.CREATED.value())
         .extract().response().as(new TypeRef<>() {
@@ -125,7 +129,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         .header("Authorization", "Bearer " + userToken)
         .pathParam("uuid", userUuid)
         .when()
-        .get("/users/{uuid}")
+        .get(apiPath + "/{uuid}")
         .then()
         .statusCode(HttpStatus.FORBIDDEN.value())
         .extract().response().as(new TypeRef<>() {
@@ -140,13 +144,13 @@ public class UserControllerTests extends BaseIntegrationTest {
 
   @Test
   @Order(6)
-  @DisplayName("Throw when USER try to call delete user")
+  @DisplayName("Throw when USER try to call delete another user")
   void testDeleteUser_whenUserTryToDeleteAUser_shouldThrowAccessDeniedException() {
     ResponseDto<ErrorMessage> response = given()
         .header("Authorization", "Bearer " + userToken)
         .pathParam("uuid", userUuid)
         .when()
-        .delete("/users/{uuid}")
+        .delete(apiPath + "/{uuid}")
         .then()
         .statusCode(HttpStatus.FORBIDDEN.value())
         .extract().response().as(new TypeRef<>() {
@@ -161,7 +165,7 @@ public class UserControllerTests extends BaseIntegrationTest {
 
   @Test
   @Order(7)
-  @DisplayName("User can update his data")
+  @DisplayName("User can update his entity")
   void testUpdateUser_whenAuthenticatedAndValidUpdateUserProvided_returnsUpdatedUser() {
     UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, "NewUsername", EMAIL);
 
@@ -169,7 +173,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         .header("Authorization", "Bearer " + userToken)
         .body(updateUser)
         .when()
-        .patch("/users")
+        .patch(apiPath)
         .then()
         .statusCode(HttpStatus.OK.value())
         .extract().response().as(new TypeRef<>() {
@@ -190,7 +194,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         .header("Authorization", "Bearer " + adminToken)
         .pathParam("uuid", userUuid)
         .when()
-        .get("/users/{uuid}")
+        .get(apiPath + "/{uuid}")
         .then()
         .statusCode(HttpStatus.OK.value())
         .extract().response().as(new TypeRef<>() {
@@ -212,7 +216,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         .header("Authorization", "Bearer " + adminToken)
         .body(updateUser)
         .when()
-        .patch("/users")
+        .patch(apiPath)
         .then()
         .statusCode(HttpStatus.OK.value())
         .extract().response().as(new TypeRef<>() {
@@ -226,13 +230,37 @@ public class UserControllerTests extends BaseIntegrationTest {
 
   @Test
   @Order(10)
+  @DisplayName("Admin can update user role")
+  void testUpdateUser_whenAuthenticatedAdminAndValidUpdateRoleDtoProvided_returnsUpdatedRole() {
+    Role oldRole = Role.USER;
+    Role newRole = Role.ADMIN;
+    UpdateRoleDto updateRole = new UpdateRoleDto(userUuid, oldRole, newRole);
+
+    ResponseDto<Role> response = given()
+        .header("Authorization", "Bearer " + adminToken)
+        .body(updateRole)
+        .when()
+        .patch(apiPath + "/role")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
+
+    assertThat(response)
+        .isNotNull()
+        .extracting(ResponseDto::message)
+        .isEqualTo(UPDATED_ROLE);
+  }
+
+  @Test
+  @Order(11)
   @DisplayName("Admin can delete user")
   void testDeleteUser_whenAuthenticatedAdminAndValidUuidProvided_returnsDeletedUser() {
     ResponseDto<UUID> response = given()
         .header("Authorization", "Bearer " + adminToken)
         .pathParam("uuid", userUuid)
         .when()
-        .delete("/users/{uuid}")
+        .delete(apiPath + "/{uuid}")
         .then()
         .statusCode(HttpStatus.OK.value())
         .extract().response().as(new TypeRef<>() {
@@ -246,7 +274,7 @@ public class UserControllerTests extends BaseIntegrationTest {
   }
 
   @Test
-  @Order(11)
+  @Order(12)
   @DisplayName("Login fail when user available is false")
   void testLogin_whenUserHaveAvailableFalse_shouldThrowException() {
     AuthenticationRequest request = new AuthenticationRequest(EMAIL, PASSWORD);
@@ -255,7 +283,7 @@ public class UserControllerTests extends BaseIntegrationTest {
         given()
             .body(request)
             .when()
-            .post("/users/login")
+            .post(apiPath + "/login")
             .then()
             .statusCode(HttpStatus.UNAUTHORIZED.value())
             .extract().response().as(new TypeRef<>() {

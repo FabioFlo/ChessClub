@@ -7,8 +7,10 @@ import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.auth.AuthenticationService;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
+import org.csc.chessclub.dto.user.UpdateRoleDto;
 import org.csc.chessclub.dto.user.UpdateUserRequest;
 import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.csc.chessclub.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ public class UserController {
   private static final String UPDATED = "User successfully updated";
   private static final String FOUND = "User found";
   private static final String DELETED = "User deleted";
+  private static final String UPDATED_ROLE = "Role successfully updated";
 
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping()
@@ -70,5 +73,15 @@ public class UserController {
     userService.delete(uuid);
     return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
         uuid, DELETED, true));
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @PatchMapping("/role")
+  public ResponseEntity<ResponseDto<Role>> updateRole(
+      @Valid @RequestBody UpdateRoleDto updateRoleDto) {
+    Role role = userService.updateUserRole(updateRoleDto);
+    return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
+        role, UPDATED_ROLE, true
+    ));
   }
 }
