@@ -11,9 +11,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPassword {
 
-    String message() default PasswordValidationMassage.PASSWORD_NOT_VALID;
+  String message() default PasswordValidationMassage.PASSWORD_NOT_VALID;
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 }

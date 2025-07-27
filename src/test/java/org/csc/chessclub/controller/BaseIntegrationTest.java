@@ -46,89 +46,89 @@ public abstract class BaseIntegrationTest {
             = new PostgreSQLContainer<>("postgres:17.5");
 */
 
-    @LocalServerPort
-    private int port;
+  @LocalServerPort
+  private int port;
 
-    private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
-    private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
+  private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
+  private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
 
-    @Value("${admin.username}")
-    private String adminUsername;
-    @Value("${admin.password}")
-    private String adminPassword;
-    @Value("${admin.email}")
-    private String adminEmail;
+  @Value("${admin.username}")
+  private String adminUsername;
+  @Value("${admin.password}")
+  private String adminPassword;
+  @Value("${admin.email}")
+  private String adminEmail;
 
-    @Value("${user.username}")
-    private String userUsername;
-    @Value("${user.password}")
-    private String userPassword;
-    @Value("${user.email}")
-    private String userEmail;
+  @Value("${user.username}")
+  private String userUsername;
+  @Value("${user.password}")
+  private String userPassword;
+  @Value("${user.email}")
+  private String userEmail;
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+  @Autowired
+  private UserRepository userRepository;
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
-    @BeforeAll
-    void setup() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
+  @BeforeAll
+  void setup() {
+    RestAssured.baseURI = "http://localhost";
+    RestAssured.port = port;
 
-        RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
+    RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
 
-        RestAssured.requestSpecification = new RequestSpecBuilder()
-                .setContentType(ContentType.JSON)
-                .setAccept(ContentType.JSON)
-                .build();
+    RestAssured.requestSpecification = new RequestSpecBuilder()
+        .setContentType(ContentType.JSON)
+        .setAccept(ContentType.JSON)
+        .build();
 
-        userRepository.deleteAll();
+    userRepository.deleteAll();
 
-        userRepository.save(UserEntity.
-                builder()
-                .username(adminUsername)
-                .email(adminEmail)
-                .password(passwordEncoder.encode(adminPassword))
-                .role(Role.ADMIN)
-                .available(true).build());
+    userRepository.save(UserEntity.
+        builder()
+        .username(adminUsername)
+        .email(adminEmail)
+        .password(passwordEncoder.encode(adminPassword))
+        .role(Role.ADMIN)
+        .available(true).build());
 
-        userRepository.save(UserEntity
-                .builder()
-                .username(userUsername)
-                .email(userEmail)
-                .password(passwordEncoder.encode(userPassword))
-                .role(Role.USER)
-                .available(true)
-                .build());
-    }
+    userRepository.save(UserEntity
+        .builder()
+        .username(userUsername)
+        .email(userEmail)
+        .password(passwordEncoder.encode(userPassword))
+        .role(Role.USER)
+        .available(true)
+        .build());
+  }
 
-   /* protected boolean isContainerNotNullAndRunning() {
-        return postgresContainer != null && postgresContainer.isRunning();
-    }
+  /* protected boolean isContainerNotNullAndRunning() {
+       return postgresContainer != null && postgresContainer.isRunning();
+   }
 */
-    protected ResponseDto<AuthenticationResponse> loginAndGetResponse(AuthenticationRequest request) {
+  protected ResponseDto<AuthenticationResponse> loginAndGetResponse(AuthenticationRequest request) {
 
-        return given()
-                .body(request)
-                .when()
-                .post("/users/login")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
-    }
+    return given()
+        .body(request)
+        .when()
+        .post("/users/login")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
+  }
 
-    protected RequestSpecification withPageable(Pageable pageable) {
-        RequestSpecification spec = given();
-        if (pageable != null) {
-            spec
-                    .queryParam("page", pageable.getPageNumber())
-                    .queryParam("size", pageable.getPageSize());
-            pageable.getSort().forEach(order ->
-                    spec.queryParam("sort", order.getProperty() + "," + order.getDirection())
-            );
-        }
-        return spec;
+  protected RequestSpecification withPageable(Pageable pageable) {
+    RequestSpecification spec = given();
+    if (pageable != null) {
+      spec
+          .queryParam("page", pageable.getPageNumber())
+          .queryParam("size", pageable.getPageSize());
+      pageable.getSort().forEach(order ->
+          spec.queryParam("sort", order.getProperty() + "," + order.getDirection())
+      );
     }
+    return spec;
+  }
 }

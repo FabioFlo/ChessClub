@@ -20,88 +20,97 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class GameServiceImpl implements GameService {
-    private final GameRepository gameRepository;
-    private final GameMapper gameMapper;
-    private final TournamentRepository tournamentRepository;
 
-    @Override
-    public GameDto create(CreateGameDto gameDto) {
+  private final GameRepository gameRepository;
+  private final GameMapper gameMapper;
+  private final TournamentRepository tournamentRepository;
 
-        if (gameDto.tournamentId() != null && !tournamentRepository.existsById(gameDto.tournamentId())) {
-            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(gameDto.tournamentId()));
-        }
+  @Override
+  public GameDto create(CreateGameDto gameDto) {
 
-        GameEntity gameEntity = gameMapper.createGameDtoToGame(gameDto);
-        gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
-        gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
-        gameEntity.setAvailable(true);
-
-        return gameMapper.gameToGameDto(gameRepository.save(gameEntity));
+    if (gameDto.tournamentId() != null && !tournamentRepository.existsById(
+        gameDto.tournamentId())) {
+      throw new CustomNotFoundException(
+          NotFoundMessage.TOURNAMENT_WITH_UUID.format(gameDto.tournamentId()));
     }
 
-    @Override
-    public GameDto update(UpdateGameDto gameDto) {
-        UUID tournamentUuid = gameDto.tournamentId();
-        if (tournamentUuid != null && !tournamentRepository.existsById(tournamentUuid)) {
-            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentUuid));
-        }
+    GameEntity gameEntity = gameMapper.createGameDtoToGame(gameDto);
+    gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
+    gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
+    gameEntity.setAvailable(true);
 
-        GameEntity gameEntity = gameRepository.findById(gameDto.uuid())
-                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(gameDto.uuid())));
-        gameMapper.updateGameDtoToGame(gameDto, gameEntity);
+    return gameMapper.gameToGameDto(gameRepository.save(gameEntity));
+  }
 
-        gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
-        gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
-
-        return gameMapper.gameToGameDto(gameRepository.save(gameEntity));
+  @Override
+  public GameDto update(UpdateGameDto gameDto) {
+    UUID tournamentUuid = gameDto.tournamentId();
+    if (tournamentUuid != null && !tournamentRepository.existsById(tournamentUuid)) {
+      throw new CustomNotFoundException(
+          NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentUuid));
     }
 
-    @Override
-    public GameDto getByUuid(UUID uuid) {
-        return gameMapper.gameToGameDto(gameRepository.findById(uuid)
-                .orElseThrow(()
-                        -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid))));
-    }
+    GameEntity gameEntity = gameRepository.findById(gameDto.uuid())
+        .orElseThrow(() -> new CustomNotFoundException(
+            NotFoundMessage.GAME_WITH_UUID.format(gameDto.uuid())));
+    gameMapper.updateGameDtoToGame(gameDto, gameEntity);
 
-    @Override
-    @Transactional
-    public void delete(UUID uuid) {
-        int result = gameRepository.setAvailableFalse(uuid);
+    gameEntity.setWhitePlayerName(setEmptyPlayerNameToNN(gameEntity.getWhitePlayerName()));
+    gameEntity.setBlackPlayerName(setEmptyPlayerNameToNN(gameEntity.getBlackPlayerName()));
 
-        if (result == 0) {
-            throw new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid));
-        }
-    }
+    return gameMapper.gameToGameDto(gameRepository.save(gameEntity));
+  }
 
-    @Override
-    public Page<GameDto> getAll(Pageable pageable) {
-        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findAll(pageable));
-    }
+  @Override
+  public GameDto getByUuid(UUID uuid) {
+    return gameMapper.gameToGameDto(gameRepository.findById(uuid)
+        .orElseThrow(()
+            -> new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid))));
+  }
 
-    @Override
-    public Page<GameDto> getAllAvailable(Pageable pageable) {
-        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findAllByAvailableTrue(pageable));
-    }
+  @Override
+  @Transactional
+  public void delete(UUID uuid) {
+    int result = gameRepository.setAvailableFalse(uuid);
 
-    @Override
-    public Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable) {
-        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName, playerName, pageable));
+    if (result == 0) {
+      throw new CustomNotFoundException(NotFoundMessage.GAME_WITH_UUID.format(uuid));
     }
+  }
 
-    @Override
-    public Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable) {
-        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findByAvailableTrueAndWhitePlayerNameIs(playerName, pageable));
-    }
+  @Override
+  public Page<GameDto> getAll(Pageable pageable) {
+    return gameMapper.pageGameEntityToPageGameDto(gameRepository.findAll(pageable));
+  }
 
-    @Override
-    public Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable) {
-        return gameMapper.pageGameEntityToPageGameDto(gameRepository.findByAvailableTrueAndBlackPlayerNameIs(playerName, pageable));
-    }
+  @Override
+  public Page<GameDto> getAllAvailable(Pageable pageable) {
+    return gameMapper.pageGameEntityToPageGameDto(gameRepository.findAllByAvailableTrue(pageable));
+  }
 
-    private String setEmptyPlayerNameToNN(String playerName) {
-        if (playerName.trim().isEmpty()) {
-            return "NN";
-        }
-        return playerName;
+  @Override
+  public Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable) {
+    return gameMapper.pageGameEntityToPageGameDto(
+        gameRepository.findByAvailableTrueAndWhitePlayerNameOrBlackPlayerNameIs(playerName,
+            playerName, pageable));
+  }
+
+  @Override
+  public Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable) {
+    return gameMapper.pageGameEntityToPageGameDto(
+        gameRepository.findByAvailableTrueAndWhitePlayerNameIs(playerName, pageable));
+  }
+
+  @Override
+  public Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable) {
+    return gameMapper.pageGameEntityToPageGameDto(
+        gameRepository.findByAvailableTrueAndBlackPlayerNameIs(playerName, pageable));
+  }
+
+  private String setEmptyPlayerNameToNN(String playerName) {
+    if (playerName.trim().isEmpty()) {
+      return "NN";
     }
+    return playerName;
+  }
 }

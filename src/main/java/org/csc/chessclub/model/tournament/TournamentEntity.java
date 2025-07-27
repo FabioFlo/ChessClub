@@ -19,19 +19,20 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TournamentEntity {
-    @Id
-    @GeneratedValue(generator = "UUID")
-    private UUID uuid;
-    @Column(length = TournamentConstraints.TITLE_MAX_LENGTH)
-    private String title;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    @Column(length = TournamentConstraints.DESCRIPTION_MAX_LENGTH)
-    private String description;
-    private boolean available;
-    @OneToMany(mappedBy = "tournament")
-    private Set<GameEntity> games;
-    @ManyToOne
-    @JoinColumn(name = "event_uuid")
-    private EventEntity event;
+
+  @Id
+  @GeneratedValue(generator = "UUID")
+  private UUID uuid;
+  @Column(length = TournamentConstraints.TITLE_MAX_LENGTH)
+  private String title;
+  private LocalDate startDate;
+  private LocalDate endDate;
+  @Column(length = TournamentConstraints.DESCRIPTION_MAX_LENGTH)
+  private String description;
+  private boolean available;
+  @OneToMany(mappedBy = "tournament")
+  private Set<GameEntity> games;
+  @ManyToOne
+  @JoinColumn(name = "event_uuid")
+  private EventEntity event;
 }

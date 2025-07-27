@@ -17,32 +17,36 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
-    private final CustomRestAccessDeniedHandler customRestAccessDeniedHandler;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public SecurityConfiguration(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider, CustomRestAccessDeniedHandler customRestAccessDeniedHandler, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.authenticationProvider = authenticationProvider;
-        this.customRestAccessDeniedHandler = customRestAccessDeniedHandler;
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
-    }
+  private final JwtAuthenticationFilter jwtAuthFilter;
+  private final AuthenticationProvider authenticationProvider;
+  private final CustomRestAccessDeniedHandler customRestAccessDeniedHandler;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        http.exceptionHandling(exceptionHandling ->
-                exceptionHandling
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customRestAccessDeniedHandler));
+  public SecurityConfiguration(JwtAuthenticationFilter jwtAuthFilter,
+      AuthenticationProvider authenticationProvider,
+      CustomRestAccessDeniedHandler customRestAccessDeniedHandler,
+      CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+    this.jwtAuthFilter = jwtAuthFilter;
+    this.authenticationProvider = authenticationProvider;
+    this.customRestAccessDeniedHandler = customRestAccessDeniedHandler;
+    this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+  }
 
-        http.sessionManagement(sessionAuthenticationStrategy ->
-                sessionAuthenticationStrategy.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.authenticationProvider(authenticationProvider);
-        http.csrf(AbstractHttpConfigurer::disable);
-        return http.build();
-    }
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    http.exceptionHandling(exceptionHandling ->
+        exceptionHandling
+            .authenticationEntryPoint(customAuthenticationEntryPoint)
+            .accessDeniedHandler(customRestAccessDeniedHandler));
+
+    http.sessionManagement(sessionAuthenticationStrategy ->
+        sessionAuthenticationStrategy.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.authenticationProvider(authenticationProvider);
+    http.csrf(AbstractHttpConfigurer::disable);
+    return http.build();
+  }
 
 
 }

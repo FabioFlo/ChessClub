@@ -16,107 +16,108 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserMapperTests {
-    private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    private static final String USERNAME = "Test Username";
-    private static final String PASSWORD = "password";
-    private static final String EMAIL = "email@email.com";
-    private static final Role ROLE = Role.USER;
-    private static final UUID uuid = UUID.randomUUID();
-    private static final boolean AVAILABLE = true;
-    private UserEntity user;
+  private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    @BeforeEach
-    public void setup() {
-        user = UserEntity
-                .builder()
-                .uuid(uuid)
-                .username(USERNAME)
-                .password(PASSWORD)
-                .email(EMAIL)
-                .role(ROLE)
-                .available(AVAILABLE)
-                .build();
-    }
+  private static final String USERNAME = "Test Username";
+  private static final String PASSWORD = "password";
+  private static final String EMAIL = "email@email.com";
+  private static final Role ROLE = Role.USER;
+  private static final UUID uuid = UUID.randomUUID();
+  private static final boolean AVAILABLE = true;
+  private UserEntity user;
 
-    @Test
-    @DisplayName("Map UserEntity to UserDto")
-    void shouldMapUserEntityToUserDto() {
-        UserDto userDto = userMapper.userToUserDto(user);
+  @BeforeEach
+  public void setup() {
+    user = UserEntity
+        .builder()
+        .uuid(uuid)
+        .username(USERNAME)
+        .password(PASSWORD)
+        .email(EMAIL)
+        .role(ROLE)
+        .available(AVAILABLE)
+        .build();
+  }
 
-        assertEquals(user.getUuid(), userDto.uuid(),
-                "UUID should be equal");
-        assertEquals(user.getUsername(), userDto.username(),
-                "Username should be equal");
-        assertEquals(user.getEmail(), userDto.email(),
-                "Email should be equal");
-        assertEquals(user.getRole(), userDto.role(),
-                "Role should be equal");
-        assertTrue(userDto.available(),
-                "User should be available");
-    }
+  @Test
+  @DisplayName("Map UserEntity to UserDto")
+  void shouldMapUserEntityToUserDto() {
+    UserDto userDto = userMapper.userToUserDto(user);
 
-    @Test
-    @DisplayName("Map UserDto to UserEntity")
-    public void shouldMapUserDtoToUserEntity() {
-        UserDto userDto = new UserDto(uuid, USERNAME, EMAIL, ROLE, AVAILABLE);
-        UserEntity user = userMapper.userDtoToUser(userDto);
+    assertEquals(user.getUuid(), userDto.uuid(),
+        "UUID should be equal");
+    assertEquals(user.getUsername(), userDto.username(),
+        "Username should be equal");
+    assertEquals(user.getEmail(), userDto.email(),
+        "Email should be equal");
+    assertEquals(user.getRole(), userDto.role(),
+        "Role should be equal");
+    assertTrue(userDto.available(),
+        "User should be available");
+  }
 
-        assertEquals(userDto.uuid(), user.getUuid(),
-                "UUID should be equal");
-        assertEquals(userDto.username(), user.getUsername(),
-                "Username should be equal");
-        assertEquals(userDto.email(), user.getEmail(),
-                "Email should be equal");
-        assertEquals(userDto.role(), user.getRole(),
-                "Role should be equal");
-        assertTrue(userDto.available(),
-                "User should be available");
-    }
+  @Test
+  @DisplayName("Map UserDto to UserEntity")
+  public void shouldMapUserDtoToUserEntity() {
+    UserDto userDto = new UserDto(uuid, USERNAME, EMAIL, ROLE, AVAILABLE);
+    UserEntity user = userMapper.userDtoToUser(userDto);
 
-    @Test
-    @DisplayName("Map list of UserEntity to list of UserDto")
-    void shouldMapListOfUserEntityToListOfUserDto() {
-        List<UserDto> userDtoList =
-                userMapper.userEntityListToUserDtoList(java.util.List.of(user));
+    assertEquals(userDto.uuid(), user.getUuid(),
+        "UUID should be equal");
+    assertEquals(userDto.username(), user.getUsername(),
+        "Username should be equal");
+    assertEquals(userDto.email(), user.getEmail(),
+        "Email should be equal");
+    assertEquals(userDto.role(), user.getRole(),
+        "Role should be equal");
+    assertTrue(userDto.available(),
+        "User should be available");
+  }
 
-        assertEquals(1, userDtoList.size(),
-                "List should contain only one element");
-        assertEquals(user.getUuid(), userDtoList.getFirst().uuid(),
-                "UUID should be equal");
-        assertEquals(user.getUsername(), userDtoList.getFirst().username(),
-                "Username should be equal");
-        assertEquals(user.getEmail(), userDtoList.getFirst().email(),
-                "Email should be equal");
-        assertTrue(userDtoList.getFirst().available(),
-                "User should be available");
-    }
+  @Test
+  @DisplayName("Map list of UserEntity to list of UserDto")
+  void shouldMapListOfUserEntityToListOfUserDto() {
+    List<UserDto> userDtoList =
+        userMapper.userEntityListToUserDtoList(java.util.List.of(user));
 
-    @Test
-    @DisplayName("Map RegisterUserRequest to UserEntity")
-    void shouldMapURegisterUserRequestToUserEntity() {
-        RegisterUserRequest userRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
-        UserEntity registeredUser = userMapper.registerUserRequestToUser(userRequest);
+    assertEquals(1, userDtoList.size(),
+        "List should contain only one element");
+    assertEquals(user.getUuid(), userDtoList.getFirst().uuid(),
+        "UUID should be equal");
+    assertEquals(user.getUsername(), userDtoList.getFirst().username(),
+        "Username should be equal");
+    assertEquals(user.getEmail(), userDtoList.getFirst().email(),
+        "Email should be equal");
+    assertTrue(userDtoList.getFirst().available(),
+        "User should be available");
+  }
 
-        assertEquals(userRequest.username(), registeredUser.getUsername(),
-                "Username should be equal");
-        assertEquals(userRequest.email(), registeredUser.getEmail(),
-                "Email should be equal");
-        assertEquals(userRequest.password(), registeredUser.getPassword(),
-                "Password should be equal");
-    }
+  @Test
+  @DisplayName("Map RegisterUserRequest to UserEntity")
+  void shouldMapURegisterUserRequestToUserEntity() {
+    RegisterUserRequest userRequest = new RegisterUserRequest(USERNAME, EMAIL, PASSWORD);
+    UserEntity registeredUser = userMapper.registerUserRequestToUser(userRequest);
 
-    @Test
-    @DisplayName("Map UpdateUserRequest to UserEntity")
-    void shouldMapUpdateUserRequestToUserEntity() {
-        UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL);
-        UserEntity updatedUser = userMapper.updateUserRequestToUser(updateUser, user);
+    assertEquals(userRequest.username(), registeredUser.getUsername(),
+        "Username should be equal");
+    assertEquals(userRequest.email(), registeredUser.getEmail(),
+        "Email should be equal");
+    assertEquals(userRequest.password(), registeredUser.getPassword(),
+        "Password should be equal");
+  }
 
-        assertEquals(updateUser.uuid(), updatedUser.getUuid(),
-                "UUID should be equal");
-        assertEquals(updateUser.username(), updatedUser.getUsername(),
-                "Username should be equal");
-        assertEquals(updateUser.email(), updatedUser.getEmail(),
-                "Email should be equal");
-    }
+  @Test
+  @DisplayName("Map UpdateUserRequest to UserEntity")
+  void shouldMapUpdateUserRequestToUserEntity() {
+    UpdateUserRequest updateUser = new UpdateUserRequest(uuid, USERNAME, EMAIL);
+    UserEntity updatedUser = userMapper.updateUserRequestToUser(updateUser, user);
+
+    assertEquals(updateUser.uuid(), updatedUser.getUuid(),
+        "UUID should be equal");
+    assertEquals(updateUser.username(), updatedUser.getUsername(),
+        "Username should be equal");
+    assertEquals(updateUser.email(), updatedUser.getEmail(),
+        "Email should be equal");
+  }
 }

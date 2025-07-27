@@ -20,28 +20,29 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
 public abstract class TestContainerConfig {
- /*   @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgresContainer
-            = new PostgreSQLContainer<>("postgres:17.5");
-*/
-    @LocalServerPort
-    private int port;
 
-    private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
-    private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
+  /*   @Container
+     @ServiceConnection
+     static PostgreSQLContainer<?> postgresContainer
+             = new PostgreSQLContainer<>("postgres:17.5");
+ */
+  @LocalServerPort
+  private int port;
 
-    @BeforeAll
-    void setup() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
+  private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
+  private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
 
-        RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
+  @BeforeAll
+  void setup() {
+    RestAssured.baseURI = "http://localhost";
+    RestAssured.port = port;
 
-        RestAssured.requestSpecification = new RequestSpecBuilder()
-                .setContentType(ContentType.JSON)
-                .setAccept(ContentType.JSON)
-                .build();
+    RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
 
-    }
+    RestAssured.requestSpecification = new RequestSpecBuilder()
+        .setContentType(ContentType.JSON)
+        .setAccept(ContentType.JSON)
+        .build();
+
+  }
 }

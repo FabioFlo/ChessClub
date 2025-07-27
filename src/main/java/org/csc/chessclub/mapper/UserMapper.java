@@ -14,19 +14,21 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    UserDto userToUserDto(UserEntity user);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "password", ignore = true)
-    UserEntity userDtoToUser(UserDto userDto);
+  UserDto userToUserDto(UserEntity user);
 
-    List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList);
+  @Mapping(target = "password", ignore = true)
+  UserEntity userDtoToUser(UserDto userDto);
 
-    @Mapping(target = "available", ignore = true)
-    @Mapping(target = "uuid", ignore = true)
-    @Mapping(target = "role", ignore = true)
-    UserEntity registerUserRequestToUser(RegisterUserRequest userRequest);
+  List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList);
 
-    UserEntity updateUserRequestToUser(UpdateUserRequest updateUserRequest, @MappingTarget UserEntity user);
+  @Mapping(target = "available", ignore = true)
+  @Mapping(target = "uuid", ignore = true)
+  @Mapping(target = "role", ignore = true)
+  UserEntity registerUserRequestToUser(RegisterUserRequest userRequest);
+
+  UserEntity updateUserRequestToUser(UpdateUserRequest updateUserRequest,
+      @MappingTarget UserEntity user);
 }

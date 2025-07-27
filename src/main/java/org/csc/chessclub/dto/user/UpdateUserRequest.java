@@ -10,17 +10,18 @@ import org.csc.chessclub.model.user.UserConstraints;
 import java.util.UUID;
 
 public record UpdateUserRequest(
-        @ValidUUID
-        UUID uuid,
-        @NotBlank(message = UserValidationMessage.USERNAME_MUST_NOT_BE_BLANK)
-        @Size(min = UserConstraints.USERNAME_MIN_LENGTH,
-                max = UserConstraints.USERNAME_MAX_LENGTH,
-                message = UserValidationMessage.USERNAME_LENGTH_REQUIRED)
-        String username,
-        @Email(message = UserValidationMessage.EMAIL_MUST_BE_VALID)
-        @Size(min = UserConstraints.EMAIL_MIN_LENGTH,
-                max = UserConstraints.EMAIL_MAX_LENGTH,
-                message = UserValidationMessage.EMAIL_LENGTH_REQUIRED)
-        String email
+    @ValidUUID
+    UUID uuid,
+    @NotBlank(message = UserValidationMessage.USERNAME_MUST_NOT_BE_BLANK)
+    @Size(min = UserConstraints.USERNAME_MIN_LENGTH,
+        max = UserConstraints.USERNAME_MAX_LENGTH,
+        message = UserValidationMessage.USERNAME_LENGTH_REQUIRED)
+    String username,
+    @Email(message = UserValidationMessage.EMAIL_MUST_BE_VALID)
+    @Size(min = UserConstraints.EMAIL_MIN_LENGTH,
+        max = UserConstraints.EMAIL_MAX_LENGTH,
+        message = UserValidationMessage.EMAIL_LENGTH_REQUIRED)
+    String email
 ) {
+
 }

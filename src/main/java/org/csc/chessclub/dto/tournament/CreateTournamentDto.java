@@ -11,22 +11,23 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreateTournamentDto(
-        @NotBlank(message = TournamentValidationMessage.TITLE_MUST_NOT_BE_BLANK)
-        @Size(min = TournamentConstraints.TITLE_MIN_LENGTH,
-                max = TournamentConstraints.TITLE_MAX_LENGTH,
-                message = TournamentValidationMessage.TITLE_LENGTH_REQUIRED)
-        String title,
-        @NotNull(message = TournamentValidationMessage.DATE_MUST_NOT_BE_NULL)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        LocalDate startDate,
-        @NotNull(message = TournamentValidationMessage.DATE_MUST_NOT_BE_NULL)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        LocalDate endDate,
-        @NotBlank(message = TournamentValidationMessage.DESCRIPTION_MUST_NOT_BE_BLANK)
-        @Size(min = TournamentConstraints.DESCRIPTION_MIN_LENGTH,
-                max = TournamentConstraints.DESCRIPTION_MAX_LENGTH,
-                message = TournamentValidationMessage.DESCRIPTION_LENGTH_REQUIRED)
-        String description,
-        UUID eventId
+    @NotBlank(message = TournamentValidationMessage.TITLE_MUST_NOT_BE_BLANK)
+    @Size(min = TournamentConstraints.TITLE_MIN_LENGTH,
+        max = TournamentConstraints.TITLE_MAX_LENGTH,
+        message = TournamentValidationMessage.TITLE_LENGTH_REQUIRED)
+    String title,
+    @NotNull(message = TournamentValidationMessage.DATE_MUST_NOT_BE_NULL)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    LocalDate startDate,
+    @NotNull(message = TournamentValidationMessage.DATE_MUST_NOT_BE_NULL)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    LocalDate endDate,
+    @NotBlank(message = TournamentValidationMessage.DESCRIPTION_MUST_NOT_BE_BLANK)
+    @Size(min = TournamentConstraints.DESCRIPTION_MIN_LENGTH,
+        max = TournamentConstraints.DESCRIPTION_MAX_LENGTH,
+        message = TournamentValidationMessage.DESCRIPTION_LENGTH_REQUIRED)
+    String description,
+    UUID eventId
 ) {
+
 }

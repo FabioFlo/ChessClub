@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 
 public interface PageUtils<T> {
 
-    PageResponseDto<T> populatePageResponseDto(Page<T> pageResult);
+  PageResponseDto<T> populatePageResponseDto(Page<T> pageResult);
 }

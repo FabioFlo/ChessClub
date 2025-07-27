@@ -9,21 +9,22 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface GameService {
-    GameDto create(CreateGameDto gameDto);
 
-    GameDto update(UpdateGameDto gameDto);
+  GameDto create(CreateGameDto gameDto);
 
-    GameDto getByUuid(UUID uuid);
+  GameDto update(UpdateGameDto gameDto);
 
-    void delete(UUID uuid);
+  GameDto getByUuid(UUID uuid);
 
-    Page<GameDto> getAll(Pageable pageable);
+  void delete(UUID uuid);
 
-    Page<GameDto> getAllAvailable(Pageable pageable);
+  Page<GameDto> getAll(Pageable pageable);
 
-    Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable);
+  Page<GameDto> getAllAvailable(Pageable pageable);
 
-    Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable);
+  Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable);
 
-    Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable);
+  Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable);
+
+  Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable);
 }

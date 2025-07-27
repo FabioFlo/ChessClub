@@ -15,11 +15,11 @@ import java.util.UUID;
 @Repository
 public interface TournamentRepository extends JpaRepository<TournamentEntity, UUID> {
 
-    List<TournamentEntity> getTournamentEntitiesByTitleAndAvailableTrue(String title);
+  List<TournamentEntity> getTournamentEntitiesByTitleAndAvailableTrue(String title);
 
-    Page<TournamentEntity> findByAvailableIsTrue(Pageable pageable);
+  Page<TournamentEntity> findByAvailableIsTrue(Pageable pageable);
 
-    @Modifying
-    @Query("update TournamentEntity  t set t.available = false where t.uuid = :uuid")
-    int setAvailableFalse(@Param("uuid") UUID uuid);
+  @Modifying
+  @Query("update TournamentEntity  t set t.available = false where t.uuid = :uuid")
+  int setAvailableFalse(@Param("uuid") UUID uuid);
 }

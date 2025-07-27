@@ -24,71 +24,75 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TournamentServiceImpl implements TournamentService {
-    private final TournamentRepository tournamentRepository;
-    private final EventRepository eventRepository;
-    private final TournamentMapper tournamentMapper;
 
-    @Override
-    public TournamentDto create(CreateTournamentDto tournamentDto) {
-        TournamentEntity entity = tournamentMapper.createTournamentDtoToTournamentEntity(tournamentDto);
-        entity.setAvailable(true);
+  private final TournamentRepository tournamentRepository;
+  private final EventRepository eventRepository;
+  private final TournamentMapper tournamentMapper;
 
-        return tournamentMapper.tournamentToTournamentDto(validTournamentDetails(entity));
+  @Override
+  public TournamentDto create(CreateTournamentDto tournamentDto) {
+    TournamentEntity entity = tournamentMapper.createTournamentDtoToTournamentEntity(tournamentDto);
+    entity.setAvailable(true);
+
+    return tournamentMapper.tournamentToTournamentDto(validTournamentDetails(entity));
+  }
+
+  @Override
+  public TournamentDto update(UpdateTournamentDto tournamentDto) {
+    TournamentEntity tournament = tournamentRepository.findById(tournamentDto.uuid())
+        .orElseThrow(() -> new CustomNotFoundException(
+            NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentDto.uuid())));
+
+    tournamentMapper.updateTournamentToTournament(tournamentDto, tournament);
+
+    return tournamentMapper.tournamentToTournamentDto(validTournamentDetails(tournament));
+  }
+
+  @Override
+  public TournamentDto getById(UUID uuid) {
+    Optional<TournamentEntity> tournamentEntity = tournamentRepository.findById(uuid);
+    if (tournamentEntity.isEmpty()) {
+      throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
     }
+    return tournamentMapper.tournamentToTournamentDto(tournamentEntity.get());
+  }
 
-    @Override
-    public TournamentDto update(UpdateTournamentDto tournamentDto) {
-        TournamentEntity tournament = tournamentRepository.findById(tournamentDto.uuid())
-                .orElseThrow(() -> new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(tournamentDto.uuid())));
+  @Override
+  public Page<TournamentDto> getAll(Pageable pageable) {
+    return tournamentMapper.pageTournamentEntityToPageTournamentDto(
+        tournamentRepository.findAll(pageable));
+  }
 
-        tournamentMapper.updateTournamentToTournament(tournamentDto, tournament);
+  @Override
+  public Page<TournamentDto> getAllAvailable(Pageable pageable) {
+    return tournamentMapper.pageTournamentEntityToPageTournamentDto(
+        tournamentRepository.findByAvailableIsTrue(pageable));
+  }
 
-        return tournamentMapper.tournamentToTournamentDto(validTournamentDetails(tournament));
+  @Override
+  @Transactional
+  public void delete(UUID uuid) {
+    int result = tournamentRepository.setAvailableFalse(uuid);
+
+    if (result == 0) {
+      throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
     }
+  }
 
-    @Override
-    public TournamentDto getById(UUID uuid) {
-        Optional<TournamentEntity> tournamentEntity = tournamentRepository.findById(uuid);
-        if (tournamentEntity.isEmpty()) {
-            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
-        }
-        return tournamentMapper.tournamentToTournamentDto(tournamentEntity.get());
+  private boolean startDateNotBeforeEndDate(LocalDate startDate, LocalDate endDate) {
+    return !startDate.isBefore(endDate);
+  }
+
+  @NotNull
+  private TournamentEntity validTournamentDetails(TournamentEntity tournament) {
+    if (startDateNotBeforeEndDate(tournament.getStartDate(), tournament.getEndDate())) {
+      String dateExceptionMessage = "Start date must be before end date";
+      throw new TournamentServiceException(dateExceptionMessage);
     }
-
-    @Override
-    public Page<TournamentDto> getAll(Pageable pageable) {
-        return tournamentMapper.pageTournamentEntityToPageTournamentDto(tournamentRepository.findAll(pageable));
+    UUID eventId = tournament.getEvent() == null ? null : tournament.getEvent().getUuid();
+    if (eventId != null && !eventRepository.existsById(eventId)) {
+      throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(eventId));
     }
-
-    @Override
-    public Page<TournamentDto> getAllAvailable(Pageable pageable) {
-        return tournamentMapper.pageTournamentEntityToPageTournamentDto(tournamentRepository.findByAvailableIsTrue(pageable));
-    }
-
-    @Override
-    @Transactional
-    public void delete(UUID uuid) {
-        int result = tournamentRepository.setAvailableFalse(uuid);
-
-        if (result == 0) {
-            throw new CustomNotFoundException(NotFoundMessage.TOURNAMENT_WITH_UUID.format(uuid));
-        }
-    }
-
-    private boolean startDateNotBeforeEndDate(LocalDate startDate, LocalDate endDate) {
-        return !startDate.isBefore(endDate);
-    }
-
-    @NotNull
-    private TournamentEntity validTournamentDetails(TournamentEntity tournament) {
-        if (startDateNotBeforeEndDate(tournament.getStartDate(), tournament.getEndDate())) {
-            String dateExceptionMessage = "Start date must be before end date";
-            throw new TournamentServiceException(dateExceptionMessage);
-        }
-        UUID eventId = tournament.getEvent() == null ? null : tournament.getEvent().getUuid();
-        if (eventId != null && !eventRepository.existsById(eventId)) {
-            throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(eventId));
-        }
-        return tournamentRepository.save(tournament);
-    }
+    return tournamentRepository.save(tournament);
+  }
 }

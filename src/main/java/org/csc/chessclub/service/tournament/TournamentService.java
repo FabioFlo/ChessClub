@@ -9,15 +9,16 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface TournamentService {
-    TournamentDto create(CreateTournamentDto tournament);
 
-    TournamentDto update(UpdateTournamentDto tournamentDto);
+  TournamentDto create(CreateTournamentDto tournament);
 
-    TournamentDto getById(UUID uuid);
+  TournamentDto update(UpdateTournamentDto tournamentDto);
 
-    Page<TournamentDto> getAll(Pageable pageable);
+  TournamentDto getById(UUID uuid);
 
-    Page<TournamentDto> getAllAvailable(Pageable pageable);
+  Page<TournamentDto> getAll(Pageable pageable);
 
-    void delete(UUID uuid);
+  Page<TournamentDto> getAllAvailable(Pageable pageable);
+
+  void delete(UUID uuid);
 }

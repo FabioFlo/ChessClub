@@ -14,17 +14,19 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface EventMapper {
-    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    EventDto eventToEventDto(EventEntity event);
+  EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    EventEntity createEventDtoToEvent(CreateEventDto createEventDto);
+  EventDto eventToEventDto(EventEntity event);
 
-    List<EventDto> eventEntityListToEventDtoList(List<EventEntity> event);
+  EventEntity createEventDtoToEvent(CreateEventDto createEventDto);
 
-    EventEntity updateEventDtoToEvent(UpdateEventDto updateEventDto, @MappingTarget EventEntity eventEntity);
+  List<EventDto> eventEntityListToEventDtoList(List<EventEntity> event);
 
-    default Page<EventDto> pageEventEntityToPageEventDto(Page<EventEntity> events) {
-        return events.map(this::eventToEventDto);
-    }
+  EventEntity updateEventDtoToEvent(UpdateEventDto updateEventDto,
+      @MappingTarget EventEntity eventEntity);
+
+  default Page<EventDto> pageEventEntityToPageEventDto(Page<EventEntity> events) {
+    return events.map(this::eventToEventDto);
+  }
 }

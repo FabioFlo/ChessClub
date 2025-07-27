@@ -22,147 +22,147 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EventControllerTests extends BaseIntegrationTest {
 
-    private CreateEventDto createEventDto;
-    private static final String TITLE = "Test Title";
-    private static final String DESCRIPTION = "Test Description";
-    private static final String AUTHOR = "Test Author";
-    private UUID uuid;
+  private CreateEventDto createEventDto;
+  private static final String TITLE = "Test Title";
+  private static final String DESCRIPTION = "Test Description";
+  private static final String AUTHOR = "Test Author";
+  private UUID uuid;
 
-    private String userToken;
-    @Value("${user.username}")
-    private String userUsername;
-    @Value("${user.password}")
-    private String userPassword;
-    @Value("${storage.pdf-folder}")
-    String storageFolder;
+  private String userToken;
+  @Value("${user.username}")
+  private String userUsername;
+  @Value("${user.password}")
+  private String userPassword;
+  @Value("${storage.pdf-folder}")
+  String storageFolder;
 
-    private static final String CREATED = "Event successfully created";
-    private static final String DELETED = "Event deleted";
+  private static final String CREATED = "Event successfully created";
+  private static final String DELETED = "Event deleted";
 
-    @BeforeAll
-    void setup() {
-        createEventDto = new CreateEventDto(
-                TITLE, DESCRIPTION, AUTHOR);
+  @BeforeAll
+  void setup() {
+    createEventDto = new CreateEventDto(
+        TITLE, DESCRIPTION, AUTHOR);
 
-        AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
-        userToken = loginAndGetResponse(userLogin).data().token();
-    }
+    AuthenticationRequest userLogin = new AuthenticationRequest(userUsername, userPassword);
+    userToken = loginAndGetResponse(userLogin).data().token();
+  }
 
-    @Test
-    @Order(2)
-    @DisplayName("Create Event")
-    void testCreateEvent_whenUserAuthenticatedAndValidDetailsProvided_returnsCreatedEvent() {
-        ResponseDto<EventDto> response = given()
-                .header("Authorization", "Bearer " + userToken)
-                .multiPart("event", "event.json", createEventDto, "application/json")
-                .multiPart("file", new File(storageFolder + "/announcement.pdf"))
-                .contentType("multipart/form-data")
-                .when()
-                .post("/events")
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(2)
+  @DisplayName("Create Event")
+  void testCreateEvent_whenUserAuthenticatedAndValidDetailsProvided_returnsCreatedEvent() {
+    ResponseDto<EventDto> response = given()
+        .header("Authorization", "Bearer " + userToken)
+        .multiPart("event", "event.json", createEventDto, "application/json")
+        .multiPart("file", new File(storageFolder + "/announcement.pdf"))
+        .contentType("multipart/form-data")
+        .when()
+        .post("/events")
+        .then()
+        .statusCode(HttpStatus.CREATED.value())
+        .extract().response().as(new TypeRef<>() {
+        });
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success).isEqualTo(true);
+    assertThat(response)
+        .isNotNull()
+        .extracting(ResponseDto::success).isEqualTo(true);
 
-        assertThat(response)
-                .extracting(ResponseDto::message)
-                .isEqualTo(CREATED);
+    assertThat(response)
+        .extracting(ResponseDto::message)
+        .isEqualTo(CREATED);
 
-    }
+  }
 
-    @Test
-    @Order(3)
-    @DisplayName("Get all Events available")
-    void testGetAllEvents_whenEventsFound_returnsAllEvents() {
-        ResponseDto<PageResponseDto<EventDto>> response = given()
-                .when()
-                .get("/events")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(3)
+  @DisplayName("Get all Events available")
+  void testGetAllEvents_whenEventsFound_returnsAllEvents() {
+    ResponseDto<PageResponseDto<EventDto>> response = given()
+        .when()
+        .get("/events")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::data)
-                .extracting(PageResponseDto::content)
-                .asInstanceOf(InstanceOfAssertFactories.LIST)
-                .isNotEmpty();
+    assertThat(response)
+        .isNotNull()
+        .extracting(ResponseDto::data)
+        .extracting(PageResponseDto::content)
+        .asInstanceOf(InstanceOfAssertFactories.LIST)
+        .isNotEmpty();
 
-        uuid = response.data().content().getFirst().uuid();
-        assertNotNull(uuid, "UUID should not be null");
-    }
+    uuid = response.data().content().getFirst().uuid();
+    assertNotNull(uuid, "UUID should not be null");
+  }
 
-    @Test
-    @Order(4)
-    @DisplayName("Get Event By Id")
-    void testGetEvent_whenEventFoundById_returnsEvent() {
-        ResponseDto<EventDto> response = given()
-                .pathParam("uuid", uuid)
-                .when()
-                .get("/events/{uuid}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(4)
+  @DisplayName("Get Event By Id")
+  void testGetEvent_whenEventFoundById_returnsEvent() {
+    ResponseDto<EventDto> response = given()
+        .pathParam("uuid", uuid)
+        .when()
+        .get("/events/{uuid}")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
 
-        EventDto event = response.data();
-        assertThat(event)
-                .isNotNull();
-        assertEquals(event.uuid(), uuid);
-    }
+    EventDto event = response.data();
+    assertThat(event)
+        .isNotNull();
+    assertEquals(event.uuid(), uuid);
+  }
 
-    @Test
-    @Order(5)
-    @DisplayName("Update event")
-    void testUpdateEvent_whenUserAuthenticatedAndValidEventDetailsProvided_returnsUpdatedEvent() {
-        String newTitle = "New test title";
-        UpdateEventDto updateEventDto = new UpdateEventDto(uuid, newTitle, DESCRIPTION, AUTHOR);
+  @Test
+  @Order(5)
+  @DisplayName("Update event")
+  void testUpdateEvent_whenUserAuthenticatedAndValidEventDetailsProvided_returnsUpdatedEvent() {
+    String newTitle = "New test title";
+    UpdateEventDto updateEventDto = new UpdateEventDto(uuid, newTitle, DESCRIPTION, AUTHOR);
 
-        ResponseDto<EventDto> response = given()
-                .header("Authorization", "Bearer " + userToken)
-                .multiPart("event", "event.json", updateEventDto, "application/json")
-                .multiPart("file", new File(storageFolder + "/announcement.pdf"))
-                .contentType("multipart/form-data")
-                .when()
-                .patch("/events")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+    ResponseDto<EventDto> response = given()
+        .header("Authorization", "Bearer " + userToken)
+        .multiPart("event", "event.json", updateEventDto, "application/json")
+        .multiPart("file", new File(storageFolder + "/announcement.pdf"))
+        .contentType("multipart/form-data")
+        .when()
+        .patch("/events")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::data).extracting(EventDto::title)
-                .isEqualTo(newTitle);
-    }
+    assertThat(response)
+        .isNotNull()
+        .extracting(ResponseDto::data).extracting(EventDto::title)
+        .isEqualTo(newTitle);
+  }
 
-    @Test
-    @Order(6)
-    @DisplayName("Delete event")
-    void testDeleteEvent_whenUserAuthenticatedAndEventFound_returnsResponseDtoWithSuccessAndMessage() {
-        ResponseDto<UUID> responseDto = given()
-                .pathParam("uuid", uuid)
-                .header("Authorization", "Bearer " + userToken)
-                .when()
-                .delete("/events/{uuid}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(6)
+  @DisplayName("Delete event")
+  void testDeleteEvent_whenUserAuthenticatedAndEventFound_returnsResponseDtoWithSuccessAndMessage() {
+    ResponseDto<UUID> responseDto = given()
+        .pathParam("uuid", uuid)
+        .header("Authorization", "Bearer " + userToken)
+        .when()
+        .delete("/events/{uuid}")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
 
-        assertThat(responseDto)
-                .isNotNull()
-                .extracting(ResponseDto::message)
-                .isEqualTo(DELETED);
+    assertThat(responseDto)
+        .isNotNull()
+        .extracting(ResponseDto::message)
+        .isEqualTo(DELETED);
 
-        assertThat(responseDto)
-                .extracting(ResponseDto::data)
-                .isEqualTo(uuid);
-    }
+    assertThat(responseDto)
+        .extracting(ResponseDto::data)
+        .isEqualTo(uuid);
+  }
 
 }

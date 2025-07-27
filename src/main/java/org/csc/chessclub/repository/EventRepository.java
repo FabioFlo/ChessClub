@@ -14,13 +14,14 @@ import java.util.UUID;
 
 @Repository
 public interface EventRepository extends JpaRepository<EventEntity, UUID> {
-    List<EventEntity> findEventEntityByTitleAndAvailableTrue(String title);
 
-    List<EventEntity> findEventEntityByAuthorAndAvailableTrue(String author);
+  List<EventEntity> findEventEntityByTitleAndAvailableTrue(String title);
 
-    Page<EventEntity> findAllByAvailableTrue(Pageable pageable);
+  List<EventEntity> findEventEntityByAuthorAndAvailableTrue(String author);
 
-    @Modifying
-    @Query("update EventEntity e set e.available = false where e.uuid = :uuid")
-    int setAvailableFalse(@Param("uuid") UUID uuid);
+  Page<EventEntity> findAllByAvailableTrue(Pageable pageable);
+
+  @Modifying
+  @Query("update EventEntity e set e.available = false where e.uuid = :uuid")
+  int setAvailableFalse(@Param("uuid") UUID uuid);
 }

@@ -10,13 +10,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties({StorageProperties.class, FileValidationProperties.class})
 public class ChessClubApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ChessClubApplication.class, args);
-    }
-    //TODO: add cache
+  public static void main(String[] args) {
+    SpringApplication.run(ChessClubApplication.class, args);
+  }
+  //TODO: add cache
 
-    //TODO: create docker compose
-    //TODO: write documentation .md file, flowchart, commands for test, test percentage etc
+  //TODO: create docker compose
+  //TODO: write documentation .md file, flowchart, commands for test, test percentage etc
 
-    //TODO: introduce check style with 'xml code check style'
 }

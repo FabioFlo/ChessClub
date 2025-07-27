@@ -22,49 +22,53 @@ import java.util.UUID;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
-    private final AuthenticationService authService;
 
-    private static final String CREATED = "User successfully created";
-    private static final String LOGGED_IN = "User successfully logged in";
-    private static final String UPDATED = "User successfully updated";
-    private static final String FOUND = "User found";
-    private static final String DELETED = "User deleted";
+  private final UserService userService;
+  private final AuthenticationService authService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping()
-    public ResponseEntity<ResponseDto<UserDto>> createUser(@Valid @RequestBody RegisterUserRequest userRequest) {
-        UserDto userDto = userService.create(userRequest);
+  private static final String CREATED = "User successfully created";
+  private static final String LOGGED_IN = "User successfully logged in";
+  private static final String UPDATED = "User successfully updated";
+  private static final String FOUND = "User found";
+  private static final String DELETED = "User deleted";
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ResponseDto<>(userDto, CREATED, true));
-    }
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping()
+  public ResponseEntity<ResponseDto<UserDto>> createUser(
+      @Valid @RequestBody RegisterUserRequest userRequest) {
+    UserDto userDto = userService.create(userRequest);
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseDto<AuthenticationResponse>> login(@Valid @RequestBody AuthenticationRequest request) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(authService.authenticate(request), LOGGED_IN, true));
-    }
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(new ResponseDto<>(userDto, CREATED, true));
+  }
 
-    @PreAuthorize("isAuthenticated")
-    @PatchMapping()
-    public ResponseEntity<ResponseDto<UserDto>> updateUser(@Valid @RequestBody UpdateUserRequest userRequest) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto<>(userService.update(userRequest), UPDATED, true));
-    }
+  @PostMapping("/login")
+  public ResponseEntity<ResponseDto<AuthenticationResponse>> login(
+      @Valid @RequestBody AuthenticationRequest request) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ResponseDto<>(authService.authenticate(request), LOGGED_IN, true));
+  }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{uuid}")
-    public ResponseEntity<ResponseDto<UserDto>> getUser(@ValidUUID @PathVariable UUID uuid) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
-                userService.getById(uuid), FOUND, true));
-    }
+  @PreAuthorize("isAuthenticated")
+  @PatchMapping()
+  public ResponseEntity<ResponseDto<UserDto>> updateUser(
+      @Valid @RequestBody UpdateUserRequest userRequest) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ResponseDto<>(userService.update(userRequest), UPDATED, true));
+  }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{uuid}")
-    public ResponseEntity<ResponseDto<UUID>> deleteUser(@ValidUUID @PathVariable UUID uuid) {
-        userService.delete(uuid);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
-                uuid, DELETED, true));
-    }
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/{uuid}")
+  public ResponseEntity<ResponseDto<UserDto>> getUser(@ValidUUID @PathVariable UUID uuid) {
+    return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
+        userService.getById(uuid), FOUND, true));
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @DeleteMapping("/{uuid}")
+  public ResponseEntity<ResponseDto<UUID>> deleteUser(@ValidUUID @PathVariable UUID uuid) {
+    userService.delete(uuid);
+    return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
+        uuid, DELETED, true));
+  }
 }

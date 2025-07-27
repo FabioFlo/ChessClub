@@ -11,15 +11,16 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface EventService {
-    EventDto create(CreateEventDto eventDto, MultipartFile file) throws IOException;
 
-    EventDto update(UpdateEventDto event, MultipartFile file) throws IOException;
+  EventDto create(CreateEventDto eventDto, MultipartFile file) throws IOException;
 
-    EventDto getById(UUID uuid);
+  EventDto update(UpdateEventDto event, MultipartFile file) throws IOException;
 
-    void delete(UUID uuid);
+  EventDto getById(UUID uuid);
 
-    Page<EventDto> getAll(Pageable pageable);
+  void delete(UUID uuid);
 
-    Page<EventDto> getAllAvailable(Pageable pageable);
+  Page<EventDto> getAll(Pageable pageable);
+
+  Page<EventDto> getAllAvailable(Pageable pageable);
 }

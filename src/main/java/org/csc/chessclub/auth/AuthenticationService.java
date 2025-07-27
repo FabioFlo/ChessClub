@@ -13,19 +13,21 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password()));
-        UserEntity user = userRepository
-                .findUserEntityByUsernameOrEmail(request.usernameOrEmail(), request.usernameOrEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  private final UserRepository userRepository;
+  private final AuthenticationManager authenticationManager;
+  private final JwtService jwtService;
 
-        String jwtToken = jwtService.generateToken(user);
+  public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    authenticationManager
+        .authenticate(
+            new UsernamePasswordAuthenticationToken(request.usernameOrEmail(), request.password()));
+    UserEntity user = userRepository
+        .findUserEntityByUsernameOrEmail(request.usernameOrEmail(), request.usernameOrEmail())
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return new AuthenticationResponse(jwtToken);
-    }
+    String jwtToken = jwtService.generateToken(user);
+
+    return new AuthenticationResponse(jwtToken);
+  }
 }

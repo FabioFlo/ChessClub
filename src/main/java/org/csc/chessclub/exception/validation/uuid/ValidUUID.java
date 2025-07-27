@@ -7,13 +7,14 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = CustomUUIDValidator.class)
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUUID {
-    String message() default UuidValidationMessage.UUID_MUST_BE_VALID;
 
-    Class<?>[] groups() default {};
+  String message() default UuidValidationMessage.UUID_MUST_BE_VALID;
 
-    Class<? extends Payload>[] payload() default {};
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }
 

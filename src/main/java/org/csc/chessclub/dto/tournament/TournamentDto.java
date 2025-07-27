@@ -4,10 +4,11 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record TournamentDto(
-        UUID uuid,
-        String title,
-        LocalDate startDate,
-        LocalDate endDate,
-        String description
+    UUID uuid,
+    String title,
+    LocalDate startDate,
+    LocalDate endDate,
+    String description
 ) {
+
 }

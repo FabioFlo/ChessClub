@@ -12,11 +12,12 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
-    Optional<UserEntity> findUserEntityByUsernameOrEmail(String username, String email);
 
-    Optional<UserEntity> findByUsernameOrEmailAndUuidNot(String username, String email, UUID uuid);
+  Optional<UserEntity> findUserEntityByUsernameOrEmail(String username, String email);
 
-    @Modifying
-    @Query("update UserEntity u set u.available = false where u.uuid = :uuid")
-    int setAvailableFalse(@Param("uuid") UUID uuid);
+  Optional<UserEntity> findByUsernameOrEmailAndUuidNot(String username, String email, UUID uuid);
+
+  @Modifying
+  @Query("update UserEntity u set u.available = false where u.uuid = :uuid")
+  int setAvailableFalse(@Param("uuid") UUID uuid);
 }

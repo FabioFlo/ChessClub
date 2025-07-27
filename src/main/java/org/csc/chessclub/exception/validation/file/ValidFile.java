@@ -10,7 +10,10 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = FileTypeValidator.class)
 @Documented
 public @interface ValidFile {
-    String message() default FileValidationMessage.FILE_NOT_VALID;
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+
+  String message() default FileValidationMessage.FILE_NOT_VALID;
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }
