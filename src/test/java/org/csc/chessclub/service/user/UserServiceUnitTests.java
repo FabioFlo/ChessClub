@@ -83,7 +83,6 @@ public class UserServiceUnitTests {
     SecurityContextHolder.clearContext();
   }
 
-  //TODO: method that create automatically a dummy admin if none exists on DB
   @Test
   @DisplayName("Create User")
   public void testCreateUser_whenUserProvided_returnUser() {
