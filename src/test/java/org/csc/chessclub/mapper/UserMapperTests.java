@@ -11,8 +11,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserMapperTests {
@@ -119,5 +125,22 @@ public class UserMapperTests {
         "Username should be equal");
     assertEquals(updateUser.email(), updatedUser.getEmail(),
         "Email should be equal");
+  }
+
+  @Test
+  @DisplayName("Map page of UserEntity to page of UserDto")
+  void shouldMapPageOfUserEntityToUserDto() {
+    Pageable pageable = PageRequest.of(0, 10);
+    List<UserEntity> listUsers = List.of(user);
+    Page<UserEntity> pageOfUsers = new PageImpl<>(listUsers, pageable, listUsers.size());
+
+    Page<UserDto> result = userMapper.pageUserEntityToPageUserDto(pageOfUsers);
+    assertAll("Page entity to page dto assertions",
+        () -> assertNotNull(result, "Result should not be null"),
+        () -> assertEquals(1, result.getTotalElements(), "Should be one user"),
+        () -> assertEquals(0, result.getNumber(), "Page number should be equal to zero"),
+        () -> assertEquals(user.getUuid(), result.getContent().getFirst().uuid(),
+            "User UUID should be equal"));
+
   }
 }

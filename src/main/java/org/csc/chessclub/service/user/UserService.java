@@ -7,6 +7,8 @@ import org.csc.chessclub.dto.user.UserDto;
 
 import java.util.UUID;
 import org.csc.chessclub.enums.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -19,5 +21,7 @@ public interface UserService {
   void delete(UUID uuid);
 
   Role updateUserRole(UpdateRoleDto updateRoleDto);
+
+  Page<UserDto> getAll(Pageable pageable);
 
 }

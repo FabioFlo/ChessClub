@@ -6,10 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.restassured.common.mapper.TypeRef;
+import java.util.List;
 import java.util.UUID;
+import org.assertj.core.api.Assertions;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.controller.BaseIntegrationTest;
+import org.csc.chessclub.dto.PageResponseDto;
 import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.dto.user.UpdateRoleDto;
@@ -294,5 +297,31 @@ public class UserControllerTests extends BaseIntegrationTest {
     assertThat(response.success()).isFalse();
     assertThat(response.data().message()).isEqualTo("User is disabled");
     assertThat(response.message()).isEqualTo("Authentication Required");
+  }
+
+  @Test
+  @Order(13)
+  @DisplayName("Get all paged users")
+  void testGetAll_whenUsersExists_returnsAllUsersPaged() {
+    ResponseDto<PageResponseDto<UserDto>> response = given()
+        .header("Authorization", "Bearer " + adminToken)
+        .when()
+        .get(apiPath)
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .extract().response().as(new TypeRef<>() {
+        });
+
+    Assertions.assertThat(response)
+        .isNotNull()
+        .extracting(ResponseDto::success).isEqualTo(true);
+
+    Assertions.assertThat(response.data().pageSize())
+        .isEqualTo(10);
+
+    Assertions.assertThat(response)
+        .extracting(ResponseDto::data)
+        .extracting(PageResponseDto::content)
+        .extracting(List::size).isEqualTo(3);
   }
 }

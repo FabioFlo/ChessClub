@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
@@ -32,6 +33,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,9 +61,12 @@ public class UserServiceUnitTests {
   private static final Role ROLE = Role.USER;
   private static final UUID uuid = UUID.randomUUID();
   private UserEntity user;
+  private Pageable pageable;
 
   @BeforeEach
   public void setUp() {
+    pageable = PageRequest.of(0, 10);
+
     new UserEntity();
     user = UserEntity
         .builder()
@@ -176,6 +184,21 @@ public class UserServiceUnitTests {
   }
 
   @Test
+  @DisplayName("Get all paginated users")
+  void testGetAllPaginatedUsers_whenUsersFound_thenReturnPaginatedUsers() {
+    List<UserEntity> users = List.of(user);
+    Page<UserEntity> pagedUsers = new PageImpl<>(users, pageable, users.size());
+
+    when(userRepository.findAll(pageable)).thenReturn(pagedUsers);
+
+    Page<UserDto> result = userService.getAll(pageable);
+
+    assertAll("Get all assertions",
+        () -> assertNotNull(result, "Result should not be null"),
+        () -> assertEquals(1, result.getTotalElements(), "Result should contain two users"));
+  }
+
+  @Test
   @DisplayName("Delete user by Id set available false")
   void testDeleteUser_whenUserFoundById_availableShouldBeSetToFalse() {
     when(userRepository.setAvailableFalse(user.getUuid())).thenReturn(1);
@@ -193,7 +216,7 @@ public class UserServiceUnitTests {
     when(userRepository.updateRole(user.getUuid(), oldRole, newRole)).thenReturn(1);
 
     Role result = userService.updateUserRole(updateRole);
-    
+
     assertAll("Update role assertions",
         () -> assertNotNull(result, "Role should not be null"),
         () -> assertEquals(newRole, result, "Role should be equal"));

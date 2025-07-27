@@ -11,6 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
@@ -23,6 +24,10 @@ public interface UserMapper {
   UserEntity userDtoToUser(UserDto userDto);
 
   List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList);
+
+  default Page<UserDto> pageUserEntityToPageUserDto(Page<UserEntity> users) {
+    return users.map(this::userToUserDto);
+  }
 
   @Mapping(target = "available", ignore = true)
   @Mapping(target = "uuid", ignore = true)

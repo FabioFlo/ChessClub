@@ -16,6 +16,8 @@ import org.csc.chessclub.exception.UserServiceException;
 import org.csc.chessclub.mapper.UserMapper;
 import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -97,5 +99,10 @@ public class UserServiceImpl implements UserService {
           NotFoundMessage.USER_WITH_UUID.format(updateRoleDto.uuid()));
     }
     return updateRoleDto.newRole();
+  }
+
+  @Override
+  public Page<UserDto> getAll(Pageable pageable) {
+    return userMapper.pageUserEntityToPageUserDto(userRepository.findAll(pageable));
   }
 }
