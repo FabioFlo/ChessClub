@@ -1,6 +1,10 @@
 package org.csc.chessclub.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import org.csc.chessclub.controller.TestContainerConfig;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.user.UserEntity;
@@ -8,11 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserRepositoryTests extends TestContainerConfig {
 
@@ -84,6 +83,16 @@ public class UserRepositoryTests extends TestContainerConfig {
   void testSetAvailableFalse_whenGivenUuid_resultShouldBeOne() {
     userRepository.save(user1);
     int result = userRepository.setAvailableFalse(user1.getUuid());
+
+    assertEquals(1, result, "Result should be 1");
+  }
+
+  @Test
+  @DisplayName("Update user role")
+  @Transactional
+  void testUpdateUserRole_whenGivenUuid_returnUserWithNewRole() {
+    userRepository.save(user1);
+    int result = userRepository.updateRole(user1.getUuid(), Role.USER, Role.ADMIN);
 
     assertEquals(1, result, "Result should be 1");
   }
