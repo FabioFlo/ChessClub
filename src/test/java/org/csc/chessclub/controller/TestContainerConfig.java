@@ -38,6 +38,5 @@ public abstract class TestContainerConfig {
         .setContentType(ContentType.JSON)
         .setAccept(ContentType.JSON)
         .build();
-
   }
 }
