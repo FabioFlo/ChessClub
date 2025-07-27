@@ -4,6 +4,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
+import org.csc.chessclub.exception.validation.role.RoleValidationMessage;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -11,7 +12,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = CustomResultValidator.class)
 public @interface ValidResult {
 
-  String message() default ResultValidationMessage.RESULT_MUST_BE_VALID;
+  String message() default RoleValidationMessage.ROLE_MUST_BE_VALID;
 
   Class<?>[] groups() default {};
 

@@ -1,16 +1,15 @@
 package org.csc.chessclub.validator;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import java.util.Set;
 import org.csc.chessclub.dto.user.RegisterUserRequest;
 import org.csc.chessclub.exception.validation.messages.UserValidationMessage;
 import org.csc.chessclub.exception.validation.password.PasswordValidationMassage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class UserValidationTests extends BaseValidatorConfig {
 
