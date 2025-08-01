@@ -1,6 +1,7 @@
 package org.csc.chessclub.config;
 
 import java.util.logging.Logger;
+import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.user.UserEntity;
 import org.csc.chessclub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,11 +42,14 @@ public class Runner implements CommandLineRunner {
       fakeAdmin.setUsername(fakeAdminUsername);
       fakeAdmin.setPassword(passwordEncoder.encode(fakeAdminPassword));
       fakeAdmin.setEmail(fakeAdminEmail);
+      fakeAdmin.setAvailable(true);
+      fakeAdmin.setRole(Role.ADMIN);
 
       userRepository.save(fakeAdmin);
-      log.info("Created fake Admin");
+      log.info("Created fake Admin with username: " + fakeAdminUsername + " and password: "
+          + fakeAdminPassword);
     } else {
-      log.info("Fake admin already exists");
+      log.info("Fake admin already exists with username: " + fakeAdmin.getUsername());
     }
   }
 
