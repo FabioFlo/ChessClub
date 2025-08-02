@@ -34,7 +34,7 @@
     <spring.version>3.4.5</spring.version>
     <checkstyle-maven-plugin.version>3.0.0</checkstyle-maven-plugin.version>
     <argLine/>
-    <server.port>8090</server.port>
+    <server.port>8080</server.port>
     <servlet.path>/api/v1</servlet.path>
   </properties>
 

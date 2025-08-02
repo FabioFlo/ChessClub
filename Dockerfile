@@ -1,4 +1,3 @@
-# Use a lightweight JDK image
 FROM eclipse-temurin:21-jdk-jammy as builder
 
 WORKDIR /app
