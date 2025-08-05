@@ -20,8 +20,8 @@ public class FileTypeValidator implements ConstraintValidator<ValidFile, Multipa
 
   /**
    * By default, this annotation does not throw an exception if the file is null. If you want the
-   * validation to fail, in case the file is null or empty, this logic should be modified in: 'if
-   * (file == null || file.isEmpty()) { return true; }' to return false or a message.
+   * validation to fail, in case the file is null or empty, this logic should be modified to return false or a message: 'if
+   * (file == null || file.isEmpty()) { return true; }'.
    */
   @Override
   public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
