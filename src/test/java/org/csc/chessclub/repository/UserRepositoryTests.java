@@ -49,6 +49,7 @@ public class UserRepositoryTests extends TestContainerConfig {
         .role(Role.ADMIN)
         .build();
 
+    userRepository.deleteAll();
   }
 
   @Test
