@@ -1,0 +1,3 @@
+@echo off
+echo 🧼 Stopping and removing volumes...
+docker compose down -v
