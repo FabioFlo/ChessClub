@@ -1,12 +1,29 @@
 # ♟️ Chess Club API
 
-A Spring Boot 3.4.x REST API for managing chess clubs and users, powered by PostgreSQL 17.5, and fully containerized
-using Docker Compose.
+A Spring Boot 3.4.x REST API for managing chess clubs, players, tournaments, and games.  
+It provides endpoints to register users, manage memberships, schedule tournaments, and record results.  
+Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Maven](https://img.shields.io/badge/Maven-Build-green)
 ![Dockerized](https://img.shields.io/badge/Docker-Ready-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+
+---
+
+## 📑 Table of Contents
+
+- [Requirements](#-requirements)
+- [Docker Troubleshooting (Linux/WSL)](#-docker-troubleshooting-linux--wsl)
+- [Key Dependencies & Tools](#-key-dependencies--tools)
+- [Configuration](#-configuration)
+- [Getting Started](#-getting-started)
+- [Stopping the Application](#-stopping-the-application)
+- [API Documentation](#-api-documentation)
+- [Testing & Coverage](#-testing--coverage)
+- [License](#-license)
+- [Contributing](#-contributing)
+- [Author](#-author)
 
 ---
 
@@ -28,8 +45,9 @@ using Docker Compose.
 ### ✅ Check if Docker is installed properly
 
 ```bash
-  docker --version
-  docker compose version
+docker --version
+docker compose version
+
 ```
 
 If you get an error like:
@@ -193,29 +211,53 @@ Run the following in your terminal:
 
 ---
 
+## 🧬 Database Seeding (coming soon)
+
+The application will include a preloaded demo dataset (users, clubs, tournaments).
+Stay tuned for the initialization logic or SQL script in the next update!
+---
+
 ## 📘 API Documentation
 
-### OpenAPI UI (Swagger) is available here:
+### Swagger UI:
 
 🔗 http://localhost:8080/api/v1/swagger-ui.html
 
-To generate the OpenApi json:
-> ⚠️ The app needs to be up and running!
+Generate OpenAPI JSON (app must be running)
 
 ```bash
   mvn springdoc-openapi:generate
 ```
 
-> OpenApi json is located at `target/openapi.json`
+> Output file: `target/openapi.json`
 
 ---
 
 ## 🧪 Testing & Coverage
 
-To generate the test coverage:
+Run Tests & Generate Coverage Report
 
 ```bash
   mvn clean verify
 ```
 
-> Jacoco index.html is located at `target/site/jacoco/index.html`
+> JaCoCo HTML report: `target/site/jacoco/index.html`
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+Feel free to open an issue or a pull request.
+---
+
+## 👤 Author
+
+**Fabio Floris**  
+💻 [GitHub](https://github.com/FabioFlo/ChessClub)
+💼 [LinkedIn](https://www.linkedin.com/in/fabiofloris92)
+---
