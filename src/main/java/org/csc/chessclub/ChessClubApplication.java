@@ -15,6 +15,6 @@ public class ChessClubApplication {
   }
   //TODO: add cache
 
-  //TODO: write documentation .md file, flowchart, commands for test, test percentage etc
+  //TODO: flowchart
 
 }

@@ -129,13 +129,13 @@ SPRING_PROFILES_ACTIVE=local
 Run the following in your terminal:
 
 ```bash
-  ./start.sh
+  ./scripts/start.sh
 ```
 
 🔒 You may need to make the script executable first:
 
 ```bash
-  chmod +x start.sh
+  chmod +x scripts/start.sh
 ```
 
 ### 🪟 On Windows (CMD or PowerShell)
@@ -143,7 +143,7 @@ Run the following in your terminal:
 Run the following in your terminal:
 
 ```cmd
-  start.bat
+  scripts\start.bat
 ```
 
 ### Or run it manually
@@ -160,13 +160,13 @@ ___
 ### ✅ Linux/macOS/WSL
 
 ```bash
-  ./stop.sh
+  ./scripts/stop.sh
 ```
 
 🔒 You may need to make the script executable first:
 
 ```bash
-  chmod +x start.sh
+  chmod +x scripts/stop.sh
 ```
 
 ### 🪟 On Windows (CMD or PowerShell)
@@ -174,15 +174,21 @@ ___
 Run the following in your terminal:
 
 ```cmd
-  stop.bat
+  scripts\stop.bat
 ```
 
 ### 🔁 Full Reset (Wipe Database)
 
 ```bash
-  ./stop-clean.sh
+  ./scripts/stop-clean.sh
 # or
-  stop-clean.bat
+  scripts\stop-clean.bat
+```
+
+🔒 You may need to make the script executable first on Linux:
+
+```bash
+  chmod +x scripts/stop-clean.sh
 ```
 
 ---
