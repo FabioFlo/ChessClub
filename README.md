@@ -13,7 +13,6 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ## 📑 Table of Contents
 
-- [Before you begin](#-before-you-begin)
 - [Requirements](#-requirements-and-installation-help)
 - [Docker Troubleshooting (Linux/WSL)](#-docker-troubleshooting-linux--wsl)
 - [Key Dependencies & Tools](#-key-dependencies--tools)
@@ -28,7 +27,7 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ---
 
-## ⚠️ Before You Begin
+## 📦 Requirements (and Installation Help)
 
 To run the project using the provided scripts (`start.sh`, `start.bat`), you only need the following installed and
 configured on your system:
@@ -49,6 +48,7 @@ configured on your system:
 
 2. **Install Docker Desktop**  
    Download it from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
+   </br> Docker compose is included in Docker desktop.
 
 3. ✅ After installation, **restart CMD/PowerShell and your IDE** (e.g., IntelliJ) to apply PATH changes.
 
@@ -70,19 +70,7 @@ Use your package manager to install Docker and Maven:
   sudo systemctl enable docker
 ```
 
----
-
-## 📦 Requirements (and Installation Help)
-
-| Tool                      | Version | Install Link / Docs                                           | Linux / macOS (CLI)                                                                      | Windows                                                                              |
-|---------------------------|---------|---------------------------------------------------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| **Maven**                 | 3.9+    | [maven.apache.org](https://maven.apache.org/install.html)     | `sudo apt install maven` <br/> ☑️ Check: `mvn -v`                                        | [Download ZIP](https://maven.apache.org/download.cgi) → unzip → add `bin/` to `PATH` |
-| **Docker**                | 27.5+   | [docker.com](https://www.docker.com/products/docker-desktop/) | `sudo apt install docker.io`<br/>`sudo systemctl start docker`<br/>☑️ `docker --version` | Install [Docker Desktop](https://docs.docker.com/desktop/)                           |
-| **Docker Compose Plugin** | 2.x+    | [Compose Docs](https://docs.docker.com/compose/install/)      | `sudo apt install docker-compose-plugin`<br/>☑️ `docker compose version`                 | Included in Docker Desktop (v2+) — nothing else needed                               |
-
----
-
-## 🐳 Docker Troubleshooting (Linux / WSL)
+### 🐳 Docker Troubleshooting (Linux / WSL)
 
 > If you encounter issues with `docker compose` not working or returning permission errors, follow these steps.
 
@@ -91,7 +79,6 @@ Use your package manager to install Docker and Maven:
 ```bash
   docker --version
   docker compose version
-
 ```
 
 If you get an error like:
