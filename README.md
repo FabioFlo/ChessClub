@@ -13,7 +13,8 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ## 📑 Table of Contents
 
-- [Requirements](#-requirements)
+- [Before you begin](#-before-you-begin)
+- [Requirements](#-requirements-and-installation-help)
 - [Docker Troubleshooting (Linux/WSL)](#-docker-troubleshooting-linux--wsl)
 - [Key Dependencies & Tools](#-key-dependencies--tools)
 - [Configuration](#-configuration)
@@ -27,14 +28,57 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ---
 
-## 📦 Requirements
+## ⚠️ Before You Begin
 
-| Tool           | Version |
-|----------------|---------|
-| Java           | 21      |
-| Maven          | 3.8+    |
-| Docker         | 27.5+   |
-| Docker Compose | v2.x+   |
+To run the project using the provided scripts (`start.sh`, `start.bat`), you only need the following installed and
+configured on your system:
+
+| Tool       | Purpose                                       | Required? |
+|------------|-----------------------------------------------|-----------|
+| **Docker** | Runs the containers via `docker compose`      | ✅ Yes     |
+| **Maven**  | Builds the Java project (`mvn clean package`) | ✅ Yes     |
+
+> ✅ All other dependencies (Java, PostgreSQL, etc.) are managed inside Docker containers.  
+> 🧩 You do **not** need to install Java or PostgreSQL locally.
+
+### 🪟 Windows Setup Tips
+
+1. **Install Maven**  
+   Download the [Apache Maven ZIP archive](https://maven.apache.org/download.cgi), extract it, and add the `bin` folder
+   to your **System PATH**.
+
+2. **Install Docker Desktop**  
+   Download it from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
+
+3. ✅ After installation, **restart CMD/PowerShell and your IDE** (e.g., IntelliJ) to apply PATH changes.
+
+### 🐧 Linux / macOS
+
+Use your package manager to install Docker and Maven:
+
+```bash
+  # Install Maven
+  sudo apt update && sudo apt install maven
+   
+  # Install Docker and Docker Compose plugin
+  sudo apt install docker.io docker-compose-plugin
+    
+  # Start Docker daemon
+  sudo systemctl start docker
+    
+  # Optional: enable Docker at startup
+  sudo systemctl enable docker
+```
+
+---
+
+## 📦 Requirements (and Installation Help)
+
+| Tool                      | Version | Install Link / Docs                                           | Linux / macOS (CLI)                                                                      | Windows                                                                              |
+|---------------------------|---------|---------------------------------------------------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| **Maven**                 | 3.9+    | [maven.apache.org](https://maven.apache.org/install.html)     | `sudo apt install maven` <br/> ☑️ Check: `mvn -v`                                        | [Download ZIP](https://maven.apache.org/download.cgi) → unzip → add `bin/` to `PATH` |
+| **Docker**                | 27.5+   | [docker.com](https://www.docker.com/products/docker-desktop/) | `sudo apt install docker.io`<br/>`sudo systemctl start docker`<br/>☑️ `docker --version` | Install [Docker Desktop](https://docs.docker.com/desktop/)                           |
+| **Docker Compose Plugin** | 2.x+    | [Compose Docs](https://docs.docker.com/compose/install/)      | `sudo apt install docker-compose-plugin`<br/>☑️ `docker compose version`                 | Included in Docker Desktop (v2+) — nothing else needed                               |
 
 ---
 
@@ -45,8 +89,8 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 ### ✅ Check if Docker is installed properly
 
 ```bash
-docker --version
-docker compose version
+  docker --version
+  docker compose version
 
 ```
 
@@ -101,7 +145,7 @@ Then retry:
 ✅ You should now see something like:
 
 ```
-Docker Compose version v2.39.1
+Docker Compose version v2.x
 ```
 
 ---
@@ -142,7 +186,9 @@ SPRING_PROFILES_ACTIVE=local
 
 ## 🚀 Getting Started
 
-### ✅ On Linux/macOS/WSL
+> **Prerequisite:** Make sure Docker is installed and running before starting the application.
+
+### 🐧 On Linux/macOS/WSL
 
 Run the following in your terminal:
 
@@ -158,7 +204,7 @@ Run the following in your terminal:
 
 ### 🪟 On Windows (CMD or PowerShell)
 
-Run the following in your terminal:
+> Run the following in your terminal:
 
 ```cmd
   scripts\start.bat
@@ -175,7 +221,7 @@ ___
 
 ## 🛑 Stopping the Application
 
-### ✅ Linux/macOS/WSL
+### 🐧 Linux/macOS/WSL
 
 ```bash
   ./scripts/stop.sh
@@ -214,7 +260,7 @@ Run the following in your terminal:
 ## 🧬 Database Seeding (coming soon)
 
 The application will include a preloaded demo dataset (users, clubs, tournaments).
-Stay tuned for the initialization logic or SQL script in the next update!
+
 ---
 
 ## 📘 API Documentation
