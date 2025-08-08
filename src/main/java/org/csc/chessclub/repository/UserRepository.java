@@ -36,4 +36,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
       @Param("fromRole") Role fromRole,
       @Param("toRole") Role toRole
   );
+
+  @Modifying
+  int updatePassword(@Param("uuid") UUID uuid, @Param("password") String password);
 }

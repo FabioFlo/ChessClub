@@ -16,5 +16,6 @@ public class ChessClubApplication {
   //TODO: add cache
 
   //TODO: flowchart
+  //TODO: db init data
 
 }

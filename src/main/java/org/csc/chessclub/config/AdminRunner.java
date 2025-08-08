@@ -7,14 +7,16 @@ import org.csc.chessclub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @Profile("!test")
-public class Runner implements CommandLineRunner {
+@Order(1)
+public class AdminRunner implements CommandLineRunner {
 
-  private static final Logger log = Logger.getLogger(Runner.class.getName());
+  private static final Logger log = Logger.getLogger(AdminRunner.class.getName());
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
@@ -27,7 +29,7 @@ public class Runner implements CommandLineRunner {
   @Value("${fake.admin.create.flag}")
   private Boolean fakeAdminCreateFlag;
 
-  public Runner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public AdminRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
   }
