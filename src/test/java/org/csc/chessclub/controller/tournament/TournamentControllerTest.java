@@ -171,7 +171,7 @@ public class TournamentControllerTest extends BaseTestConfiguration {
         ResponseDto<PageResponseDto<TournamentDto>> response = given()
                 .pathParam("eventUuid", event.getUuid())
                 .when()
-                .get(apiPath + "?eventId={eventUuid}")
+                .get(apiPath + "?eventUuid={eventUuid}")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response().as(new TypeRef<>() {

@@ -8,14 +8,18 @@ import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
+import org.csc.chessclub.model.tournament.TournamentEntity;
+import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,15 +31,27 @@ public class GameControllerTests extends BaseTestConfiguration {
     private final String apiPath = "/games";
     private String userToken;
     private CreateGameDto createGameDto;
+    private TournamentEntity tournament;
     private UUID gameId;
     private final String whitePlayer = "White player";
 
     private static final String CREATED = "Game successfully created";
     private static final String UPDATED = "Game successfully updated";
+    @Autowired
+    private TournamentRepository tournamentRepository;
 
     @BeforeAll
     public void setUp() {
-        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon, null);
+        tournament = tournamentRepository.save(
+                TournamentEntity.builder()
+                        .title("Tournament")
+                        .description("Description")
+                        .startDate(LocalDate.parse("2018-01-01"))
+                        .endDate(LocalDate.parse("2018-01-03"))
+                        .available(true)
+                        .build()
+        );
+        createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon, tournament.getUuid());
         userToken = getUserToken();
     }
 
@@ -178,6 +194,33 @@ public class GameControllerTests extends BaseTestConfiguration {
 
     @Test
     @Order(6)
+    @DisplayName("Get all paged by tournament uuid")
+    void testGetAllByTournamentUuid_whenGamesFound_returnsGames() {
+        ResponseDto<PageResponseDto<GameDto>> response = given()
+                .pathParam("tournamentUuid", tournament.getUuid())
+                .when()
+                .get(apiPath + "?tournamentUuid={tournamentUuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::pageSize).isEqualTo(10);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::content)
+                .extracting(List::size).isEqualTo(1);
+    }
+
+    @Test
+    @Order(7)
     @DisplayName("Delete game")
     void testDeleteGame_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
         ResponseDto<UUID> response = authHelper.withBearerToken(userToken)

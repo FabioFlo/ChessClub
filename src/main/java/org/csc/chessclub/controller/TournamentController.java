@@ -75,7 +75,7 @@ public class TournamentController {
                 .body(new ResponseDto<>(uuid, DELETED, true));
     }
 
-    @GetMapping("?eventId={eventUuid}")
+    @GetMapping("?eventUuid={eventUuid}")
     public ResponseEntity<ResponseDto<PageResponseDto<TournamentDto>>> getAllPagedTournamentsByEventUuid(
             @ValidUUID @PathVariable UUID eventUuid,
             @PageableDefault Pageable pageable) {

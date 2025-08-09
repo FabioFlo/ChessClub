@@ -8,7 +8,6 @@ import org.csc.chessclub.dto.event.CreateEventDto;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -23,7 +22,6 @@ public class EventExceptionControllerTests extends BaseTestConfiguration {
 
 
     @Test
-    @Order(2)
     @DisplayName("Get Event By Id - Throw Not found exception")
     void testGetEvent_whenEventNotFound_shouldThrowCustomNotFoundExceptionFromGlobalExceptionHandler() {
         ResponseDto<ErrorMessage> response = given()

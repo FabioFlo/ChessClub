@@ -85,6 +85,16 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto<>(uuid, DELETED, true));
     }
+
+    @GetMapping("?tournamentUuid={tournamentUuid}")
+    public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllGamesByTournamentUuid(
+            @ValidUUID @PathVariable("tournamentUuid") UUID tournamentUuid,
+            @PageableDefault Pageable pageable) {
+        Page<GameDto> pageResult = gameService.getAllByTournamentUuid(tournamentUuid, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), LIST_FOUND, true));
+    }
 }
 
 
