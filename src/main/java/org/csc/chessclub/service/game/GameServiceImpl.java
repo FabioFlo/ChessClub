@@ -113,4 +113,10 @@ public class GameServiceImpl implements GameService {
         }
         return playerName;
     }
+
+    @Override
+    public Page<GameDto> getAllByTournamentUuid(UUID tournamentUuid, Pageable pageable) {
+        return gameMapper.pageGameEntityToPageGameDto(
+                gameRepository.findGameEntitiesByTournament_UuidAndAvailableTrue(tournamentUuid, pageable));
+    }
 }

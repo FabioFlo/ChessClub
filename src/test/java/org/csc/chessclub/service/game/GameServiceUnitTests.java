@@ -6,6 +6,7 @@ import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.mapper.GameMapper;
 import org.csc.chessclub.model.game.GameEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,11 +49,12 @@ public class GameServiceUnitTests {
     private final Result result = Result.BlackWon;
     private String pgn;
     private UUID uuid;
+    private TournamentEntity tournament;
 
     @BeforeEach
     public void setup() {
         pageable = PageRequest.of(0, 10);
-
+        tournament = TournamentEntity.builder().uuid(UUID.randomUUID()).build();
         uuid = UUID.randomUUID();
         pgn = """
                 [Event "Live Chess"]
@@ -81,6 +83,7 @@ public class GameServiceUnitTests {
                 .whitePlayerName(whitePlayer)
                 .blackPlayerName(blackPlayer)
                 .result(result)
+                .uuid(uuid)
                 .build();
 
         game2 = GameEntity.builder()
@@ -276,4 +279,21 @@ public class GameServiceUnitTests {
                         "White player name should be " + blackPlayer));
     }
 
+    @Test
+    @DisplayName("Get all paged games by tournament uuid")
+    public void testGetAllGamesAvailableByTournamentUuid_whenPageableAndTournamentUuidProvided_returnPagedGames() {
+        game.setAvailable(true);
+        List<GameEntity> allGames = List.of(game);
+        Page<GameEntity> pagedGames = new PageImpl<>(allGames, pageable, allGames.size());
+
+        when(gameRepository.findGameEntitiesByTournament_UuidAndAvailableTrue(tournament.getUuid(), pageable)).thenReturn(pagedGames);
+
+        Page<GameDto> result = gameService.getAllByTournamentUuid(tournament.getUuid(), pageable);
+
+        assertAll("Page assertions",
+                () -> assertEquals(1, result.getTotalElements()),
+                () -> assertEquals(0, result.getNumber()),
+                () -> assertEquals(10, result.getSize()),
+                () -> assertEquals(game.getUuid(), result.getContent().getFirst().uuid()));
+    }
 }

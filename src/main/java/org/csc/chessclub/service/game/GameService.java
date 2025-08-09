@@ -27,4 +27,6 @@ public interface GameService {
     Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable);
 
     Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable);
+
+    Page<GameDto> getAllByTournamentUuid(UUID tournamentUuid, Pageable pageable);
 }
