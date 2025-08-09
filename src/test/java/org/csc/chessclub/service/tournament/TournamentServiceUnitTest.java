@@ -4,6 +4,7 @@ import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
 import org.csc.chessclub.mapper.TournamentMapper;
+import org.csc.chessclub.model.event.EventEntity;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,7 @@ public class TournamentServiceUnitTest {
     private TournamentEntity tournament;
     private TournamentEntity availableTournament;
     private TournamentEntity tournament2;
+    private EventEntity event;
     private static final LocalDate START_DATE = LocalDate.parse("2018-01-01");
     private static final LocalDate END_DATE = LocalDate.parse("2018-01-03");
     private Pageable pageable;
@@ -49,6 +51,10 @@ public class TournamentServiceUnitTest {
     @BeforeEach
     void setUp() {
         pageable = PageRequest.of(0, 10);
+        UUID eventId = UUID.randomUUID();
+        event = EventEntity.builder()
+                .uuid(eventId)
+                .build();
 
         UUID uuid = UUID.randomUUID();
         tournament = TournamentEntity.builder()
@@ -57,6 +63,7 @@ public class TournamentServiceUnitTest {
                 .description("Description")
                 .startDate(START_DATE)
                 .endDate(END_DATE)
+                .event(event)
                 .build();
 
         availableTournament = TournamentEntity.builder()
@@ -167,5 +174,21 @@ public class TournamentServiceUnitTest {
         when(tournamentRepository.setAvailableFalse(tournament.getUuid())).thenReturn(1);
 
         assertDoesNotThrow(() -> tournamentService.delete(tournament.getUuid()));
+    }
+
+    @Test
+    @DisplayName("Get all available tournaments by Event uuid")
+    void testGetAllAvailable_whenPageableAndEventUuidProvided_thenReturnPaginatedTournaments() {
+        List<TournamentEntity> tournaments = List.of(availableTournament);
+        Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable,
+                tournaments.size());
+
+        when(tournamentRepository.findTournamentEntitiesByEvent_UuidAndAvailableTrue(event.getUuid(), pageable)).thenReturn(pagedTournaments);
+
+        Page<TournamentDto> result = tournamentService.getAllByEventUuid(event.getUuid(), pageable);
+
+        assertAll("Get all assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(1, result.getTotalElements(), "Result should contain two tournaments"));
     }
 }

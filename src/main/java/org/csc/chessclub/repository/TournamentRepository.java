@@ -23,5 +23,6 @@ public interface TournamentRepository extends JpaRepository<TournamentEntity, UU
     @Query("update TournamentEntity  t set t.available = false where t.uuid = :uuid")
     int setAvailableFalse(@Param("uuid") UUID uuid);
 
-    //TODO: get all tournaments where event uuid is = to:
+    Page<TournamentEntity> findTournamentEntitiesByEvent_UuidAndAvailableTrue(UUID eventUuid,
+                                                              Pageable pageable);
 }

@@ -9,6 +9,9 @@ import io.restassured.specification.RequestSpecification;
 import org.csc.chessclub.TestcontainersConfiguration;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.user.UserEntity;
+import org.csc.chessclub.repository.EventRepository;
+import org.csc.chessclub.repository.GameRepository;
+import org.csc.chessclub.repository.TournamentRepository;
 import org.csc.chessclub.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -60,6 +63,12 @@ public abstract class BaseTestConfiguration {
     protected TestDataFactory dataFactory;
     @Autowired
     protected TestAuthHelper authHelper;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private TournamentRepository tournamentRepository;
+    @Autowired
+    private GameRepository gameRepository;
 
     @BeforeAll
     void setup() {
@@ -79,6 +88,9 @@ public abstract class BaseTestConfiguration {
     }
 
     private void cleanDatabase() {
+        gameRepository.deleteAll();
+        tournamentRepository.deleteAll();
+        eventRepository.deleteAll();
         userRepository.deleteAll();
     }
 

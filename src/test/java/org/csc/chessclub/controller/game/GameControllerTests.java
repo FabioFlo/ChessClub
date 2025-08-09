@@ -8,12 +8,10 @@ import org.csc.chessclub.dto.game.CreateGameDto;
 import org.csc.chessclub.dto.game.GameDto;
 import org.csc.chessclub.dto.game.UpdateGameDto;
 import org.csc.chessclub.enums.Result;
-import org.csc.chessclub.repository.GameRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -34,12 +32,9 @@ public class GameControllerTests extends BaseTestConfiguration {
 
     private static final String CREATED = "Game successfully created";
     private static final String UPDATED = "Game successfully updated";
-    @Autowired
-    private GameRepository gameRepository;
 
     @BeforeAll
     public void setUp() {
-        gameRepository.deleteAll();
         createGameDto = new CreateGameDto("", "", "game pgn", Result.BlackWon, null);
         userToken = getUserToken();
     }

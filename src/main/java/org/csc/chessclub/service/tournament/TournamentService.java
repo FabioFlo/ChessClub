@@ -20,5 +20,7 @@ public interface TournamentService {
 
     Page<TournamentDto> getAllAvailable(Pageable pageable);
 
+    Page<TournamentDto> getAllByEventUuid(UUID eventUuid, Pageable pageable);
+
     void delete(UUID uuid);
 }

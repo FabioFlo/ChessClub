@@ -70,6 +70,13 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
+    public Page<TournamentDto> getAllByEventUuid(UUID eventUuid, Pageable pageable) {
+        return tournamentMapper.pageTournamentEntityToPageTournamentDto(
+                tournamentRepository.findTournamentEntitiesByEvent_UuidAndAvailableTrue(eventUuid, pageable)
+        );
+    }
+
+    @Override
     @Transactional
     public void delete(UUID uuid) {
         int result = tournamentRepository.setAvailableFalse(uuid);

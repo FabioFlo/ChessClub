@@ -7,12 +7,10 @@ import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
-import org.csc.chessclub.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
@@ -31,13 +29,9 @@ public class TournamentControllerTest extends BaseTestConfiguration {
     private UUID uuid;
     private LocalDate startDate;
     private LocalDate endDate;
-    @Autowired
-    private TournamentRepository tournamentRepository;
-
 
     @BeforeAll
     public void beforeAll() {
-        tournamentRepository.deleteAll();
         startDate = LocalDate.parse("2020-01-01");
         endDate = LocalDate.parse("2020-01-03");
         createTournamentDto = new CreateTournamentDto(
