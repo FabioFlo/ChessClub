@@ -230,16 +230,22 @@ Run the following in your terminal:
 
 ### 🔁 Full Reset (Wipe Database)
 
+🐧 On Linux/macOS/WSL
+
 ```bash
   ./scripts/stop-clean.sh
-# or
-  scripts\stop-clean.bat
 ```
 
 🔒 You may need to make the script executable first on Linux:
 
 ```bash
   chmod +x scripts/stop-clean.sh
+```
+
+🪟 On Windows (CMD or PowerShell)
+
+```cmd
+  scripts\stop-clean.bat
 ```
 
 ---

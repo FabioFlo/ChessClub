@@ -35,4 +35,5 @@ public class TournamentEntity {
     @ManyToOne
     @JoinColumn(name = "event_uuid")
     private EventEntity event;
+    //TODO: add the winner name
 }
