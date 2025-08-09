@@ -7,10 +7,7 @@ import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.auth.AuthenticationService;
 import org.csc.chessclub.dto.PageResponseDto;
 import org.csc.chessclub.dto.ResponseDto;
-import org.csc.chessclub.dto.user.RegisterUserRequest;
-import org.csc.chessclub.dto.user.UpdateRoleDto;
-import org.csc.chessclub.dto.user.UpdateUserRequest;
-import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.dto.user.*;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.validation.uuid.ValidUUID;
 import org.csc.chessclub.service.user.UserService;
@@ -41,8 +38,10 @@ public class UserController {
   private static final String DELETED = "User deleted";
   private static final String UPDATED_ROLE = "Role successfully updated";
   private static final String LIST_FOUND = "Users found";
+  private static final String UPDATED_PASSWORD = "Password successfully updated";
 
-  @PreAuthorize("hasRole('ADMIN')")
+
+    @PreAuthorize("hasRole('ADMIN')")
   @PostMapping()
   public ResponseEntity<ResponseDto<UserDto>> createUser(
       @Valid @RequestBody RegisterUserRequest userRequest) {
@@ -101,4 +100,13 @@ public class UserController {
         .body(new ResponseDto<>(pageUtils.populatePageResponseDto(users), LIST_FOUND, true));
   }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/password")
+    public ResponseEntity<ResponseDto<Role>> updatePassword(
+            @Valid @RequestBody UpdatePasswordDto updatePasswordDto) {
+         userService.updateUserPassword(updatePasswordDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(
+                null, UPDATED_PASSWORD, true
+        ));
+    }
 }

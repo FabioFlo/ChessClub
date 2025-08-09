@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
   }
 
     @Override
+    @Transactional
     public void updateUserPassword(UpdatePasswordDto updatePasswordDto) {
       int result = userRepository.updatePassword(updatePasswordDto.uuid(), passwordEncoder.encode(updatePasswordDto.password()));
 

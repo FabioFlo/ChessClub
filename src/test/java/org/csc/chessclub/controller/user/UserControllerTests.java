@@ -14,10 +14,7 @@ import org.csc.chessclub.auth.AuthenticationResponse;
 import org.csc.chessclub.controller.BaseIntegrationTest;
 import org.csc.chessclub.dto.PageResponseDto;
 import org.csc.chessclub.dto.ResponseDto;
-import org.csc.chessclub.dto.user.RegisterUserRequest;
-import org.csc.chessclub.dto.user.UpdateRoleDto;
-import org.csc.chessclub.dto.user.UpdateUserRequest;
-import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.dto.user.*;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.ErrorMessage;
 import org.csc.chessclub.security.JwtService;
@@ -46,6 +43,7 @@ public class UserControllerTests extends BaseIntegrationTest {
   private static final String UPDATED = "User successfully updated";
   private static final String DELETED = "User deleted";
   private static final String UPDATED_ROLE = "Role successfully updated";
+  private static final String UPDATED_PASSWORD = "Password successfully updated";
 
   @Autowired
   private JwtService service;
@@ -324,4 +322,26 @@ public class UserControllerTests extends BaseIntegrationTest {
         .extracting(PageResponseDto::content)
         .extracting(List::size).isEqualTo(3);
   }
+
+    @Test
+    @Order(14)
+    @DisplayName("Admin can update user password")
+    void testUpdateUserPassword_whenAuthenticatedAdminAndValidUpdatePasswordDtoProvided_returnsUpdatedPassword() {
+        UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto(userUuid, "New_Password1");
+
+        ResponseDto<Role> response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updatePasswordDto)
+                .when()
+                .patch(apiPath + "/password")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::message)
+                .isEqualTo(UPDATED_PASSWORD);
+    }
 }
