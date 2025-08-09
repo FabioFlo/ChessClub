@@ -228,6 +228,12 @@ Run the following in your terminal:
   scripts\stop.bat
 ```
 
+If the container got stoped with the `stop script`, this command start it again without executing the build:
+
+```bash
+  docker compose up
+```
+
 ### 🔁 Full Reset (Wipe Database)
 
 🐧 On Linux/macOS/WSL
@@ -250,9 +256,21 @@ Run the following in your terminal:
 
 ---
 
-## 🧬 Database Seeding (coming soon)
+## 🧬 Database Seeding
 
-The application will include a preloaded demo dataset (users, clubs, tournaments).
+The application include two classes for the creation of entities into the database.
+One of them allow to create an Admin via the `AdminRunner` class that can be found here `org/csc/chessclub/config`.
+This behavior is manage by the boolean flag `fake.admin.create.flag` which can be found into the
+`application-local.properties` file with some other Admin/User properties that allow to change
+`Username, Email and Password`.
+With the admin is then possible to call every method of the application.
+
+Other than that, there is another class called `DatabaseSeeder` which have the task to create other entities and
+populates the database with some data of `Event, Tournament and Games`.
+As for the Admin, this behavior can be enabled or disabled with the property `init.database` located in the same
+application properties file.
+
+🔒 Both of them are enabled by default, so the database will be initialized at the first start or ***only*** if the volume is empty.
 
 ---
 
