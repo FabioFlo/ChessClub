@@ -38,7 +38,7 @@ public class EventValidationControllerTests extends BaseTestConfiguration {
         CreateEventDto invalidCreateEventDto = new CreateEventDto(
                 null, DESCRIPTION, AUTHOR);
 
-        ResponseDto<ValidErrorMessage> response = withBearerToken(userToken)
+        ResponseDto<ValidErrorMessage> response = authHelper.withBearerToken(userToken)
                 .multiPart("event", "event.json", invalidCreateEventDto, "application/json")
                 .contentType("multipart/form-data")
                 .when()
@@ -102,7 +102,7 @@ public class EventValidationControllerTests extends BaseTestConfiguration {
     @Test
     @DisplayName("Delete - Should throw validation exception when invalid uuid provided")
     void testDeleteEvent_whenInvalidUuidProvided_validErrorMessageShouldReturn() {
-        ResponseDto<ValidErrorMessage> response = withBearerToken(userToken)
+        ResponseDto<ValidErrorMessage> response = authHelper.withBearerToken(userToken)
                 .pathParam("uuid", invalidUuid)
                 .when()
                 .delete("/events/{uuid}")
@@ -126,7 +126,7 @@ public class EventValidationControllerTests extends BaseTestConfiguration {
                 "author");
         String notAllowedFormat = "notAllowedFormat.jpeg";
 
-        ResponseDto<ValidErrorMessage> response = withBearerToken(userToken)
+        ResponseDto<ValidErrorMessage> response = authHelper.withBearerToken(userToken)
                 .multiPart("event", "event.json", updEventDto, "application/json")
                 .multiPart("file", new File(storageFolder + "/" + notAllowedFormat))
                 .contentType("multipart/form-data")

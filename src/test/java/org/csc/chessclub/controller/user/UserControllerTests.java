@@ -59,7 +59,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     @Order(1)
     @DisplayName("Admin Login")
     void testAdminLogin_whenValidUserProvided_returnsUser() {
-        ResponseDto<AuthenticationResponse> response = loginUser(adminUser.getUsername(), ADMIN_PASSWORD);
+        ResponseDto<AuthenticationResponse> response = authHelper.loginUser(adminUser.getUsername(), ADMIN_PASSWORD);
         userUuid = getBaseUserUuid();
         adminToken = response.data().token();
 
@@ -81,7 +81,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     @Order(2)
     @DisplayName("Register User")
     void testRegisterUser_whenAuthenticatedAdminAndValidUserProvided_returnsRegisteredUser() {
-        ResponseDto<UserDto> response = withBearerToken(adminToken)
+        ResponseDto<UserDto> response = authHelper.withBearerToken(adminToken)
                 .body(registerUserRequest)
                 .when()
                 .post(apiPath)
@@ -106,7 +106,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     @DisplayName("User login")
     void testUserLogin_whenValidUserProvided_returnsUser() {
         ResponseDto<AuthenticationResponse> response =
-                loginUser(EMAIL, PASSWORD);
+                authHelper.loginUser(EMAIL, PASSWORD);
 
         userToken = response.data().token();
         assertNotNull(userToken);
@@ -128,7 +128,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     void testUpdateUser_whenAuthenticatedAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, "NewUsername", EMAIL);
 
-        ResponseDto<UserDto> response = withBearerToken(userToken)
+        ResponseDto<UserDto> response = authHelper.withBearerToken(userToken)
                 .body(updateUser)
                 .when()
                 .patch(apiPath)
@@ -148,7 +148,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     @Order(5)
     @DisplayName("Admin can get user by id")
     void testGetUser_whenAuthenticatedAdminAndValidUuidProvided_returnUserDto() {
-        ResponseDto<UserDto> response = withBearerToken(adminToken)
+        ResponseDto<UserDto> response = authHelper.withBearerToken(adminToken)
                 .pathParam("uuid", userUuid)
                 .when()
                 .get(apiPath + "/{uuid}")
@@ -169,7 +169,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     void testUpdateUser_whenAuthenticatedAdminAndValidUpdateUserProvided_returnsUpdatedUser() {
         UpdateUserRequest updateUser = new UpdateUserRequest(userUuid, USERNAME, EMAIL);
 
-        ResponseDto<UserDto> response = withBearerToken(adminToken)
+        ResponseDto<UserDto> response = authHelper.withBearerToken(adminToken)
                 .body(updateUser)
                 .when()
                 .patch(apiPath)
@@ -192,7 +192,7 @@ public class UserControllerTests extends BaseTestConfiguration {
         Role newRole = Role.ADMIN;
         UpdateRoleDto updateRole = new UpdateRoleDto(userUuid, oldRole, newRole);
 
-        ResponseDto<Role> response = withBearerToken(adminToken)
+        ResponseDto<Role> response = authHelper.withBearerToken(adminToken)
                 .body(updateRole)
                 .when()
                 .patch(apiPath + "/role")
@@ -211,7 +211,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     @Order(8)
     @DisplayName("Admin can delete user")
     void testDeleteUser_whenAuthenticatedAdminAndValidUuidProvided_returnsDeletedUser() {
-        ResponseDto<UUID> response = withBearerToken(adminToken)
+        ResponseDto<UUID> response = authHelper.withBearerToken(adminToken)
                 .pathParam("uuid", userUuid)
                 .when()
                 .delete(apiPath + "/{uuid}")
@@ -231,7 +231,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     @Order(9)
     @DisplayName("Get all paged users")
     void testGetAll_whenUsersExists_returnsAllUsersPaged() {
-        ResponseDto<PageResponseDto<UserDto>> response = withBearerToken(adminToken)
+        ResponseDto<PageResponseDto<UserDto>> response = authHelper.withBearerToken(adminToken)
                 .when()
                 .get(apiPath)
                 .then()
@@ -258,7 +258,7 @@ public class UserControllerTests extends BaseTestConfiguration {
     void testUpdateUserPassword_whenAuthenticatedAdminAndValidUpdatePasswordDtoProvided_returnsUpdatedPassword() {
         UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto(userUuid, "New_Password1");
 
-        ResponseDto<Role> response = withBearerToken(adminToken)
+        ResponseDto<Role> response = authHelper.withBearerToken(adminToken)
                 .body(updatePasswordDto)
                 .when()
                 .patch(apiPath + "/password")

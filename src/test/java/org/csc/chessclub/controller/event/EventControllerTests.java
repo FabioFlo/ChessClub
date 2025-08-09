@@ -50,7 +50,7 @@ public class EventControllerTests extends BaseTestConfiguration {
     @Order(2)
     @DisplayName("Create Event")
     void testCreateEvent_whenUserAuthenticatedAndValidDetailsProvided_returnsCreatedEvent() {
-        ResponseDto<EventDto> response = withBearerToken(userToken)
+        ResponseDto<EventDto> response = authHelper.withBearerToken(userToken)
                 .multiPart("event", "event.json", createEventDto, "application/json")
                 .multiPart("file", new File(storageFolder + "/announcement.pdf"))
                 .contentType("multipart/form-data")
@@ -120,7 +120,7 @@ public class EventControllerTests extends BaseTestConfiguration {
         String newTitle = "New test title";
         UpdateEventDto updateEventDto = new UpdateEventDto(uuid, newTitle, DESCRIPTION, AUTHOR);
 
-        ResponseDto<EventDto> response = withBearerToken(userToken)
+        ResponseDto<EventDto> response = authHelper.withBearerToken(userToken)
                 .multiPart("event", "event.json", updateEventDto, "application/json")
                 .multiPart("file", new File(storageFolder + "/announcement.pdf"))
                 .contentType("multipart/form-data")
@@ -141,7 +141,7 @@ public class EventControllerTests extends BaseTestConfiguration {
     @Order(6)
     @DisplayName("Delete event")
     void testDeleteEvent_whenUserAuthenticatedAndEventFound_returnsResponseDtoWithSuccessAndMessage() {
-        ResponseDto<UUID> responseDto = withBearerToken(userToken)
+        ResponseDto<UUID> responseDto = authHelper.withBearerToken(userToken)
                 .pathParam("uuid", uuid)
                 .when()
                 .delete("/events/{uuid}")

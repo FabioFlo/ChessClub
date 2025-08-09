@@ -48,7 +48,7 @@ public class GameControllerTests extends BaseTestConfiguration {
     @Order(1)
     @DisplayName("Create Game correctly")
     void testCreateGame_whenUserAuthenticatedAndValidCreateGameProvided_returnsCreatedGame() {
-        ResponseDto<GameDto> response = withBearerToken(userToken)
+        ResponseDto<GameDto> response = authHelper.withBearerToken(userToken)
                 .body(createGameDto)
                 .when()
                 .post(apiPath)
@@ -74,7 +74,7 @@ public class GameControllerTests extends BaseTestConfiguration {
     void testUpdateGame_whenUserAuthenticatedAndValidUpdateGameProvided_returnsUpdatedGame() {
         UpdateGameDto updateGameDto = new UpdateGameDto(gameId, whitePlayer, "Black player", "",
                 Result.WhiteWon, null);
-        ResponseDto<GameDto> response = withBearerToken(userToken)
+        ResponseDto<GameDto> response = authHelper.withBearerToken(userToken)
                 .body(updateGameDto)
                 .when()
                 .patch(apiPath)
@@ -185,7 +185,7 @@ public class GameControllerTests extends BaseTestConfiguration {
     @Order(6)
     @DisplayName("Delete game")
     void testDeleteGame_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
-        ResponseDto<UUID> response = withBearerToken(userToken)
+        ResponseDto<UUID> response = authHelper.withBearerToken(userToken)
                 .pathParam("uuid", gameId)
                 .when()
                 .delete(apiPath + "/{uuid}")

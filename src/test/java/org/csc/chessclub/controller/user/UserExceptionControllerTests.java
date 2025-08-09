@@ -4,6 +4,7 @@ import io.restassured.common.mapper.TypeRef;
 import org.csc.chessclub.auth.AuthenticationRequest;
 import org.csc.chessclub.controller.BaseTestConfiguration;
 import org.csc.chessclub.dto.ResponseDto;
+import org.csc.chessclub.dto.user.UpdatePasswordDto;
 import org.csc.chessclub.exception.ErrorMessage;
 import org.csc.chessclub.model.user.UserEntity;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,14 +30,14 @@ public class UserExceptionControllerTests extends BaseTestConfiguration {
     void setUp() {
         userToken = getUserToken();
         userUuid = getBaseUserUuid();
-        unavailableUser = createUnavailableUser();
+        unavailableUser = dataFactory.createUnavailableUser();
     }
 
     @Test
     @Order(1)
     @DisplayName("Throw when USER try to call get by id")
     void testGetUser_whenUserTryGetUserByID_shouldThrowAccessDeniedException() {
-        ResponseDto<ErrorMessage> response = withBearerToken(userToken)
+        ResponseDto<ErrorMessage> response = authHelper.withBearerToken(userToken)
                 .pathParam("uuid", userUuid)
                 .when()
                 .get(apiPath + "/{uuid}")
@@ -56,7 +57,7 @@ public class UserExceptionControllerTests extends BaseTestConfiguration {
     @Order(2)
     @DisplayName("Throw when USER try to call delete another user")
     void testDeleteUser_whenUserTryToDeleteAUser_shouldThrowAccessDeniedException() {
-        ResponseDto<ErrorMessage> response = withBearerToken(userToken)
+        ResponseDto<ErrorMessage> response = authHelper.withBearerToken(userToken)
                 .pathParam("uuid", unavailableUser.getUuid())
                 .when()
                 .delete(apiPath + "/{uuid}")
@@ -92,5 +93,27 @@ public class UserExceptionControllerTests extends BaseTestConfiguration {
         assertThat(response.success()).isFalse();
         assertThat(response.data().message()).isEqualTo("User is disabled");
         assertThat(response.message()).isEqualTo("Authentication Required");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Throw when USER try to update user password")
+    void testUpdatePasswordUser_whenUserCallUpdatePasswordDtoProvided_shouldThrowAccessDeniedException() {
+        UpdatePasswordDto updatePasswordDto = new UpdatePasswordDto(userUuid, "New_Password1");
+
+        ResponseDto<ErrorMessage> response = authHelper.withBearerToken(userToken)
+                .body(updatePasswordDto)
+                .when()
+                .patch(apiPath + "/password")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull();
+        assertThat(response.success()).isFalse();
+        assertThat(response.message()).isEqualTo("Access denied");
+        assertThat(response.data().statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 }
