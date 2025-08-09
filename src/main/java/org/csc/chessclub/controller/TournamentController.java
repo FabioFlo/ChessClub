@@ -26,53 +26,53 @@ import java.util.UUID;
 @Valid
 public class TournamentController {
 
-  private final TournamentService tournamentService;
-  private final PageUtils<TournamentDto> pageUtils;
+    private final TournamentService tournamentService;
+    private final PageUtils<TournamentDto> pageUtils;
 
-  private static final String CREATED = "Tournament successfully created";
-  private static final String UPDATED = "Tournament successfully updated";
-  private static final String FOUND = "Tournament found";
-  private static final String LIST_FOUND = "Tournaments found";
-  private static final String DELETED = "Tournament deleted";
+    private static final String CREATED = "Tournament successfully created";
+    private static final String UPDATED = "Tournament successfully updated";
+    private static final String FOUND = "Tournament found";
+    private static final String LIST_FOUND = "Tournaments found";
+    private static final String DELETED = "Tournament deleted";
 
-  @PostMapping
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<TournamentDto>> createTournament(
-      @RequestBody @Valid CreateTournamentDto createTournamentDto) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(new ResponseDto<>(tournamentService.create(createTournamentDto), CREATED, true));
-  }
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<TournamentDto>> createTournament(
+            @RequestBody @Valid CreateTournamentDto createTournamentDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto<>(tournamentService.create(createTournamentDto), CREATED, true));
+    }
 
-  @PatchMapping
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<TournamentDto>> updateTournament(
-      @RequestBody @Valid UpdateTournamentDto updateTournamentDto) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(tournamentService.update(updateTournamentDto), UPDATED, true));
-  }
+    @PatchMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<TournamentDto>> updateTournament(
+            @RequestBody @Valid UpdateTournamentDto updateTournamentDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(tournamentService.update(updateTournamentDto), UPDATED, true));
+    }
 
-  @GetMapping("/{uuid}")
-  public ResponseEntity<ResponseDto<TournamentDto>> getTournament(
-      @ValidUUID @PathVariable UUID uuid) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(tournamentService.getById(uuid), FOUND, true));
-  }
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseDto<TournamentDto>> getTournament(
+            @ValidUUID @PathVariable UUID uuid) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(tournamentService.getById(uuid), FOUND, true));
+    }
 
-  @GetMapping
-  public ResponseEntity<ResponseDto<PageResponseDto<TournamentDto>>> getAllTournaments(
-      @PageableDefault Pageable pageable) {
-    Page<TournamentDto> pagedTournaments = tournamentService.getAllAvailable(pageable);
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedTournaments), LIST_FOUND,
-            true));
-  }
+    @GetMapping
+    public ResponseEntity<ResponseDto<PageResponseDto<TournamentDto>>> getAllTournaments(
+            @PageableDefault Pageable pageable) {
+        Page<TournamentDto> pagedTournaments = tournamentService.getAllAvailable(pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedTournaments), LIST_FOUND,
+                        true));
+    }
 
-  @DeleteMapping("/{uuid}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<UUID>> deleteTournament(@ValidUUID @PathVariable UUID uuid) {
-    tournamentService.delete(uuid);
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(uuid, DELETED, true));
-  }
+    @DeleteMapping("/{uuid}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<UUID>> deleteTournament(@ValidUUID @PathVariable UUID uuid) {
+        tournamentService.delete(uuid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(uuid, DELETED, true));
+    }
 
 }

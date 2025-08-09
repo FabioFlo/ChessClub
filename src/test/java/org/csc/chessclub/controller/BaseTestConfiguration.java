@@ -29,6 +29,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,7 +39,7 @@ import static io.restassured.RestAssured.given;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
-public abstract class BaseIntegrationTest {
+public abstract class BaseTestConfiguration {
 
   @LocalServerPort
   private int port;
@@ -51,6 +53,7 @@ public abstract class BaseIntegrationTest {
   private String adminPassword;
   @Value("${admin.email}")
   private String adminEmail;
+  private UserEntity baseAdminUser;
 
   @Value("${user.username}")
   private String userUsername;
@@ -58,6 +61,7 @@ public abstract class BaseIntegrationTest {
   private String userPassword;
   @Value("${user.email}")
   private String userEmail;
+  private UserEntity baseUser;
 
   @Autowired
   private UserRepository userRepository;
@@ -78,7 +82,7 @@ public abstract class BaseIntegrationTest {
 
     userRepository.deleteAll();
 
-    userRepository.save(UserEntity.
+   baseAdminUser =  userRepository.save(UserEntity.
         builder()
         .username(adminUsername)
         .email(adminEmail)
@@ -86,7 +90,7 @@ public abstract class BaseIntegrationTest {
         .role(Role.ADMIN)
         .available(true).build());
 
-    userRepository.save(UserEntity
+   baseUser = userRepository.save(UserEntity
         .builder()
         .username(userUsername)
         .email(userEmail)
@@ -96,17 +100,6 @@ public abstract class BaseIntegrationTest {
         .build());
   }
 
-  protected ResponseDto<AuthenticationResponse> loginAndGetResponse(AuthenticationRequest request) {
-
-    return given()
-        .body(request)
-        .when()
-        .post("/users/login")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .extract().response().as(new TypeRef<>() {
-        });
-  }
 
   protected RequestSpecification withPageable(Pageable pageable) {
     RequestSpecification spec = given();
@@ -120,4 +113,69 @@ public abstract class BaseIntegrationTest {
     }
     return spec;
   }
+
+    protected UserEntity getBaseAdmin() {
+        return baseAdminUser;
+    }
+
+    protected UserEntity getBaseUser() {
+        return baseUser;
+    }
+
+    protected UUID getBaseAdminUuid() {
+        return baseAdminUser.getUuid();
+    }
+
+    protected UUID getBaseUserUuid() {
+        return baseUser.getUuid();
+    }
+
+    protected String getAdminToken() {
+        return getTokenForUser(adminUsername, adminPassword);
+    }
+
+    protected String getUserToken() {
+        return getTokenForUser(userUsername, userPassword);
+    }
+
+
+    public UserEntity createUser(UserEntity user) {
+        return userRepository.save(UserEntity.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(user.getRole())
+                .available(user.isAvailable())
+                .build());
+    }
+
+    public UserEntity createUnavailableUser() {
+        return createUser(
+                UserEntity.builder()
+                        .username("unavailable")
+                        .email("unabailable@email.com")
+                        .password(passwordEncoder.encode("Test123_"))
+                        .role(Role.USER)
+                        .available(false)
+                        .build());
+    }
+
+    public ResponseDto<AuthenticationResponse> loginUser(String username, String password) {
+        return given()
+                .body(new AuthenticationRequest(username, password))
+                .when()
+                .post("/users/login")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+    }
+
+    public String getTokenForUser(String username, String password) {
+        return loginUser(username, password).data().token();
+    }
+
+    public RequestSpecification withBearerToken(String token) {
+        return given().header("Authorization", "Bearer " + token);
+    }
 }

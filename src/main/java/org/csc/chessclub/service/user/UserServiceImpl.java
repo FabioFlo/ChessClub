@@ -1,8 +1,10 @@
 package org.csc.chessclub.service.user;
 
 import jakarta.transaction.Transactional;
+
 import java.util.Optional;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import org.csc.chessclub.dto.user.*;
 import org.csc.chessclub.enums.NotFoundMessage;
@@ -24,89 +26,89 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
-  private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-  @Override
-  public UserDto create(RegisterUserRequest request) {
-    Optional<UserEntity> existingUser = userRepository.findUserEntityByUsernameOrEmail(
-        request.username(), request.email());
-    if (existingUser.isPresent()) {
-      throw new UserServiceException("Email or username already taken");
-    }
-    UserEntity user = userMapper.registerUserRequestToUser(request);
-    user.setAvailable(true);
-    user.setRole(Role.USER);
-    user.setPassword(passwordEncoder.encode(request.password()));
+    @Override
+    public UserDto create(RegisterUserRequest request) {
+        Optional<UserEntity> existingUser = userRepository.findUserEntityByUsernameOrEmail(
+                request.username(), request.email());
+        if (existingUser.isPresent()) {
+            throw new UserServiceException("Email or username already taken");
+        }
+        UserEntity user = userMapper.registerUserRequestToUser(request);
+        user.setAvailable(true);
+        user.setRole(Role.USER);
+        user.setPassword(passwordEncoder.encode(request.password()));
 
-    return userMapper.userToUserDto(userRepository.save(user));
-  }
-
-  @Override
-  public UserDto update(UpdateUserRequest userRequest) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserEntity currentUser = (UserEntity) authentication.getPrincipal();
-
-    if (!currentUser.getUuid().equals(userRequest.uuid()) &&
-        !currentUser.getRole().equals(Role.ADMIN)) {
-      throw new CustomAccessDeniedException("You are not allowed to update this user");
+        return userMapper.userToUserDto(userRepository.save(user));
     }
 
-    Optional<UserEntity> existingUser = userRepository
-        .findByUsernameOrEmailAndUuidNot(userRequest.username(), userRequest.email(),
-            userRequest.uuid());
-    if (existingUser.isPresent()) {
-      throw new UserServiceException("Email or username already taken");
-    }
-    UserEntity user = userRepository.findById(userRequest.uuid())
-        .orElseThrow(() -> new CustomNotFoundException(
-            NotFoundMessage.USER_WITH_UUID.format(userRequest.uuid())));
+    @Override
+    public UserDto update(UpdateUserRequest userRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity currentUser = (UserEntity) authentication.getPrincipal();
 
-    userMapper.updateUserRequestToUser(userRequest, user);
+        if (!currentUser.getUuid().equals(userRequest.uuid()) &&
+                !currentUser.getRole().equals(Role.ADMIN)) {
+            throw new CustomAccessDeniedException("You are not allowed to update this user");
+        }
 
-    return userMapper.userToUserDto(userRepository.save(user));
+        Optional<UserEntity> existingUser = userRepository
+                .findByUsernameOrEmailAndUuidNot(userRequest.username(), userRequest.email(),
+                        userRequest.uuid());
+        if (existingUser.isPresent()) {
+            throw new UserServiceException("Email or username already taken");
+        }
+        UserEntity user = userRepository.findById(userRequest.uuid())
+                .orElseThrow(() -> new CustomNotFoundException(
+                        NotFoundMessage.USER_WITH_UUID.format(userRequest.uuid())));
 
-  }
+        userMapper.updateUserRequestToUser(userRequest, user);
 
-  @Override
-  public UserDto getById(UUID uuid) {
-    return userMapper.userToUserDto(userRepository.findById(uuid)
-        .orElseThrow(
-            () -> new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid))));
-  }
+        return userMapper.userToUserDto(userRepository.save(user));
 
-  @Override
-  @Transactional
-  public void delete(UUID uuid) {
-    int result = userRepository.setAvailableFalse(uuid);
-    if (result == 0) {
-      throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid));
     }
 
-  }
-
-  @Override
-  @Transactional
-  public Role updateUserRole(UpdateRoleDto updateRoleDto) {
-    int result = userRepository.updateRole(updateRoleDto.uuid(), updateRoleDto.oldRole(),
-        updateRoleDto.newRole());
-    if (result == 0) {
-      throw new CustomNotFoundException(
-          NotFoundMessage.USER_WITH_UUID.format(updateRoleDto.uuid()));
+    @Override
+    public UserDto getById(UUID uuid) {
+        return userMapper.userToUserDto(userRepository.findById(uuid)
+                .orElseThrow(
+                        () -> new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid))));
     }
-    return updateRoleDto.newRole();
-  }
 
-  @Override
-  public Page<UserDto> getAll(Pageable pageable) {
-    return userMapper.pageUserEntityToPageUserDto(userRepository.findAll(pageable));
-  }
+    @Override
+    @Transactional
+    public void delete(UUID uuid) {
+        int result = userRepository.setAvailableFalse(uuid);
+        if (result == 0) {
+            throw new CustomNotFoundException(NotFoundMessage.USER_WITH_UUID.format(uuid));
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public Role updateUserRole(UpdateRoleDto updateRoleDto) {
+        int result = userRepository.updateRole(updateRoleDto.uuid(), updateRoleDto.oldRole(),
+                updateRoleDto.newRole());
+        if (result == 0) {
+            throw new CustomNotFoundException(
+                    NotFoundMessage.USER_WITH_UUID.format(updateRoleDto.uuid()));
+        }
+        return updateRoleDto.newRole();
+    }
+
+    @Override
+    public Page<UserDto> getAll(Pageable pageable) {
+        return userMapper.pageUserEntityToPageUserDto(userRepository.findAll(pageable));
+    }
 
     @Override
     @Transactional
     public void updateUserPassword(UpdatePasswordDto updatePasswordDto) {
-      int result = userRepository.updatePassword(updatePasswordDto.uuid(), passwordEncoder.encode(updatePasswordDto.password()));
+        int result = userRepository.updatePassword(updatePasswordDto.uuid(), passwordEncoder.encode(updatePasswordDto.password()));
 
         if (result == 0) {
             throw new CustomNotFoundException(

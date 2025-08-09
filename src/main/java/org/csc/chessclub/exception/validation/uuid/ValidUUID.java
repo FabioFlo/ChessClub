@@ -11,10 +11,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUUID {
 
-  String message() default UuidValidationMessage.UUID_MUST_BE_VALID;
+    String message() default UuidValidationMessage.UUID_MUST_BE_VALID;
 
-  Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }
 

@@ -4,22 +4,22 @@ import lombok.Getter;
 
 @Getter
 public enum NotFoundMessage {
-  EVENT("Event not found"),
-  EVENT_WITH_UUID("Event with UUID %s not found"),
-  USER("User not found"),
-  USER_WITH_UUID("User with UUID %s not found"),
-  GAME("Game not found"),
-  GAME_WITH_UUID("Game with UUID %s not found"),
-  TOURNAMENT("Tournament not found"),
-  TOURNAMENT_WITH_UUID("Tournament with UUID %s not found");
+    EVENT("Event not found"),
+    EVENT_WITH_UUID("Event with UUID %s not found"),
+    USER("User not found"),
+    USER_WITH_UUID("User with UUID %s not found"),
+    GAME("Game not found"),
+    GAME_WITH_UUID("Game with UUID %s not found"),
+    TOURNAMENT("Tournament not found"),
+    TOURNAMENT_WITH_UUID("Tournament with UUID %s not found");
 
-  private final String message;
+    private final String message;
 
-  NotFoundMessage(String message) {
-    this.message = message;
-  }
+    NotFoundMessage(String message) {
+        this.message = message;
+    }
 
-  public String format(Object... args) {
-    return message.formatted(args);
-  }
+    public String format(Object... args) {
+        return message.formatted(args);
+    }
 }

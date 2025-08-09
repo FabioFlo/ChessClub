@@ -2,8 +2,8 @@ package org.csc.chessclub.model.game;
 
 public final class GameConstraints {
 
-  private GameConstraints() {
-  }
+    private GameConstraints() {
+    }
 
-  public static final int PLAYER_MAX_LENGTH = 20;
+    public static final int PLAYER_MAX_LENGTH = 20;
 }

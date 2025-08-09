@@ -14,30 +14,30 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
-  Optional<UserEntity> findUserEntityByUsernameOrEmail(String username, String email);
+    Optional<UserEntity> findUserEntityByUsernameOrEmail(String username, String email);
 
-  Optional<UserEntity> findByUsernameOrEmailAndUuidNot(String username, String email, UUID uuid);
+    Optional<UserEntity> findByUsernameOrEmailAndUuidNot(String username, String email, UUID uuid);
 
-  @Modifying
-  @Query("update UserEntity u set u.available = false where u.uuid = :uuid")
-  int setAvailableFalse(@Param("uuid") UUID uuid);
+    @Modifying
+    @Query("update UserEntity u set u.available = false where u.uuid = :uuid")
+    int setAvailableFalse(@Param("uuid") UUID uuid);
 
-  @Modifying
-  @Query("""
-           UPDATE UserEntity u
-           SET u.role = CASE\s
-                          WHEN u.role = :fromRole THEN :toRole
-                          ELSE u.role
-                        END
-           WHERE u.uuid = :uuid
-      \s""")
-  int updateRole(
-      @Param("uuid") UUID uuid,
-      @Param("fromRole") Role fromRole,
-      @Param("toRole") Role toRole
-  );
+    @Modifying
+    @Query("""
+                 UPDATE UserEntity u
+                 SET u.role = CASE\s
+                                WHEN u.role = :fromRole THEN :toRole
+                                ELSE u.role
+                              END
+                 WHERE u.uuid = :uuid
+            \s""")
+    int updateRole(
+            @Param("uuid") UUID uuid,
+            @Param("fromRole") Role fromRole,
+            @Param("toRole") Role toRole
+    );
 
-  @Modifying
-  @Query("update UserEntity u set u.password = :password where u.uuid = :uuid")
-  int updatePassword(@Param("uuid") UUID uuid, @Param("password") String password);
+    @Modifying
+    @Query("update UserEntity u set u.password = :password where u.uuid = :uuid")
+    int updatePassword(@Param("uuid") UUID uuid, @Param("password") String password);
 }

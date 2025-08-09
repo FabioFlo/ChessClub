@@ -1,7 +1,7 @@
 package org.csc.chessclub.repository;
 
 import jakarta.transaction.Transactional;
-import org.csc.chessclub.controller.TestContainerConfig;
+import org.csc.chessclub.controller.BaseTestConfiguration;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.model.user.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserRepositoryTests extends TestContainerConfig {
+public class UserRepositoryTests extends BaseTestConfiguration {
 
     private UserEntity user1;
     private final String USERNAME1 = "Test Username";
@@ -107,7 +107,7 @@ public class UserRepositoryTests extends TestContainerConfig {
     @Transactional
     void testUpdateUserPassword_whenUserUuidAndNewPassword_resultShouldBeOne() {
         userRepository.save(user1);
-       int result = userRepository.updatePassword(user1.getUuid(), passwordEncoder.encode("NEW PASSWORD"));
+        int result = userRepository.updatePassword(user1.getUuid(), passwordEncoder.encode("NEW PASSWORD"));
 
         assertEquals(1, result, "Result should be 1");
 

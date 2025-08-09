@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-public abstract class MockedData{
+public abstract class MockedData {
 
 
     public List<EventEntity> listOfEvents() {
@@ -30,6 +30,7 @@ public abstract class MockedData{
         );
 
     }
+
     public List<TournamentEntity> listOfTournaments() {
         return List.of(
 

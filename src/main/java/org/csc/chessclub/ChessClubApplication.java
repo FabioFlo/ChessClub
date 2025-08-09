@@ -10,12 +10,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties({StorageProperties.class, FileValidationProperties.class})
 public class ChessClubApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(ChessClubApplication.class, args);
-  }
-  //TODO: add cache
+    public static void main(String[] args) {
+        SpringApplication.run(ChessClubApplication.class, args);
+    }
+    //TODO: add cache
 
-  //TODO: flowchart
-  //TODO: db init data
+    //TODO: flowchart
+    //TODO: db init data
 
 }

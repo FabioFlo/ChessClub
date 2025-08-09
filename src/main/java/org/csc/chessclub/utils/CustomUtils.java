@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 public class CustomUtils<T> implements PageUtils<T> {
 
 
-  @Override
-  public PageResponseDto<T> populatePageResponseDto(Page<T> pageResult) {
-    return new PageResponseDto<>(
-        pageResult.getContent(),
-        pageResult.getNumber(),
-        pageResult.getSize(),
-        pageResult.getTotalElements(),
-        pageResult.getTotalPages()
-    );
-  }
+    @Override
+    public PageResponseDto<T> populatePageResponseDto(Page<T> pageResult) {
+        return new PageResponseDto<>(
+                pageResult.getContent(),
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.getTotalPages()
+        );
+    }
 }

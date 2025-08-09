@@ -22,8 +22,8 @@ import java.util.List;
 public class FileValidationProperties {
 
 
-  private List<String> allowedExtensions = Collections.emptyList();
+    private List<String> allowedExtensions = Collections.emptyList();
 
-  private List<String> allowedMimeTypes = Collections.emptyList();
+    private List<String> allowedMimeTypes = Collections.emptyList();
 
 }

@@ -23,66 +23,66 @@ import java.util.UUID;
 @Service
 public class EventServiceImpl implements EventService {
 
-  private final EventRepository eventRepository;
-  private final StorageService storageService;
-  private final EventMapper eventMapper;
+    private final EventRepository eventRepository;
+    private final StorageService storageService;
+    private final EventMapper eventMapper;
 
-  @Override
-  public EventDto create(CreateEventDto eventDto, MultipartFile file) throws IOException {
-    String filename = null;
-    if (file != null && !file.isEmpty()) {
-      filename = storageService.store(file);
+    @Override
+    public EventDto create(CreateEventDto eventDto, MultipartFile file) throws IOException {
+        String filename = null;
+        if (file != null && !file.isEmpty()) {
+            filename = storageService.store(file);
+        }
+        EventEntity event = eventMapper.createEventDtoToEvent(eventDto);
+        event.setAnnouncementPDF(filename);
+        event.setAvailable(true);
+        return eventMapper.eventToEventDto(eventRepository.save(event));
     }
-    EventEntity event = eventMapper.createEventDtoToEvent(eventDto);
-    event.setAnnouncementPDF(filename);
-    event.setAvailable(true);
-    return eventMapper.eventToEventDto(eventRepository.save(event));
-  }
 
-  @Override
-  public EventDto update(UpdateEventDto eventDto, MultipartFile file) throws IOException {
-    EventEntity eventEntity = eventRepository.findById(eventDto.uuid())
-        .orElseThrow(() -> new CustomNotFoundException(
-            NotFoundMessage.EVENT_WITH_UUID.format(eventDto.uuid())));
+    @Override
+    public EventDto update(UpdateEventDto eventDto, MultipartFile file) throws IOException {
+        EventEntity eventEntity = eventRepository.findById(eventDto.uuid())
+                .orElseThrow(() -> new CustomNotFoundException(
+                        NotFoundMessage.EVENT_WITH_UUID.format(eventDto.uuid())));
 
-    eventMapper.updateEventDtoToEvent(eventDto, eventEntity);
+        eventMapper.updateEventDtoToEvent(eventDto, eventEntity);
 
-    String filename = null;
-    if (file != null && !file.isEmpty()) {
-      filename = storageService.store(file);
+        String filename = null;
+        if (file != null && !file.isEmpty()) {
+            filename = storageService.store(file);
+        }
+        eventEntity.setAnnouncementPDF(filename);
+
+        return eventMapper.eventToEventDto(eventRepository.save(eventEntity));
     }
-    eventEntity.setAnnouncementPDF(filename);
 
-    return eventMapper.eventToEventDto(eventRepository.save(eventEntity));
-  }
-
-  @Override
-  public EventDto getById(UUID uuid) {
-    EventEntity event = eventRepository.findById(uuid)
-        .orElseThrow(
-            () -> new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid)));
-    return eventMapper.eventToEventDto(event);
-  }
-
-  @Override
-  @Transactional
-  public void delete(UUID uuid) {
-    int result = eventRepository.setAvailableFalse(uuid);
-
-    if (result == 0) {
-      throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid));
+    @Override
+    public EventDto getById(UUID uuid) {
+        EventEntity event = eventRepository.findById(uuid)
+                .orElseThrow(
+                        () -> new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid)));
+        return eventMapper.eventToEventDto(event);
     }
-  }
 
-  @Override
-  public Page<EventDto> getAll(Pageable pageable) {
-    return eventMapper.pageEventEntityToPageEventDto(eventRepository.findAll(pageable));
-  }
+    @Override
+    @Transactional
+    public void delete(UUID uuid) {
+        int result = eventRepository.setAvailableFalse(uuid);
 
-  @Override
-  public Page<EventDto> getAllAvailable(Pageable pageable) {
-    return eventMapper.pageEventEntityToPageEventDto(
-        eventRepository.findAllByAvailableTrue(pageable));
-  }
+        if (result == 0) {
+            throw new CustomNotFoundException(NotFoundMessage.EVENT_WITH_UUID.format(uuid));
+        }
+    }
+
+    @Override
+    public Page<EventDto> getAll(Pageable pageable) {
+        return eventMapper.pageEventEntityToPageEventDto(eventRepository.findAll(pageable));
+    }
+
+    @Override
+    public Page<EventDto> getAllAvailable(Pageable pageable) {
+        return eventMapper.pageEventEntityToPageEventDto(
+                eventRepository.findAllByAvailableTrue(pageable));
+    }
 }
 

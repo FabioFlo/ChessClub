@@ -18,26 +18,26 @@ import java.util.UUID;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface GameMapper {
 
-  GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
+    GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
 
-  GameDto gameToGameDto(GameEntity gameEntity);
+    GameDto gameToGameDto(GameEntity gameEntity);
 
-  @Mapping(target = "tournament", source = "tournamentId")
-  GameEntity createGameDtoToGame(CreateGameDto gameDto);
+    @Mapping(target = "tournament", source = "tournamentId")
+    GameEntity createGameDtoToGame(CreateGameDto gameDto);
 
-  @Mapping(target = "tournament", source = "tournamentId")
-  GameEntity updateGameDtoToGame(UpdateGameDto gameDto, @MappingTarget GameEntity entity);
+    @Mapping(target = "tournament", source = "tournamentId")
+    GameEntity updateGameDtoToGame(UpdateGameDto gameDto, @MappingTarget GameEntity entity);
 
-  List<GameDto> listOfGamesToGameDto(List<GameEntity> games);
+    List<GameDto> listOfGamesToGameDto(List<GameEntity> games);
 
-  default Page<GameDto> pageGameEntityToPageGameDto(Page<GameEntity> games) {
-    return games.map(this::gameToGameDto);
-  }
-
-  default TournamentEntity map(UUID tournamentId) {
-    if (tournamentId == null) {
-      return null;
+    default Page<GameDto> pageGameEntityToPageGameDto(Page<GameEntity> games) {
+        return games.map(this::gameToGameDto);
     }
-    return TournamentEntity.builder().uuid(tournamentId).build();
-  }
+
+    default TournamentEntity map(UUID tournamentId) {
+        if (tournamentId == null) {
+            return null;
+        }
+        return TournamentEntity.builder().uuid(tournamentId).build();
+    }
 }

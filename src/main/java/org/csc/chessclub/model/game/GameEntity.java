@@ -18,17 +18,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GameEntity {
 
-  @Id
-  @GeneratedValue
-  private UUID uuid;
-  @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
-  private String whitePlayerName;
-  @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
-  private String blackPlayerName;
-  private Result result;
-  private String pgn;
-  private boolean available;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "tournament_uuid")
-  private TournamentEntity tournament;
+    @Id
+    @GeneratedValue
+    private UUID uuid;
+    @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
+    private String whitePlayerName;
+    @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
+    private String blackPlayerName;
+    private Result result;
+    private String pgn;
+    private boolean available;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tournament_uuid")
+    private TournamentEntity tournament;
 }

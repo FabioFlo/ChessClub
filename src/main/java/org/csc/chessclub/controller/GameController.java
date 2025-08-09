@@ -26,65 +26,65 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GameController {
 
-  private final GameService gameService;
-  private final PageUtils<GameDto> pageUtils;
+    private final GameService gameService;
+    private final PageUtils<GameDto> pageUtils;
 
-  private static final String CREATED = "Game successfully created";
-  private static final String UPDATED = "Game successfully updated";
-  private static final String FOUND = "Game found";
-  private static final String LIST_FOUND = "Games found";
-  private static final String DELETED = "Game deleted";
+    private static final String CREATED = "Game successfully created";
+    private static final String UPDATED = "Game successfully updated";
+    private static final String FOUND = "Game found";
+    private static final String LIST_FOUND = "Games found";
+    private static final String DELETED = "Game deleted";
 
-  @PostMapping
-  public ResponseEntity<ResponseDto<GameDto>> createGame(
-      @Valid @RequestBody CreateGameDto createGameDto) {
-    GameDto gameDto = gameService.create(createGameDto);
+    @PostMapping
+    public ResponseEntity<ResponseDto<GameDto>> createGame(
+            @Valid @RequestBody CreateGameDto createGameDto) {
+        GameDto gameDto = gameService.create(createGameDto);
 
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(new ResponseDto<>(gameDto, CREATED, true));
-  }
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto<>(gameDto, CREATED, true));
+    }
 
-  @PatchMapping
-  public ResponseEntity<ResponseDto<GameDto>> updateGame(
-      @Valid @RequestBody UpdateGameDto updateGameDto) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(gameService.update(updateGameDto), UPDATED, true));
-  }
+    @PatchMapping
+    public ResponseEntity<ResponseDto<GameDto>> updateGame(
+            @Valid @RequestBody UpdateGameDto updateGameDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(gameService.update(updateGameDto), UPDATED, true));
+    }
 
-  @GetMapping("/{uuid}")
-  public ResponseEntity<ResponseDto<GameDto>> getGame(@ValidUUID @PathVariable UUID uuid) {
-    GameDto gameDto = gameService.getByUuid(uuid);
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseDto<GameDto>> getGame(@ValidUUID @PathVariable UUID uuid) {
+        GameDto gameDto = gameService.getByUuid(uuid);
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(gameDto, FOUND, true));
-  }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(gameDto, FOUND, true));
+    }
 
-  @GetMapping
-  public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllGames(
-      @PageableDefault Pageable pageable) {
-    Page<GameDto> pageResult = gameService.getAllAvailable(pageable);
+    @GetMapping
+    public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllGames(
+            @PageableDefault Pageable pageable) {
+        Page<GameDto> pageResult = gameService.getAllAvailable(pageable);
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), LIST_FOUND, true));
-  }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), LIST_FOUND, true));
+    }
 
-  @GetMapping("/player/{player-name}")
-  public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllByPlayerName(
-      @PageableDefault Pageable pageable,
-      @PathVariable("player-name") String playerName) {
-    Page<GameDto> pageResult = gameService.getAllByPlayerName(playerName, pageable);
+    @GetMapping("/player/{player-name}")
+    public ResponseEntity<ResponseDto<PageResponseDto<GameDto>>> getAllByPlayerName(
+            @PageableDefault Pageable pageable,
+            @PathVariable("player-name") String playerName) {
+        Page<GameDto> pageResult = gameService.getAllByPlayerName(playerName, pageable);
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), LIST_FOUND, true));
-  }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pageResult), LIST_FOUND, true));
+    }
 
-  @DeleteMapping("/{uuid}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<UUID>> deleteGame(@ValidUUID @PathVariable UUID uuid) {
-    gameService.delete(uuid);
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(uuid, DELETED, true));
-  }
+    @DeleteMapping("/{uuid}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<UUID>> deleteGame(@ValidUUID @PathVariable UUID uuid) {
+        gameService.delete(uuid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(uuid, DELETED, true));
+    }
 }
 
 

@@ -31,141 +31,141 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class TournamentServiceUnitTest {
 
-  @Mock
-  private TournamentRepository tournamentRepository;
-  @InjectMocks
-  private TournamentServiceImpl tournamentService;
-  @Spy
-  private final TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
+    @Mock
+    private TournamentRepository tournamentRepository;
+    @InjectMocks
+    private TournamentServiceImpl tournamentService;
+    @Spy
+    private final TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
 
 
-  private TournamentEntity tournament;
-  private TournamentEntity availableTournament;
-  private TournamentEntity tournament2;
-  private static final LocalDate START_DATE = LocalDate.parse("2018-01-01");
-  private static final LocalDate END_DATE = LocalDate.parse("2018-01-03");
-  private Pageable pageable;
+    private TournamentEntity tournament;
+    private TournamentEntity availableTournament;
+    private TournamentEntity tournament2;
+    private static final LocalDate START_DATE = LocalDate.parse("2018-01-01");
+    private static final LocalDate END_DATE = LocalDate.parse("2018-01-03");
+    private Pageable pageable;
 
-  @BeforeEach
-  void setUp() {
-    pageable = PageRequest.of(0, 10);
+    @BeforeEach
+    void setUp() {
+        pageable = PageRequest.of(0, 10);
 
-    UUID uuid = UUID.randomUUID();
-    tournament = TournamentEntity.builder()
-        .uuid(uuid)
-        .title("Tournament")
-        .description("Description")
-        .startDate(START_DATE)
-        .endDate(END_DATE)
-        .build();
+        UUID uuid = UUID.randomUUID();
+        tournament = TournamentEntity.builder()
+                .uuid(uuid)
+                .title("Tournament")
+                .description("Description")
+                .startDate(START_DATE)
+                .endDate(END_DATE)
+                .build();
 
-    availableTournament = TournamentEntity.builder()
-        .uuid(UUID.randomUUID())
-        .title("Tournament1")
-        .description("Description1")
-        .startDate(START_DATE)
-        .endDate(END_DATE)
-        .available(true)
-        .build();
+        availableTournament = TournamentEntity.builder()
+                .uuid(UUID.randomUUID())
+                .title("Tournament1")
+                .description("Description1")
+                .startDate(START_DATE)
+                .endDate(END_DATE)
+                .available(true)
+                .build();
 
-    tournament2 = TournamentEntity.builder()
-        .uuid(UUID.randomUUID())
-        .title("Tournament2")
-        .description("Description2")
-        .startDate(START_DATE)
-        .endDate(END_DATE)
-        .available(false)
-        .build();
-  }
+        tournament2 = TournamentEntity.builder()
+                .uuid(UUID.randomUUID())
+                .title("Tournament2")
+                .description("Description2")
+                .startDate(START_DATE)
+                .endDate(END_DATE)
+                .available(false)
+                .build();
+    }
 
-  @Test
-  @DisplayName("Create tournament")
-  void testCreateTournament_whenTournamentDetailsProvided_return() {
-    CreateTournamentDto tournamentDto = new CreateTournamentDto(tournament.getTitle(),
-        tournament.getStartDate(), tournament.getEndDate(), "Description", null);
-    when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
+    @Test
+    @DisplayName("Create tournament")
+    void testCreateTournament_whenTournamentDetailsProvided_return() {
+        CreateTournamentDto tournamentDto = new CreateTournamentDto(tournament.getTitle(),
+                tournament.getStartDate(), tournament.getEndDate(), "Description", null);
+        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
 
-    TournamentDto newTournament = tournamentService.create(tournamentDto);
+        TournamentDto newTournament = tournamentService.create(tournamentDto);
 
-    assertAll("Create tournament assertions",
-        () -> assertNotNull(newTournament, "Tournament should not be null"),
-        () -> assertNotNull(newTournament.uuid(), "New tournament should not be null"),
-        () -> assertEquals(tournament.getTitle(), newTournament.title(), "Title should be equal"));
-  }
+        assertAll("Create tournament assertions",
+                () -> assertNotNull(newTournament, "Tournament should not be null"),
+                () -> assertNotNull(newTournament.uuid(), "New tournament should not be null"),
+                () -> assertEquals(tournament.getTitle(), newTournament.title(), "Title should be equal"));
+    }
 
-  @Test
-  @DisplayName("Update tournament")
-  void testUpdateTournament_whenTournamentDetailsProvided_returnTournament() {
-    String newTitle = "Updated Tournament";
-    UpdateTournamentDto tournamentDto = new UpdateTournamentDto(availableTournament.getUuid(),
-        newTitle, START_DATE, END_DATE, "Description", null);
+    @Test
+    @DisplayName("Update tournament")
+    void testUpdateTournament_whenTournamentDetailsProvided_returnTournament() {
+        String newTitle = "Updated Tournament";
+        UpdateTournamentDto tournamentDto = new UpdateTournamentDto(availableTournament.getUuid(),
+                newTitle, START_DATE, END_DATE, "Description", null);
 
-    when(tournamentRepository.save(any(TournamentEntity.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0));
-    when(tournamentRepository.findById(tournamentDto.uuid()))
-        .thenReturn(Optional.ofNullable(availableTournament));
+        when(tournamentRepository.save(any(TournamentEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(tournamentRepository.findById(tournamentDto.uuid()))
+                .thenReturn(Optional.ofNullable(availableTournament));
 
-    TournamentDto updatedTournament = tournamentService.update(tournamentDto);
+        TournamentDto updatedTournament = tournamentService.update(tournamentDto);
 
-    assertAll("Update tournament assertions",
-        () -> assertNotNull(updatedTournament, "Tournament should be returned"),
-        () -> assertEquals(availableTournament.getTitle(), updatedTournament.title(),
-            "Title should be equal"),
-        () -> assertTrue(availableTournament.isAvailable(), "Tournament should be available"),
-        () -> verify(tournamentRepository, times(1)).save(any(TournamentEntity.class)));
-  }
+        assertAll("Update tournament assertions",
+                () -> assertNotNull(updatedTournament, "Tournament should be returned"),
+                () -> assertEquals(availableTournament.getTitle(), updatedTournament.title(),
+                        "Title should be equal"),
+                () -> assertTrue(availableTournament.isAvailable(), "Tournament should be available"),
+                () -> verify(tournamentRepository, times(1)).save(any(TournamentEntity.class)));
+    }
 
-  @Test
-  @DisplayName("Get tournament by id")
-  void testGetTournamentById_whenTournamentIdProvided_returnTournament() {
-    when(tournamentRepository.findById(tournament.getUuid())).thenReturn(Optional.of(tournament));
+    @Test
+    @DisplayName("Get tournament by id")
+    void testGetTournamentById_whenTournamentIdProvided_returnTournament() {
+        when(tournamentRepository.findById(tournament.getUuid())).thenReturn(Optional.of(tournament));
 
-    TournamentDto retrievedTournament = tournamentService.getById(tournament.getUuid());
+        TournamentDto retrievedTournament = tournamentService.getById(tournament.getUuid());
 
-    assertAll("Get tournament by id assertions",
-        () -> assertNotNull(retrievedTournament, "Tournament should not be null"),
-        () -> assertEquals(tournament.getUuid(), retrievedTournament.uuid(),
-            "Tournament should be equal"),
-        () -> verify(tournamentRepository, times(1)).findById(tournament.getUuid()));
-  }
+        assertAll("Get tournament by id assertions",
+                () -> assertNotNull(retrievedTournament, "Tournament should not be null"),
+                () -> assertEquals(tournament.getUuid(), retrievedTournament.uuid(),
+                        "Tournament should be equal"),
+                () -> verify(tournamentRepository, times(1)).findById(tournament.getUuid()));
+    }
 
-  @Test
-  @DisplayName("Get all tournaments")
-  void testGetAll_whenPageableProvided_thenReturnPaginatedTournaments() {
-    List<TournamentEntity> tournaments = List.of(tournament, availableTournament, tournament2);
-    Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable,
-        tournaments.size());
+    @Test
+    @DisplayName("Get all tournaments")
+    void testGetAll_whenPageableProvided_thenReturnPaginatedTournaments() {
+        List<TournamentEntity> tournaments = List.of(tournament, availableTournament, tournament2);
+        Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable,
+                tournaments.size());
 
-    when(tournamentRepository.findAll(pageable)).thenReturn(pagedTournaments);
+        when(tournamentRepository.findAll(pageable)).thenReturn(pagedTournaments);
 
-    Page<TournamentDto> result = tournamentService.getAll(pageable);
+        Page<TournamentDto> result = tournamentService.getAll(pageable);
 
-    assertAll("Get all assertions",
-        () -> assertNotNull(result, "Result should not be null"),
-        () -> assertEquals(3, result.getTotalElements(), "Result should contain two tournaments"));
-  }
+        assertAll("Get all assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(3, result.getTotalElements(), "Result should contain two tournaments"));
+    }
 
-  @Test
-  @DisplayName("Get all available tournaments")
-  void testGetAllAvailable_whenPageableProvided_thenReturnPaginatedTournamentsWithAvailableTrue() {
-    List<TournamentEntity> tournaments = List.of(availableTournament);
-    Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable,
-        tournaments.size());
+    @Test
+    @DisplayName("Get all available tournaments")
+    void testGetAllAvailable_whenPageableProvided_thenReturnPaginatedTournamentsWithAvailableTrue() {
+        List<TournamentEntity> tournaments = List.of(availableTournament);
+        Page<TournamentEntity> pagedTournaments = new PageImpl<>(tournaments, pageable,
+                tournaments.size());
 
-    when(tournamentRepository.findByAvailableIsTrue(pageable)).thenReturn(pagedTournaments);
+        when(tournamentRepository.findByAvailableIsTrue(pageable)).thenReturn(pagedTournaments);
 
-    Page<TournamentDto> result = tournamentService.getAllAvailable(pageable);
+        Page<TournamentDto> result = tournamentService.getAllAvailable(pageable);
 
-    assertAll("Get all assertions",
-        () -> assertNotNull(result, "Result should not be null"),
-        () -> assertEquals(1, result.getTotalElements(), "Result should contain two tournaments"));
-  }
+        assertAll("Get all assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(1, result.getTotalElements(), "Result should contain two tournaments"));
+    }
 
-  @Test
-  @DisplayName("Delete tournament")
-  void testDeleteTournament_whenTournamentUuidProvided_setAvailableToFalse() {
-    when(tournamentRepository.setAvailableFalse(tournament.getUuid())).thenReturn(1);
+    @Test
+    @DisplayName("Delete tournament")
+    void testDeleteTournament_whenTournamentUuidProvided_setAvailableToFalse() {
+        when(tournamentRepository.setAvailableFalse(tournament.getUuid())).thenReturn(1);
 
-    assertDoesNotThrow(() -> tournamentService.delete(tournament.getUuid()));
-  }
+        assertDoesNotThrow(() -> tournamentService.delete(tournament.getUuid()));
+    }
 }

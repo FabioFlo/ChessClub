@@ -31,59 +31,59 @@ import java.util.UUID;
 @Validated
 public class EventController {
 
-  private final EventService eventService;
-  private final PageUtils<EventDto> pageUtils;
+    private final EventService eventService;
+    private final PageUtils<EventDto> pageUtils;
 
-  private static final String CREATED = "Event successfully created";
-  private static final String UPDATED = "Event successfully updated";
-  private static final String FOUND = "Event found";
-  private static final String LIST_FOUND = "Events found";
-  private static final String DELETED = "Event deleted";
+    private static final String CREATED = "Event successfully created";
+    private static final String UPDATED = "Event successfully updated";
+    private static final String FOUND = "Event found";
+    private static final String LIST_FOUND = "Events found";
+    private static final String DELETED = "Event deleted";
 
-  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<EventDto>> createEvent(
-      @Valid @RequestPart(value = "event") CreateEventDto createEventDto,
-      @RequestPart(value = "pdfFile", required = false) @ValidFile MultipartFile file)
-      throws IOException {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<EventDto>> createEvent(
+            @Valid @RequestPart(value = "event") CreateEventDto createEventDto,
+            @RequestPart(value = "pdfFile", required = false) @ValidFile MultipartFile file)
+            throws IOException {
 
-    EventDto createdEvent = eventService.create(createEventDto, file);
+        EventDto createdEvent = eventService.create(createEventDto, file);
 
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(new ResponseDto<>(createdEvent, CREATED, true));
-  }
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto<>(createdEvent, CREATED, true));
+    }
 
-  @GetMapping()
-  public ResponseEntity<ResponseDto<PageResponseDto<EventDto>>> getAllEvents(
-      @PageableDefault Pageable pageable) {
-    Page<EventDto> pagedEvent = eventService.getAllAvailable(pageable);
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedEvent), LIST_FOUND, true));
-  }
+    @GetMapping()
+    public ResponseEntity<ResponseDto<PageResponseDto<EventDto>>> getAllEvents(
+            @PageableDefault Pageable pageable) {
+        Page<EventDto> pagedEvent = eventService.getAllAvailable(pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedEvent), LIST_FOUND, true));
+    }
 
-  @GetMapping("/{uuid}")
-  public ResponseEntity<ResponseDto<EventDto>> getEventById(@ValidUUID @PathVariable UUID uuid) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(new ResponseDto<>(eventService.getById(uuid), FOUND, true));
-  }
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseDto<EventDto>> getEventById(@ValidUUID @PathVariable UUID uuid) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(eventService.getById(uuid), FOUND, true));
+    }
 
-  @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<EventDto>> updateEvent(
-      @Valid @RequestPart(value = "event") UpdateEventDto updateEventDto,
-      @RequestPart(value = "file", required = false) @ValidFile MultipartFile file)
-      throws IOException {
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<EventDto>> updateEvent(
+            @Valid @RequestPart(value = "event") UpdateEventDto updateEventDto,
+            @RequestPart(value = "file", required = false) @ValidFile MultipartFile file)
+            throws IOException {
 
-    EventDto eventDto = eventService.update(updateEventDto, file);
+        EventDto eventDto = eventService.update(updateEventDto, file);
 
-    return ResponseEntity.ok(new ResponseDto<>(eventDto, UPDATED, true));
-  }
+        return ResponseEntity.ok(new ResponseDto<>(eventDto, UPDATED, true));
+    }
 
-  @DeleteMapping("/{uuid}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ResponseDto<UUID>> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
-    eventService.delete(uuid);
-    return ResponseEntity.ok(new ResponseDto<>(uuid, DELETED, true));
-  }
+    @DeleteMapping("/{uuid}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<UUID>> deleteEvent(@ValidUUID @PathVariable UUID uuid) {
+        eventService.delete(uuid);
+        return ResponseEntity.ok(new ResponseDto<>(uuid, DELETED, true));
+    }
 
 }

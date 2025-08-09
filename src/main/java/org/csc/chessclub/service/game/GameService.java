@@ -10,21 +10,21 @@ import java.util.UUID;
 
 public interface GameService {
 
-  GameDto create(CreateGameDto gameDto);
+    GameDto create(CreateGameDto gameDto);
 
-  GameDto update(UpdateGameDto gameDto);
+    GameDto update(UpdateGameDto gameDto);
 
-  GameDto getByUuid(UUID uuid);
+    GameDto getByUuid(UUID uuid);
 
-  void delete(UUID uuid);
+    void delete(UUID uuid);
 
-  Page<GameDto> getAll(Pageable pageable);
+    Page<GameDto> getAll(Pageable pageable);
 
-  Page<GameDto> getAllAvailable(Pageable pageable);
+    Page<GameDto> getAllAvailable(Pageable pageable);
 
-  Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable);
+    Page<GameDto> getAllByPlayerName(String playerName, Pageable pageable);
 
-  Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable);
+    Page<GameDto> getAllGamesByWhitePlayerName(String playerName, Pageable pageable);
 
-  Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable);
+    Page<GameDto> getAllGamesByBlackPlayerName(String playerName, Pageable pageable);
 }

@@ -1,7 +1,7 @@
 package org.csc.chessclub.repository;
 
 import jakarta.transaction.Transactional;
-import org.csc.chessclub.controller.TestContainerConfig;
+import org.csc.chessclub.controller.BaseTestConfiguration;
 import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,70 +16,70 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TournamentRepositoryTests extends TestContainerConfig {
+public class TournamentRepositoryTests extends BaseTestConfiguration {
 
-  @Autowired
-  private TournamentRepository tournamentRepository;
-  private TournamentEntity tournament;
+    @Autowired
+    private TournamentRepository tournamentRepository;
+    private TournamentEntity tournament;
 
-  @BeforeEach
-  void setUp() {
-    tournament = TournamentEntity.builder()
-        .title("Tournament")
-        .description("Description")
-        .startDate(LocalDate.parse("2018-01-01"))
-        .endDate(LocalDate.parse("2018-01-03"))
-        .available(true)
-        .build();
+    @BeforeEach
+    void setUp() {
+        tournament = TournamentEntity.builder()
+                .title("Tournament")
+                .description("Description")
+                .startDate(LocalDate.parse("2018-01-01"))
+                .endDate(LocalDate.parse("2018-01-03"))
+                .available(true)
+                .build();
 
-    TournamentEntity tournament1 = TournamentEntity.builder()
-        .title("Tournament1")
-        .description("Description1")
-        .startDate(LocalDate.parse("2018-01-01"))
-        .endDate(LocalDate.parse("2018-01-03"))
-        .available(false)
-        .build();
+        TournamentEntity tournament1 = TournamentEntity.builder()
+                .title("Tournament1")
+                .description("Description1")
+                .startDate(LocalDate.parse("2018-01-01"))
+                .endDate(LocalDate.parse("2018-01-03"))
+                .available(false)
+                .build();
 
-    tournamentRepository.save(tournament);
-    tournamentRepository.save(tournament1);
+        tournamentRepository.save(tournament);
+        tournamentRepository.save(tournament1);
 
-  }
+    }
 
-  @Test
-  @DisplayName("Find tournament by title")
-  void testGetTournamentByTitle_whenTitleProvided_returnTournamentIfExist() {
-    String title = "Tournament";
+    @Test
+    @DisplayName("Find tournament by title")
+    void testGetTournamentByTitle_whenTitleProvided_returnTournamentIfExist() {
+        String title = "Tournament";
 
-    List<TournamentEntity> result = tournamentRepository.getTournamentEntitiesByTitleAndAvailableTrue(
-        title);
+        List<TournamentEntity> result = tournamentRepository.getTournamentEntitiesByTitleAndAvailableTrue(
+                title);
 
-    assertAll("Get by title assertions",
-        () -> assertNotNull(result, "Result should not be null"),
-        () -> assertEquals(1, result.size(), "Should contain one tournament"),
-        () -> assertTrue(result.stream().allMatch(TournamentEntity::isAvailable),
-            "Result should be available"),
-        () -> assertEquals(title, result.getFirst().getTitle(), "Title should be equal"));
-  }
+        assertAll("Get by title assertions",
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(1, result.size(), "Should contain one tournament"),
+                () -> assertTrue(result.stream().allMatch(TournamentEntity::isAvailable),
+                        "Result should be available"),
+                () -> assertEquals(title, result.getFirst().getTitle(), "Title should be equal"));
+    }
 
-  @Test
-  @DisplayName("Find all available tournaments")
-  void testGetAllAvailableTournaments_returnTournamentsWithAvailableTrue() {
-    Pageable pageable = PageRequest.of(0, 10);
-    Page<TournamentEntity> result = tournamentRepository.findByAvailableIsTrue(pageable);
+    @Test
+    @DisplayName("Find all available tournaments")
+    void testGetAllAvailableTournaments_returnTournamentsWithAvailableTrue() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<TournamentEntity> result = tournamentRepository.findByAvailableIsTrue(pageable);
 
-    boolean allAvailable = result.getContent().stream().allMatch(TournamentEntity::isAvailable);
+        boolean allAvailable = result.getContent().stream().allMatch(TournamentEntity::isAvailable);
 
-    assertAll("Get all available tournaments",
-        () -> assertFalse(result.isEmpty(), "Result should not be null"),
-        () -> assertTrue(allAvailable, "All tournaments should be available"));
-  }
+        assertAll("Get all available tournaments",
+                () -> assertFalse(result.isEmpty(), "Result should not be null"),
+                () -> assertTrue(allAvailable, "All tournaments should be available"));
+    }
 
-  @Test
-  @DisplayName("Set available to false")
-  @Transactional
-  void testSetAvailableFalse_whenGivenUuid_resultShouldBeOne() {
-    int result = tournamentRepository.setAvailableFalse(tournament.getUuid());
+    @Test
+    @DisplayName("Set available to false")
+    @Transactional
+    void testSetAvailableFalse_whenGivenUuid_resultShouldBeOne() {
+        int result = tournamentRepository.setAvailableFalse(tournament.getUuid());
 
-    assertEquals(1, result, "Should return 1");
-  }
+        assertEquals(1, result, "Should return 1");
+    }
 }

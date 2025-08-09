@@ -11,9 +11,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface ValidFile {
 
-  String message() default FileValidationMessage.FILE_NOT_VALID;
+    String message() default FileValidationMessage.FILE_NOT_VALID;
 
-  Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

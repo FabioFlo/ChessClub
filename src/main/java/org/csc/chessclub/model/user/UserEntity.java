@@ -22,38 +22,38 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity implements UserDetails {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID uuid;
-  @Column(length = UserConstraints.USERNAME_MAX_LENGTH)
-  private String username;
-  private String password;
-  private String email;
-  private Role role;
-  private boolean available;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID uuid;
+    @Column(length = UserConstraints.USERNAME_MAX_LENGTH)
+    private String username;
+    private String password;
+    private String email;
+    private Role role;
+    private boolean available;
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-  }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
-  }
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return UserDetails.super.isAccountNonLocked();
-  }
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
 
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return UserDetails.super.isCredentialsNonExpired();
-  }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
 
-  @Override
-  public boolean isEnabled() {
-    return isAvailable();
-  }
+    @Override
+    public boolean isEnabled() {
+        return isAvailable();
+    }
 }
