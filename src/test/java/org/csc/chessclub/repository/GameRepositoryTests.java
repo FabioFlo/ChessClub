@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.csc.chessclub.controller.BaseTestConfiguration;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.game.GameEntity;
+import org.csc.chessclub.model.tournament.TournamentEntity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,10 +24,25 @@ public class GameRepositoryTests extends BaseTestConfiguration {
     private GameEntity gameOne;
     private GameEntity unavailableGame;
     private Pageable pageable;
-
+    @Autowired
+    private TournamentRepository tournamentRepository;
+    private TournamentEntity tournament;
     @BeforeAll
     public void setup() {
         pageable = PageRequest.of(0, 10);
+        tournament = tournamentRepository.save(TournamentEntity.builder()
+                .title("Tournament")
+                .description("Description")
+                .startDate(LocalDate.parse("2018-01-01"))
+                .endDate(LocalDate.parse("2018-01-03"))
+                .available(true)
+                .build());
+        gameRepository.deleteAll();
+        createBaseTestData();
+    }
+
+    @Override
+    public void createBaseTestData(){
         String playerOne = "Gino";
         String playerTwo = "Paolo";
         Result whiteWon = Result.WhiteWon;
@@ -37,6 +55,7 @@ public class GameRepositoryTests extends BaseTestConfiguration {
                 .blackPlayerName(playerTwo)
                 .result(whiteWon)
                 .available(true)
+                .tournament(tournament)
                 .build();
 
         GameEntity gameTwo = GameEntity.builder()
@@ -128,7 +147,7 @@ public class GameRepositoryTests extends BaseTestConfiguration {
                 () -> assertTrue(gamesRetrieved.stream().allMatch(GameEntity::isAvailable),
                         "All games should be available"),
                 () -> assertEquals(1, gamesRetrieved.getTotalElements(), "Should find one game"),
-                () -> assertEquals(gameOne, gamesRetrieved.getContent().getFirst(),
+                () -> assertEquals(gameOne.getUuid(), gamesRetrieved.getContent().getFirst().getUuid(),
                         "Game one should be equal to first"));
 
     }
@@ -168,5 +187,19 @@ public class GameRepositoryTests extends BaseTestConfiguration {
         int result = gameRepository.setAvailableFalse(gameOne.getUuid());
 
         assertEquals(1, result, "Result should be equal to 1");
+    }
+
+    @Test
+    @DisplayName("Find all available games")
+    void testGetAllAvailableGames_whenTournamentUuidAndPageableProvided_returnGames() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<GameEntity> result = gameRepository.findGameEntitiesByTournament_UuidAndAvailableTrue(tournament.getUuid(), pageable);
+
+        boolean allAvailable = result.getContent().stream().allMatch(GameEntity::isAvailable);
+
+        assertAll("Get all available games",
+                () -> assertFalse(result.isEmpty(), "Result should not be null"),
+                () -> assertTrue(allAvailable, "All games should be available"),
+                () -> assertEquals(tournament.getUuid(), result.getContent().getFirst().getTournament().getUuid(), "Tournament uuid should be equal"));
     }
 }

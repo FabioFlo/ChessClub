@@ -30,5 +30,5 @@ public interface GameRepository extends JpaRepository<GameEntity, UUID> {
     @Query("update GameEntity  g set g.available = false where g.uuid = :uuid")
     int setAvailableFalse(@Param("uuid") UUID uuid);
 
-    //TODO: get all games where tournament uuid is = to:
+    Page<GameEntity> findGameEntitiesByTournament_UuidAndAvailableTrue(UUID tournamentUuid, Pageable pageable);
 }

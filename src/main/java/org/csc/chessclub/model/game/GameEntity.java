@@ -28,7 +28,7 @@ public class GameEntity {
     private Result result;
     private String pgn;
     private boolean available;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "tournament_uuid")
     private TournamentEntity tournament;
 }
