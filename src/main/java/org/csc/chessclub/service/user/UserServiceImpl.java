@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.csc.chessclub.dto.user.RegisterUserRequest;
-import org.csc.chessclub.dto.user.UpdateRoleDto;
-import org.csc.chessclub.dto.user.UpdateUserRequest;
-import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.dto.user.*;
 import org.csc.chessclub.enums.NotFoundMessage;
 import org.csc.chessclub.enums.Role;
 import org.csc.chessclub.exception.CustomAccessDeniedException;
@@ -105,4 +102,14 @@ public class UserServiceImpl implements UserService {
   public Page<UserDto> getAll(Pageable pageable) {
     return userMapper.pageUserEntityToPageUserDto(userRepository.findAll(pageable));
   }
+
+    @Override
+    public void updateUserPassword(UpdatePasswordDto updatePasswordDto) {
+      int result = userRepository.updatePassword(updatePasswordDto.uuid(), passwordEncoder.encode(updatePasswordDto.password()));
+
+        if (result == 0) {
+            throw new CustomNotFoundException(
+                    NotFoundMessage.USER_WITH_UUID.format(updatePasswordDto.uuid()));
+        }
+    }
 }

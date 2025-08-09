@@ -1,9 +1,6 @@
 package org.csc.chessclub.service.user;
 
-import org.csc.chessclub.dto.user.RegisterUserRequest;
-import org.csc.chessclub.dto.user.UpdateRoleDto;
-import org.csc.chessclub.dto.user.UpdateUserRequest;
-import org.csc.chessclub.dto.user.UserDto;
+import org.csc.chessclub.dto.user.*;
 
 import java.util.UUID;
 import org.csc.chessclub.enums.Role;
@@ -23,5 +20,7 @@ public interface UserService {
   Role updateUserRole(UpdateRoleDto updateRoleDto);
 
   Page<UserDto> getAll(Pageable pageable);
+
+  void updateUserPassword(UpdatePasswordDto updatePasswordDto);
 
 }
