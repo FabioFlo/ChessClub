@@ -102,7 +102,6 @@ public class UserRepositoryTests extends TestContainerConfig {
         assertEquals(1, result, "Result should be 1");
     }
 
-    //TODO:create admin method for password update
     @Test
     @DisplayName("Update user password")
     @Transactional
