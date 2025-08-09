@@ -59,7 +59,7 @@ public class TournamentController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<PageResponseDto<TournamentDto>>> getAllTournaments(
+    public ResponseEntity<ResponseDto<PageResponseDto<TournamentDto>>> getAllPagedTournaments(
             @PageableDefault Pageable pageable) {
         Page<TournamentDto> pagedTournaments = tournamentService.getAllAvailable(pageable);
         return ResponseEntity.status(HttpStatus.OK)
@@ -75,4 +75,13 @@ public class TournamentController {
                 .body(new ResponseDto<>(uuid, DELETED, true));
     }
 
+    @GetMapping("?eventId={eventUuid}")
+    public ResponseEntity<ResponseDto<PageResponseDto<TournamentDto>>> getAllPagedTournamentsByEventUuid(
+            @ValidUUID @PathVariable UUID eventUuid,
+            @PageableDefault Pageable pageable) {
+        Page<TournamentDto> pagedTournaments = tournamentService.getAllByEventUuid(eventUuid, pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto<>(pageUtils.populatePageResponseDto(pagedTournaments), LIST_FOUND,
+                        true));
+    }
 }

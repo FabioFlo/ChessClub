@@ -7,10 +7,13 @@ import org.csc.chessclub.dto.ResponseDto;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
+import org.csc.chessclub.model.event.EventEntity;
+import org.csc.chessclub.repository.EventRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
@@ -26,20 +29,34 @@ public class TournamentControllerTest extends BaseTestConfiguration {
     private String userToken;
 
     private CreateTournamentDto createTournamentDto;
+    private EventEntity event;
     private UUID uuid;
     private LocalDate startDate;
     private LocalDate endDate;
+    @Autowired
+    private EventRepository eventRepository;
 
     @BeforeAll
     public void beforeAll() {
         startDate = LocalDate.parse("2020-01-01");
         endDate = LocalDate.parse("2020-01-03");
+
+        event = eventRepository.save(EventEntity
+                .builder()
+                .description("Event description")
+                .announcementPDF("")
+                .author("Billy")
+                .createdAt(LocalDate.parse("2022-02-01"))
+                .title("Titolo evento")
+                .available(true)
+                .build());
+
         createTournamentDto = new CreateTournamentDto(
                 "New tournament",
                 startDate,
                 endDate,
                 "Description",
-                null);
+                event.getUuid());
 
         userToken = getUserToken();
     }
@@ -79,8 +96,7 @@ public class TournamentControllerTest extends BaseTestConfiguration {
         String newTitle = "New test title";
         UpdateTournamentDto updateTournamentDto = new UpdateTournamentDto(uuid, newTitle, startDate,
                 endDate, "Description", null);
-        ResponseDto<TournamentDto> response = given()
-                .header("Authorization", "Bearer " + userToken)
+        ResponseDto<TournamentDto> response = authHelper.withBearerToken(userToken)
                 .body(updateTournamentDto)
                 .when()
                 .patch(apiPath)
@@ -150,6 +166,33 @@ public class TournamentControllerTest extends BaseTestConfiguration {
 
     @Test
     @Order(5)
+    @DisplayName("Get all paged by Event uuid")
+    void testGetAllByEventUuid_whenTournamentsFoundByEventUuid_returnsTournamentsDto() {
+        ResponseDto<PageResponseDto<TournamentDto>> response = given()
+                .pathParam("eventUuid", event.getUuid())
+                .when()
+                .get(apiPath + "?eventId={eventUuid}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(new TypeRef<>() {
+                });
+
+        assertThat(response)
+                .isNotNull()
+                .extracting(ResponseDto::success).isEqualTo(true);
+
+        assertThat(response.data().pageSize())
+                .isEqualTo(10);
+
+        assertThat(response)
+                .extracting(ResponseDto::data)
+                .extracting(PageResponseDto::content)
+                .extracting(List::size).isEqualTo(1);
+
+    }
+
+    @Test
+    @Order(6)
     @DisplayName("Delete tournament")
     void testDeleteTournament_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
         ResponseDto<UUID> response = authHelper.withBearerToken(userToken)
