@@ -11,6 +11,70 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ---
 
+## 🎯 Project Overview & Personal Notes
+
+When I started this project, I had almost zero experience about unit test, integration test and the various test
+tools I have used here, because of this I have decided to build it following the TDD practice (Test-Driven
+Development).</br>
+My test journey started with an Udemy course and continued with a lot of practice and questions to my friend which have
+a lot of experience more than me.. and I am not talking about AI!
+
+***But let's be honest, obviously I have got some help from the AI too, as every developer now days, but how i have used
+this tool?***
+
+I do not like to just copy/paste staff in/out the chatbot without understanding what i am doing, this is how i have
+proceeded:
+
+- I have thought about the project and how i want it to work and checked for some example of real site online
+- Then i have written a roadmap to follow and the logic of the app, classes, some of the features, DB (note code, just
+  ideas) only after that i have questioned the AI with `This is my idea, what is the best practice?`
+  so i already had an idea in mind when i started.
+
+***And what about the actual code problems?***
+
+Usually i have tried to solve them by myself, after that i check for some improvement using the AI and sometimes it came
+out with some crazy stuff i had never thought about or i have never seen before!</br>
+Sometimes the AI helped me to discover some new tool,new topics to things about and study, i and up questioning myself
+about what i have done until that moment and how to improve it.</br>
+I have used it as a more expert developer able to guide me through the best practice (exactly what i have done with my
+friend, thank yow D.!).
+
+### In conclusion
+
+The AI can be very useful, but it needs a direction in order to be efficient, more it was clear the
+idea or the problem to solve i had in mind, better it was the answer for me in order to learn and understand.
+
+### 🔍 What This Project Demonstrates
+
+As a portfolio piece for GitHub and LinkedIn, this project highlights my proficiency in:
+
+- Modern Java Development — Spring Boot 3.4.x with Java 21 features
+- Clean Architecture — Well-structured layers with DTO/Entity separation using MapStruct
+- Database Design — PostgreSQL integration with proper relationship modeling
+- DevOps Practices — Full Docker containerization and automated deployment scripts
+- Code Quality — Comprehensive testing, coverage reporting (JaCoCo), and style enforcement (Checkstyle)
+- API Documentation — Auto-generated OpenAPI/Swagger documentation
+- Security Implementation — Role-based access control and authentication
+
+### 💭 Technical Decisions & Learnings
+
+This project allowed me to explore several interesting technical challenges:
+
+- Role-Based Access Control — Implementing a flexible permission system that scales from individual users to admin-level
+  operations
+- File Upload Handling — Using Apache Tika for secure file type detection and validation
+  Database Seeding Strategy — Creating configurable data initialization for development and demo purposes
+- Cross-Platform Deployment — Ensuring seamless setup across Windows, Linux, and macOS environments
+
+### 🎓 Why Chess Club Management?
+
+I chose this domain because i am a chess player too and this topic is more familiar to me and naturally encompasses many
+real-world application requirements: user management, event
+scheduling, tournament brackets, game results tracking. It's complex enough to showcase advanced development patterns
+while being intuitive for anyone reviewing the code.
+
+---
+
 ## 📑 Table of Contents
 
 - [Requirements](#-requirements-and-installation-help)
