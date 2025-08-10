@@ -270,11 +270,82 @@ populates the database with some data of `Event, Tournament and Games`.
 As for the Admin, this behavior can be enabled or disabled with the property `init.database` located in the same
 application properties file.
 
-🔒 Both of them are enabled by default, so the database will be initialized at the first start or ***only*** if the volume is empty.
+🔒 Both of them are enabled by default, so the database will be initialized at the first start or ***only*** if the
+volume is empty.
 
 ---
 
 ## 📘 API Documentation
+
+This section provides a visual overview of the API endpoints for each major entity, followed by a link to the detailed
+Swagger UI.
+
+### Role-Based API Flowchart
+
+This flowchart visualizes the entire API, organized by user role. Each subgraph represents a distinct user type and the
+operations they are permitted to perform.
+
+```mermaid
+graph TD
+    subgraph UNAUTHENTICATED_USER
+        direction LR
+        style UNAUTHENTICATED_USER fill:#f9f,stroke:#333,stroke-width:2px
+        U_A[GET_events] --> U_B[Get all events];
+        U_A2[GET_events_uuid] --> U_B;
+        U_C[GET_tournaments] --> U_D[Get all tournaments];
+        U_C2[GET_tournaments_uuid] --> U_D;
+        U_E[GET_games] --> U_F[Get all games];
+        U_E2[GET_games_uuid] --> U_F;
+        U_G[GET_games_player_player-name] --> U_F;
+        U_H[GET_games_tournamentUuid] --> U_F;
+    end
+
+    subgraph AUTHENTICATED_USER
+        direction LR
+        style AUTHENTICATED_USER fill:#ccf,stroke:#333,stroke-width:2px
+        subgraph USER_ROLE
+            direction TB
+            style USER_ROLE fill:#fff,stroke:#000,stroke-width:1px,stroke-dasharray: 5, 5
+            P_U_C[POST_users_login] --> P_U_D[User login];
+            P_U_E[GET_users_uuid] --> P_U_F[Get own profile];
+            P_U_G[PATCH_users] --> P_U_H[Update own profile];
+            P_U_K[POST_events] --> P_U_L[Create new event];
+            P_U_M[POST_events_with_PDF] --> P_U_L;
+            P_U_N[PATCH_events] --> P_U_O[Update event];
+            P_U_P[DELETE_events_uuid] --> P_U_Q[Delete event];
+            P_U_R[POST_tournaments] --> P_U_S[Create new tournament];
+            P_U_T[PATCH_tournaments] --> P_U_V[Update tournament];
+            P_U_W[DELETE_tournaments_uuid] --> P_U_X[Delete tournament];
+            P_U_Y[POST_games] --> P_U_Z[Create new game];
+            P_U_AA[PATCH_games] --> P_U_AB[Update game];
+            P_U_AC[DELETE_games_uuid] --> P_U_AD[Delete game];
+        end
+    end
+
+    subgraph AUTHENTICATED_ADMIN
+        direction LR
+        style AUTHENTICATED_ADMIN fill:#cfc,stroke:#333,stroke-width:2px
+        subgraph ADMIN_ROLE
+            direction TB
+            style ADMIN_ROLE fill:#fff,stroke:#000,stroke-width:1px,stroke-dasharray: 5, 5
+            A_A[GET_users] --> A_B[Get all users];
+            A_C[GET_users_uuid] --> A_D[Get user by ID];
+            A_E[PATCH_users] --> A_F[Update any user];
+            A_G[PATCH_users_role] --> A_H[Change user role];
+            A_I[PATCH_users_password] --> A_J[Change any user password];
+            A_K[DELETE_users_uuid] --> A_L[Delete any user];
+            A_M[POST/PATCH/DELETE_events] --> A_N[Full Event Access];
+            A_M2[GET_events] --> A_N;
+            A_O[POST/PATCH/DELETE_tournaments] --> A_P[Full Tournament Access];
+            A_O2[GET_tournaments] --> A_P;
+            A_Q[POST/PATCH/DELETE_games] --> A_R[Full Game Access];
+            A_Q2[GET_games] --> A_R;
+        end
+    end
+
+    UNAUTHENTICATED_USER --> |Login| AUTHENTICATED_USER;
+    AUTHENTICATED_USER --> |Promote| AUTHENTICATED_ADMIN;
+   ```
 
 ### Swagger UI:
 
