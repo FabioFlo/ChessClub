@@ -1,7 +1,8 @@
 # ♟️ Chess Club API
 
 A Spring Boot 3.4.x REST API for managing chess clubs, players, tournaments, and games.  
-It provides endpoints to register users, manage memberships, schedule tournaments, and record results.  
+It provides endpoints to register users, manage memberships, schedule tournaments, and record
+results.  
 Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
@@ -13,36 +14,46 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ## 🎯 Project Overview & Personal Notes
 
-When I started this project, I had almost zero experience with unit and integration tests and the various testing tools
-I've used. Because of this, I decided to build it following the Test-Driven Development (TDD) practice.
+When I started this project, I had almost zero experience with unit and integration tests and the
+various testing tools I've used. Because of this, I decided to build it following the Test-Driven
+Development (TDD) practice.
 
-My testing journey began with an Udemy course and continued with a lot of practice and questions to a friend who has far
-more experience than I do—and I'm not talking about AI!
+My testing journey began with an Udemy course and continued with a lot of practice and questions
+about best practices to a friend who has far more experience than I do—and I'm not talking about AI!
 
-But let's be honest, I obviously got some help from AI as well, just like every developer nowadays. So, how did I use
-this tool?
+But let's be honest, I obviously got some help from AI as well, just like every developer nowadays.
+So, how did I use this tool?
 
-I don't like to just copy and paste code from a chatbot without understanding what I'm doing. Here's how I proceeded:
+I don't like to just copy and paste code from a chatbot without understanding what I'm doing. Here's
+how I proceeded:
 
-- I first thought about the project, how I wanted it to work, and researched real-world examples online.
+- I first thought about the project, how I wanted it to work, and researched real-world examples
+  online.
 
-- Then, I created a roadmap and outlined the logic of the app, including classes, some features, and the database. I
-  only questioned the AI afterward with prompts like, "This is my idea; what is the best practice?" Then i tought about
-  the answers it give me and questioned in order to reach a point were the result was fine to me.
+- Then, I created a roadmap and outlined the logic of the app, including classes, some features, and
+  the database. I only questioned the AI afterward with prompts like, "This is my idea; what is the
+  best practice?" Then I thought about the answers it gave me and asked follow-up questions to
+  refine the result until I was satisfied. Sometimes, I specifically asked the AI not to write code,
+  but simply to give me steps to follow based on best practices.
 
 ### What about actual code problems?
 
-I usually try to solve them myself first. Afterward, I ask the AI for improvements, other times it was useful to me in
-solving problems that required the use of Java classes and methods that I didn't know at all and this gave me the
+I usually try to solve them myself first. Afterward, I ask the AI for improvements, other times it
+was useful to me in
+solving problems that required the use of Java classes and methods that I didn't know at all and
+this gave me the
 opportunity to learn new aspects of the language.
 
-Sometimes the AI helped me discover new tools and topics to study. This led me to question my own work and think about
-how to improve it. I used the AI as a more expert developer, guiding me through best practices (exactly what I did with
+Sometimes the AI helped me discover new tools and topics to study. This led me to question my own
+work and think about
+how to improve it. I used the AI as a more expert developer, guiding me through best practices (
+exactly what I did with
 my friend—thank you, D.!).
 
 ### In conclusion
 
-AI can be very useful, but it needs clear direction to be efficient. The more specific my idea or problem was, the
+AI can be very useful, but it needs clear direction to be efficient. The more specific my idea or
+problem was, the
 better the answer I received, and the more I learned and understood.
 
 ### 🔍 What This Project Demonstrates
@@ -53,7 +64,8 @@ As a portfolio piece for GitHub and LinkedIn, this project highlights my profici
 - Clean Architecture — Well-structured layers with DTO/Entity separation using MapStruct
 - Database Design — PostgreSQL integration with proper relationship modeling
 - DevOps Practices — Full Docker containerization and automated deployment scripts
-- Code Quality — Comprehensive testing, coverage reporting (JaCoCo), and style enforcement (Checkstyle)
+- Code Quality — Comprehensive testing, coverage reporting (JaCoCo), and style enforcement (
+  Checkstyle)
 - API Documentation — Auto-generated OpenAPI/Swagger documentation
 - Security Implementation — Role-based access control and authentication
 
@@ -61,17 +73,21 @@ As a portfolio piece for GitHub and LinkedIn, this project highlights my profici
 
 This project allowed me to explore several interesting technical challenges:
 
-- Role-Based Access Control — Implementing a flexible permission system that scales from individual users to admin-level
+- Role-Based Access Control — Implementing a flexible permission system that scales from individual
+  users to admin-level
   operations
 - File Upload Handling — Using Apache Tika for secure file type detection and validation
-  Database Seeding Strategy — Creating configurable data initialization for development and demo purposes
+  Database Seeding Strategy — Creating configurable data initialization for development and demo
+  purposes
 - Cross-Platform Deployment — Ensuring seamless setup across Windows, Linux, and macOS environments
 
 ### 🎓 Why Chess Club Management?
 
-I chose this domain because i am a chess player too and this topic is more familiar to me and naturally encompasses many
+I chose this domain because i am a chess player too and this topic is more familiar to me and
+naturally encompasses many
 real-world application requirements: user management, event
-scheduling, tournament brackets, game results tracking. It's complex enough to showcase advanced development patterns
+scheduling, tournament brackets, game results tracking. It's complex enough to showcase advanced
+development patterns
 while being intuitive for anyone reviewing the code.
 
 ---
@@ -94,7 +110,8 @@ while being intuitive for anyone reviewing the code.
 
 ## 📦 Requirements (and Installation Help)
 
-To run the project using the provided scripts (`start.sh`, `start.bat`), you only need the following installed and
+To run the project using the provided scripts (`start.sh`, `start.bat`), you only need the following
+installed and
 configured on your system:
 
 | Tool       | Purpose                                       | Required? |
@@ -108,14 +125,17 @@ configured on your system:
 ### 🪟 Windows Setup Tips
 
 1. **Install Maven**  
-   Download the [Apache Maven ZIP archive](https://maven.apache.org/download.cgi), extract it, and add the `bin` folder
+   Download the [Apache Maven ZIP archive](https://maven.apache.org/download.cgi), extract it, and
+   add the `bin` folder
    to your **System PATH**.
 
 2. **Install Docker Desktop**  
-   Download it from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
+   Download it
+   from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
    </br> Docker compose is included in Docker desktop.
 
-3. ✅ After installation, **restart CMD/PowerShell and your IDE** (e.g., IntelliJ) to apply PATH changes.
+3. ✅ After installation, **restart CMD/PowerShell and your IDE** (e.g., IntelliJ) to apply PATH
+   changes.
 
 ### 🐧 Linux / macOS
 
@@ -137,7 +157,8 @@ Use your package manager to install Docker and Maven:
 
 ### 🐳 Docker Troubleshooting (Linux / WSL)
 
-> If you encounter issues with `docker compose` not working or returning permission errors, follow these steps.
+> If you encounter issues with `docker compose` not working or returning permission errors, follow
+> these steps.
 
 ### ✅ Check if Docker is installed properly
 
@@ -214,7 +235,8 @@ This project leverages the following libraries and tooling:
 
 ### 🧰 Developer & CI Tools
 
-- **Checkstyle Plugin** — enforces [Google Java Style Guide](https://checkstyle.sourceforge.io/google_style.html)
+- **Checkstyle Plugin** —
+  enforces [Google Java Style Guide](https://checkstyle.sourceforge.io/google_style.html)
 - **JaCoCo** — test coverage analysis and reporting
 - **OpenAPI / Swagger UI** — automatically generated API documentation
 
@@ -293,7 +315,8 @@ Run the following in your terminal:
   scripts\stop.bat
 ```
 
-If the container got stoped with the `stop script`, this command start it again without executing the build:
+If the container got stoped with the `stop script`, this command start it again without executing
+the build:
 
 ```bash
   docker compose up
@@ -324,30 +347,36 @@ If the container got stoped with the `stop script`, this command start it again 
 ## 🧬 Database Seeding
 
 The application include two classes for the creation of entities into the database.
-One of them allow to create an Admin via the `AdminRunner` class that can be found here `org/csc/chessclub/config`.
+One of them allow to create an Admin via the `AdminRunner` class that can be found here
+`org/csc/chessclub/config`.
 This behavior is manage by the boolean flag `fake.admin.create.flag` which can be found into the
 `application-local.properties` file with some other Admin/User properties that allow to change
 `Username, Email and Password`.
 With the admin is then possible to call every method of the application.
 
-Other than that, there is another class called `DatabaseSeeder` which have the task to create other entities and
+Other than that, there is another class called `DatabaseSeeder` which have the task to create other
+entities and
 populates the database with some data of `Event, Tournament and Games`.
-As for the Admin, this behavior can be enabled or disabled with the property `init.database` located in the same
+As for the Admin, this behavior can be enabled or disabled with the property `init.database` located
+in the same
 application properties file.
 
-🔒 Both of them are enabled by default, so the database will be initialized at the first start or ***only*** if the
+🔒 Both of them are enabled by default, so the database will be initialized at the first start or
+***only*** if the
 volume is empty.
 
 ---
 
 ## 📘 API Documentation
 
-This section provides a visual overview of the API endpoints for each major entity, followed by a link to the detailed
+This section provides a visual overview of the API endpoints for each major entity, followed by a
+link to the detailed
 Swagger UI.
 
 ### Role-Based API Flowchart
 
-This flowchart visualizes the entire API, organized by user role. Each subgraph represents a distinct user type and the
+This flowchart visualizes the entire API, organized by user role. Each subgraph represents a
+distinct user type and the
 operations they are permitted to perform.
 
 ```mermaid
