@@ -67,15 +67,15 @@ public class TournamentServiceExceptionTests {
                 .event(EventEntity.builder().uuid(uuid).build())
                 .build();
 
-        updateDto = new UpdateTournamentDto(uuid, title, startDate, endDate, description, eventId);
-        createDto = new CreateTournamentDto(title, startDate, endDate, description, eventId);
+        updateDto = new UpdateTournamentDto(uuid, title, startDate, endDate, description,"Winner", eventId);
+        createDto = new CreateTournamentDto(title, startDate, endDate, description, null,eventId);
     }
 
     @Test
     @DisplayName("Create Tournament - Throw if end date is before start date")
     void testCreateTournament_whenEndDateIsBeforeStartDate_throwCustomTournamentException() {
         LocalDate invalidStartDate = LocalDate.parse("2019-01-01");
-        createDto = new CreateTournamentDto(title, invalidStartDate, endDate, description,
+        createDto = new CreateTournamentDto(title, invalidStartDate, endDate, description,null,
                 UUID.randomUUID());
 
         TournamentServiceException exception = assertThrows(TournamentServiceException.class,
@@ -88,7 +88,7 @@ public class TournamentServiceExceptionTests {
     @DisplayName("Update Tournament - Throw if end date is before start date")
     void testUpdateTournament_whenEndDateIsBeforeStartDate_throwCustomTournamentException() {
         LocalDate invalidStartDate = LocalDate.parse("2019-01-01");
-        updateDto = new UpdateTournamentDto(uuid, title, invalidStartDate, endDate, description,
+        updateDto = new UpdateTournamentDto(uuid, title, invalidStartDate, endDate, description,null,
                 UUID.randomUUID());
 
         when(tournamentRepository.findById(updateDto.uuid()))

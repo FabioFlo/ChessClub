@@ -64,6 +64,7 @@ public class TournamentServiceUnitTest {
                 .startDate(START_DATE)
                 .endDate(END_DATE)
                 .event(event)
+                .winner("Winner")
                 .build();
 
         availableTournament = TournamentEntity.builder()
@@ -73,6 +74,7 @@ public class TournamentServiceUnitTest {
                 .startDate(START_DATE)
                 .endDate(END_DATE)
                 .available(true)
+                .winner("Winner1")
                 .build();
 
         tournament2 = TournamentEntity.builder()
@@ -82,6 +84,7 @@ public class TournamentServiceUnitTest {
                 .startDate(START_DATE)
                 .endDate(END_DATE)
                 .available(false)
+                .winner("Winner2")
                 .build();
     }
 
@@ -89,7 +92,7 @@ public class TournamentServiceUnitTest {
     @DisplayName("Create tournament")
     void testCreateTournament_whenTournamentDetailsProvided_return() {
         CreateTournamentDto tournamentDto = new CreateTournamentDto(tournament.getTitle(),
-                tournament.getStartDate(), tournament.getEndDate(), "Description", null);
+                tournament.getStartDate(), tournament.getEndDate(), "Description", null,null);
         when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(tournament);
 
         TournamentDto newTournament = tournamentService.create(tournamentDto);
@@ -105,7 +108,7 @@ public class TournamentServiceUnitTest {
     void testUpdateTournament_whenTournamentDetailsProvided_returnTournament() {
         String newTitle = "Updated Tournament";
         UpdateTournamentDto tournamentDto = new UpdateTournamentDto(availableTournament.getUuid(),
-                newTitle, START_DATE, END_DATE, "Description", null);
+                newTitle, START_DATE, END_DATE, "Description", null,null);
 
         when(tournamentRepository.save(any(TournamentEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));

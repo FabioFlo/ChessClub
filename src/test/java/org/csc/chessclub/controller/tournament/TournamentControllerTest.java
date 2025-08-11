@@ -56,6 +56,7 @@ public class TournamentControllerTest extends BaseTestConfiguration {
                 startDate,
                 endDate,
                 "Description",
+                null,
                 event.getUuid());
 
         userToken = getUserToken();
@@ -95,7 +96,7 @@ public class TournamentControllerTest extends BaseTestConfiguration {
         String expectedMessage = "Tournament successfully updated";
         String newTitle = "New test title";
         UpdateTournamentDto updateTournamentDto = new UpdateTournamentDto(uuid, newTitle, startDate,
-                endDate, "Description", null);
+                endDate, "Description", "Fabiano Caruana",null);
         ResponseDto<TournamentDto> response = authHelper.withBearerToken(userToken)
                 .body(updateTournamentDto)
                 .when()

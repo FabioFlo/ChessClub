@@ -28,6 +28,7 @@ public class TournamentMapperTests {
     private static final LocalDate START_DATE = LocalDate.parse("2019-01-01");
     private static final LocalDate END_DATE = LocalDate.parse("2018-01-03");
     private static final UUID EVENT_ID = UUID.randomUUID();
+    private static final String WINNER = "Winner";
 
     @BeforeEach
     void setUp() {
@@ -39,6 +40,7 @@ public class TournamentMapperTests {
                 .description(DESCRIPTION)
                 .startDate(START_DATE)
                 .endDate(END_DATE)
+                .winner(WINNER)
                 .build();
 
     }
@@ -58,7 +60,9 @@ public class TournamentMapperTests {
                 () -> assertEquals(tournament.getEndDate(), tournamentDto.endDate(),
                         "End game should be equal"),
                 () -> assertEquals(tournament.getDescription(), tournamentDto.description(),
-                        "Description should be equal"));
+                        "Description should be equal"),
+                () -> assertEquals(tournament.getWinner(), tournamentDto.winner(),
+                        "Winner should be equal"));
 
     }
 
@@ -66,7 +70,7 @@ public class TournamentMapperTests {
     @DisplayName("Map CreateTournamentDto to TournamentEntity")
     void shouldMapCreateTournamentDtoToTournamentEntity() {
         CreateTournamentDto tournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE,
-                DESCRIPTION, EVENT_ID);
+                DESCRIPTION, WINNER, EVENT_ID);
         TournamentEntity tournamentEntity = tournamentMapper.createTournamentDtoToTournamentEntity(
                 tournamentDto);
 
@@ -79,6 +83,8 @@ public class TournamentMapperTests {
                         "End game should be equal"),
                 () -> assertEquals(tournamentEntity.getDescription(), tournamentDto.description(),
                         "Description should be equal"),
+                () -> assertEquals(tournament.getWinner(), tournamentDto.winner(),
+                        "Winner should be equal"),
                 () -> assertEquals(tournamentEntity.getEvent().getUuid(), tournamentDto.eventId(),
                         "Event Uuid should be equal"));
     }
@@ -106,7 +112,7 @@ public class TournamentMapperTests {
     @DisplayName("Map UpdateTournamentDto to TournamentEntity")
     void shouldMapUpdateTournamentDtoToTournamentEntity() {
         UpdateTournamentDto tournamentDto = new UpdateTournamentDto(UUID.randomUUID(), TITLE,
-                START_DATE, END_DATE, DESCRIPTION, EVENT_ID);
+                START_DATE, END_DATE, DESCRIPTION, WINNER, EVENT_ID);
         TournamentEntity tournamentEntity = tournamentMapper.updateTournamentToTournament(tournamentDto,
                 tournament);
         assertAll("Map update tournament to entity assertions",
@@ -120,6 +126,8 @@ public class TournamentMapperTests {
                         "End game should be equal"),
                 () -> assertEquals(tournamentEntity.getDescription(), tournamentDto.description(),
                         "Description should be equal"),
+                () -> assertEquals(tournamentEntity.getWinner(), tournamentDto.winner(),
+                        "Winner should be equal"),
                 () -> assertEquals(tournamentEntity.getEvent().getUuid(), tournamentDto.eventId(),
                         "Event Uuid should be equal"));
     }

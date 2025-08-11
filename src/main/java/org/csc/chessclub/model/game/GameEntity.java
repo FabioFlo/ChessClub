@@ -26,7 +26,7 @@ public class GameEntity {
     @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
     private String blackPlayerName;
     private Result result;
-    @Lob
+    @Column(columnDefinition = "VARCHAR(10000)")
     private String pgn;
     private boolean available;
     @ManyToOne()

@@ -35,5 +35,6 @@ public class TournamentEntity {
     @ManyToOne
     @JoinColumn(name = "event_uuid")
     private EventEntity event;
-    //TODO: add the winner name
+    @Column(length = TournamentConstraints.WINNER_MAX_LENGTH)
+    private String winner;
 }

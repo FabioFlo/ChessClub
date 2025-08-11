@@ -18,4 +18,8 @@ public final class TournamentValidationMessage {
             + TournamentConstraints.DESCRIPTION_MIN_LENGTH
             + " and "
             + TournamentConstraints.DESCRIPTION_MAX_LENGTH + " characters";
+    public static final String WINNER_LENGTH_REQUIRED = "Winner should be between "
+            + TournamentConstraints.WINNER_MIN_LENGTH
+            + " and "
+            + TournamentConstraints.WINNER_MAX_LENGTH + " characters";
 }

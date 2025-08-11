@@ -34,7 +34,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @DisplayName("Validation CreateTournamentDto - Title is blank")
     void testValidationCreateTournamentDto_whenTitleIsBlank_thenValidationFails() {
         createTournamentDto = new CreateTournamentDto(
-                "", START_DATE, END_DATE, DESCRIPTION, EVENT_ID);
+                "", START_DATE, END_DATE, DESCRIPTION, null,EVENT_ID);
 
         propertyPath = "title";
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
@@ -47,7 +47,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @Test
     @DisplayName("Validation CreateTournamentDto - Description is blank")
     void testValidationCreateTournamentDto_whenDescriptionIsBlank_thenValidationFails() {
-        createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, "", EVENT_ID);
+        createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, "",null, EVENT_ID);
 
         propertyPath = "description";
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
@@ -60,7 +60,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @Test
     @DisplayName("Validation CreateTournamentDto - Date is null")
     void testValidationCreateTournamentDto_whenDateIsNull_thenValidationFails() {
-        createTournamentDto = new CreateTournamentDto(TITLE, null, END_DATE, DESCRIPTION, null);
+        createTournamentDto = new CreateTournamentDto(TITLE, null, END_DATE, DESCRIPTION, null,null);
 
         propertyPath = "startDate";
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
@@ -79,7 +79,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
 
         propertyPath = "title";
         createTournamentDto = new CreateTournamentDto(tooShortTitle, START_DATE, END_DATE, DESCRIPTION,
-                null);
+                null,null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
                 createTournamentDto);
@@ -96,7 +96,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         String tooLongTitle = repeatedChar.repeat(length);
 
         propertyPath = "title";
-        createTournamentDto = new CreateTournamentDto(tooLongTitle, START_DATE, END_DATE, DESCRIPTION,
+        createTournamentDto = new CreateTournamentDto(tooLongTitle, START_DATE, END_DATE, DESCRIPTION,null,
                 null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
@@ -114,7 +114,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
         String tooLongDescription = repeatedChar.repeat(length);
 
         propertyPath = "description";
-        createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooLongDescription,
+        createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooLongDescription,null,
                 null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
@@ -133,7 +133,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
 
         propertyPath = "description";
         createTournamentDto = new CreateTournamentDto(TITLE, START_DATE, END_DATE, tooShortDescription,
-                null);
+                null,null);
 
         Set<ConstraintViolation<CreateTournamentDto>> violations = validator.validate(
                 createTournamentDto);
@@ -146,7 +146,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @DisplayName("Validation UpdateTournamentDto - Uuid null or not valid")
     void testValidationUpdateTournamentDto_whenUUIDNotValid_thenValidationFails() {
         updateTournamentDto = new UpdateTournamentDto(null, TITLE, START_DATE, END_DATE, DESCRIPTION,
-                null);
+                null,null);
 
         propertyPath = "uuid";
         Set<ConstraintViolation<UpdateTournamentDto>> violations = validator.validate(
@@ -160,7 +160,7 @@ public class TournamentValidationTests extends BaseValidatorConfig {
     @DisplayName("Validation UpdateTournamentDto - Is valid")
     void testValidationUpdateTournamentDto_whenValidUpdateDtoProvided_thenValidationPasses() {
         updateTournamentDto = new UpdateTournamentDto(UUID.randomUUID(), TITLE, START_DATE, END_DATE,
-                DESCRIPTION, null);
+                DESCRIPTION, null,null);
 
         Set<ConstraintViolation<UpdateTournamentDto>> violations = validator.validate(
                 updateTournamentDto);

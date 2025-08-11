@@ -30,6 +30,10 @@ public record UpdateTournamentDto(
                 max = TournamentConstraints.DESCRIPTION_MAX_LENGTH,
                 message = TournamentValidationMessage.DESCRIPTION_LENGTH_REQUIRED)
         String description,
+        @Size(
+                max = TournamentConstraints.WINNER_MAX_LENGTH,
+                message = TournamentValidationMessage.WINNER_LENGTH_REQUIRED)
+        String winner,
         UUID eventId
 ) {
 

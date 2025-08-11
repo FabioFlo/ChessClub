@@ -8,7 +8,9 @@ public record TournamentDto(
         String title,
         LocalDate startDate,
         LocalDate endDate,
-        String description
+        String description,
+        String winner
+
 ) {
 
 }
