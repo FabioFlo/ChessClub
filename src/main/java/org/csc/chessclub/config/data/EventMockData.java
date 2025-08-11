@@ -38,7 +38,8 @@ public class EventMockData {
                         .description("This knockout tournament determines three qualifiers for the Candidates Tournament.")
                         .build()
         );
-        log.info("Saving events.");
+        log.info("Saving events...");
         eventRepository.saveAll(events);
+        log.info("Events saved!");
     }
 }

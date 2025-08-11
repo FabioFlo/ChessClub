@@ -37,6 +37,7 @@ public final class TournamentMockData {
                         .description("The first edition of the best chess event of the city!")
                         .startDate(LocalDate.parse("2024-03-01"))
                         .endDate(LocalDate.parse("2024-03-03"))
+                        .winner("Paul Morphy")
                         .event(amazingEvent)
                         .available(true)
                         .build(),
@@ -45,6 +46,7 @@ public final class TournamentMockData {
                         .description("The second edition of the best chess event of the city! At the same place and time, are you ready to test your skills?")
                         .startDate(LocalDate.parse("2025-03-01"))
                         .endDate(LocalDate.parse("2025-03-03"))
+                        .winner("Paul Morphy")
                         .event(amazingEvent)
                         .available(true)
                         .build(),
@@ -53,12 +55,14 @@ public final class TournamentMockData {
                         .description("The tournament was an eight-round knockout event, with the top 50 seeds having been given a bye directly into the second round. The losers of the two semi-finals played a match for third place. The players who finished first, second, and third qualified for the Candidates Tournament 2024, a tournament to decide the challenger for the upcoming World Championship.")
                         .startDate(LocalDate.parse("2023-07-30"))
                         .endDate(LocalDate.parse("2023-08-24"))
+                        .winner("Magnus Carlsen")
                         .event(worldCup)
                         .available(true)
                         .build()
         );
-        log.info("Saving tournaments");
+        log.info("Saving tournaments...");
         tournamentRepository.saveAll(tournamentEntities);
+        log.info("Tournaments saved!");
     }
 
 

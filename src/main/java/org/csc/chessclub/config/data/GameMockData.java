@@ -133,8 +133,9 @@ public final class GameMockData {
                         .tournament(worldCup2023)
                         .build()
         );
-        log.info("Saving games.");
+        log.info("Saving games...");
         gameRepository.saveAll(gameEntities);
+        log.info("Games saved!");
     }
 
     private TournamentEntity findTournamentByTitle(String title, List<TournamentEntity> tournaments) {
