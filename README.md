@@ -13,36 +13,37 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ## 🎯 Project Overview & Personal Notes
 
-When I started this project, I had almost zero experience about unit test, integration test and the various test
-tools I have used here, because of this I have decided to build it following the TDD practice (Test-Driven
-Development).</br>
-My test journey started with an Udemy course and continued with a lot of practice and questions to my friend which have
-a lot of experience more than me.. and I am not talking about AI!
+When I started this project, I had almost zero experience with unit and integration tests and the various testing tools
+I've used. Because of this, I decided to build it following the Test-Driven Development (TDD) practice.
 
-***But let's be honest, obviously I have got some help from the AI too, as every developer now days, but how i have used
-this tool?***
+My testing journey began with an Udemy course and continued with a lot of practice and questions to a friend who has far
+more experience than I do—and I'm not talking about AI!
 
-I do not like to just copy/paste staff in/out the chatbot without understanding what i am doing, this is how i have
-proceeded:
+But let's be honest, I obviously got some help from AI as well, just like every developer nowadays. So, how did I use
+this tool?
 
-- I have thought about the project and how i want it to work and checked for some example of real site online
-- Then i have written a roadmap to follow and the logic of the app, classes, some of the features, DB (note code, just
-  ideas) only after that i have questioned the AI with `This is my idea, what is the best practice?`
-  so i already had an idea in mind when i started.
+I don't like to just copy and paste code from a chatbot without understanding what I'm doing. Here's how I proceeded:
 
-***And what about the actual code problems?***
+- I first thought about the project, how I wanted it to work, and researched real-world examples online.
 
-Usually i have tried to solve them by myself, after that i check for some improvement using the AI and sometimes it came
-out with some crazy stuff i had never thought about or i have never seen before!</br>
-Sometimes the AI helped me to discover some new tool,new topics to things about and study, i and up questioning myself
-about what i have done until that moment and how to improve it.</br>
-I have used it as a more expert developer able to guide me through the best practice (exactly what i have done with my
-friend, thank yow D.!).
+- Then, I created a roadmap and outlined the logic of the app, including classes, some features, and the database. I
+  only questioned the AI afterward with prompts like, "This is my idea; what is the best practice?" Then i tought about
+  the answers it give me and questioned in order to reach a point were the result was fine to me.
+
+### What about actual code problems?
+
+I usually try to solve them myself first. Afterward, I ask the AI for improvements, other times it was useful to me in
+solving problems that required the use of Java classes and methods that I didn't know at all and this gave me the
+opportunity to learn new aspects of the language.
+
+Sometimes the AI helped me discover new tools and topics to study. This led me to question my own work and think about
+how to improve it. I used the AI as a more expert developer, guiding me through best practices (exactly what I did with
+my friend—thank you, D.!).
 
 ### In conclusion
 
-The AI can be very useful, but it needs a direction in order to be efficient, more it was clear the
-idea or the problem to solve i had in mind, better it was the answer for me in order to learn and understand.
+AI can be very useful, but it needs clear direction to be efficient. The more specific my idea or problem was, the
+better the answer I received, and the more I learned and understood.
 
 ### 🔍 What This Project Demonstrates
 
