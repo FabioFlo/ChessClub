@@ -1,15 +1,14 @@
 package org.csc.chessclub.model.event;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.Set;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.csc.chessclub.model.tournament.TournamentEntity;
-
-import java.time.LocalDate;
-import java.util.Set;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -19,19 +18,24 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EventEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
-    @Column(length = EventConstraints.TITLE_MAX_LENGTH)
-    private String title;
-    @Column(length = EventConstraints.DESCRIPTION_MAX_LENGTH)
-    private String description;
-    private LocalDate createdAt;
-    @Column(length = EventConstraints.AUTHOR_MAX_LENGTH)
-    private String author;
-    private String announcementPDF;
-    private boolean available;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private Set<TournamentEntity> tournaments;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID uuid;
 
+  @Column(length = EventConstraints.TITLE_MAX_LENGTH)
+  private String title;
+
+  @Column(length = EventConstraints.DESCRIPTION_MAX_LENGTH)
+  private String description;
+
+  private LocalDate createdAt;
+
+  @Column(length = EventConstraints.AUTHOR_MAX_LENGTH)
+  private String author;
+
+  private String announcementPDF;
+  private boolean available;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+  private Set<TournamentEntity> tournaments;
 }

@@ -1,5 +1,6 @@
 package org.csc.chessclub.mapper;
 
+import java.util.UUID;
 import org.csc.chessclub.dto.tournament.CreateTournamentDto;
 import org.csc.chessclub.dto.tournament.TournamentDto;
 import org.csc.chessclub.dto.tournament.UpdateTournamentDto;
@@ -12,31 +13,31 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
-import java.util.UUID;
-
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface TournamentMapper {
 
-    TournamentMapper INSTANCE = Mappers.getMapper(TournamentMapper.class);
+  TournamentMapper INSTANCE = Mappers.getMapper(TournamentMapper.class);
 
-    TournamentDto tournamentToTournamentDto(TournamentEntity tournament);
+  TournamentDto tournamentToTournamentDto(TournamentEntity tournament);
 
-    @Mapping(target = "event", source = "eventId")
-    TournamentEntity updateTournamentToTournament(UpdateTournamentDto updateTournamentDto,
-                                                  @MappingTarget TournamentEntity tournament);
+  @Mapping(target = "event", source = "eventId")
+  TournamentEntity updateTournamentToTournament(
+      UpdateTournamentDto updateTournamentDto, @MappingTarget TournamentEntity tournament);
 
-    @Mapping(target = "event", source = "eventId")
-    TournamentEntity createTournamentDtoToTournamentEntity(CreateTournamentDto tournamentDto);
+  @Mapping(target = "event", source = "eventId")
+  TournamentEntity createTournamentDtoToTournamentEntity(CreateTournamentDto tournamentDto);
 
-    default EventEntity map(UUID eventId) {
-        if (eventId == null) {
-            return null;
-        }
-        return EventEntity.builder().uuid(eventId).build();
+  default EventEntity map(UUID eventId) {
+    if (eventId == null) {
+      return null;
     }
+    return EventEntity.builder().uuid(eventId).build();
+  }
 
-    default Page<TournamentDto> pageTournamentEntityToPageTournamentDto(
-            Page<TournamentEntity> pageOfTournament) {
-        return pageOfTournament.map(this::tournamentToTournamentDto);
-    }
+  default Page<TournamentDto> pageTournamentEntityToPageTournamentDto(
+      Page<TournamentEntity> pageOfTournament) {
+    return pageOfTournament.map(this::tournamentToTournamentDto);
+  }
 }

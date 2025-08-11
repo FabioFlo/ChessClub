@@ -8,9 +8,9 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 public class TestChessClubApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.from(ChessClubApplication::main).with(TestcontainersConfiguration.class)
-                .run(args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.from(ChessClubApplication::main)
+        .with(TestcontainersConfiguration.class)
+        .run(args);
+  }
 }

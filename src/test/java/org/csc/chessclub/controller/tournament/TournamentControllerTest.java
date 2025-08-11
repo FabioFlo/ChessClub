@@ -1,6 +1,12 @@
 package org.csc.chessclub.controller.tournament;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.common.mapper.TypeRef;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 import org.csc.chessclub.controller.BaseTestConfiguration;
 import org.csc.chessclub.dto.PageResponseDto;
 import org.csc.chessclub.dto.ResponseDto;
@@ -16,33 +22,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class TournamentControllerTest extends BaseTestConfiguration {
 
-    private final String apiPath = "/tournaments";
-    private String userToken;
+  private final String apiPath = "/tournaments";
+  private String userToken;
 
-    private CreateTournamentDto createTournamentDto;
-    private EventEntity event;
-    private UUID uuid;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    @Autowired
-    private EventRepository eventRepository;
+  private CreateTournamentDto createTournamentDto;
+  private EventEntity event;
+  private UUID uuid;
+  private LocalDate startDate;
+  private LocalDate endDate;
+  @Autowired private EventRepository eventRepository;
 
-    @BeforeAll
-    public void beforeAll() {
-        startDate = LocalDate.parse("2020-01-01");
-        endDate = LocalDate.parse("2020-01-03");
+  @BeforeAll
+  public void beforeAll() {
+    startDate = LocalDate.parse("2020-01-01");
+    endDate = LocalDate.parse("2020-01-03");
 
-        event = eventRepository.save(EventEntity
-                .builder()
+    event =
+        eventRepository.save(
+            EventEntity.builder()
                 .description("Event description")
                 .announcementPDF("")
                 .author("Billy")
@@ -51,166 +50,160 @@ public class TournamentControllerTest extends BaseTestConfiguration {
                 .available(true)
                 .build());
 
-        createTournamentDto = new CreateTournamentDto(
-                "New tournament",
-                startDate,
-                endDate,
-                "Description",
-                null,
-                event.getUuid());
+    createTournamentDto =
+        new CreateTournamentDto(
+            "New tournament", startDate, endDate, "Description", null, event.getUuid());
 
-        userToken = getUserToken();
-    }
+    userToken = getUserToken();
+  }
 
-    @Test
-    @Order(1)
-    @DisplayName("Create tournament")
-    void testCreateTournament_whenUserAuthenticatedAndValidCreateTournamentProvided_returnCreateTournamentDto() {
-        String expectedMessage = "Tournament successfully created";
+  @Test
+  @Order(1)
+  @DisplayName("Create tournament")
+  void
+      testCreateTournament_whenUserAuthenticatedAndValidCreateTournamentProvided_returnCreateTournamentDto() {
+    String expectedMessage = "Tournament successfully created";
 
-        ResponseDto<TournamentDto> response = authHelper.withBearerToken(userToken)
-                .body(createTournamentDto)
-                .when()
-                .post(apiPath)
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+    ResponseDto<TournamentDto> response =
+        authHelper
+            .withBearerToken(userToken)
+            .body(createTournamentDto)
+            .when()
+            .post(apiPath)
+            .then()
+            .statusCode(HttpStatus.CREATED.value())
+            .extract()
+            .response()
+            .as(new TypeRef<>() {});
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success)
-                .isEqualTo(true);
+    assertThat(response).isNotNull().extracting(ResponseDto::success).isEqualTo(true);
 
-        uuid = response.data().uuid();
+    uuid = response.data().uuid();
 
-        assertThat(response)
-                .extracting(ResponseDto::message)
-                .isEqualTo(expectedMessage);
-    }
+    assertThat(response).extracting(ResponseDto::message).isEqualTo(expectedMessage);
+  }
 
-    @Test
-    @Order(2)
-    @DisplayName("Update tournament")
-    void testUpdateTournament_whenUserAuthenticatedAndValidUpdateTournamentProvided_returnUpdateTournamentDto() {
-        String expectedMessage = "Tournament successfully updated";
-        String newTitle = "New test title";
-        UpdateTournamentDto updateTournamentDto = new UpdateTournamentDto(uuid, newTitle, startDate,
-                endDate, "Description", "Fabiano Caruana",null);
-        ResponseDto<TournamentDto> response = authHelper.withBearerToken(userToken)
-                .body(updateTournamentDto)
-                .when()
-                .patch(apiPath)
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(2)
+  @DisplayName("Update tournament")
+  void
+      testUpdateTournament_whenUserAuthenticatedAndValidUpdateTournamentProvided_returnUpdateTournamentDto() {
+    String expectedMessage = "Tournament successfully updated";
+    String newTitle = "New test title";
+    UpdateTournamentDto updateTournamentDto =
+        new UpdateTournamentDto(
+            uuid, newTitle, startDate, endDate, "Description", "Fabiano Caruana", null);
+    ResponseDto<TournamentDto> response =
+        authHelper
+            .withBearerToken(userToken)
+            .body(updateTournamentDto)
+            .when()
+            .patch(apiPath)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response()
+            .as(new TypeRef<>() {});
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success).isEqualTo(true);
+    assertThat(response).isNotNull().extracting(ResponseDto::success).isEqualTo(true);
 
-        assertThat(response.data().title())
-                .isEqualTo(newTitle);
+    assertThat(response.data().title()).isEqualTo(newTitle);
 
-        assertThat(response)
-                .extracting(ResponseDto::message)
-                .isEqualTo(expectedMessage);
-    }
+    assertThat(response).extracting(ResponseDto::message).isEqualTo(expectedMessage);
+  }
 
-    @Test
-    @Order(3)
-    @DisplayName("Get by id")
-    void getTournamentById_whenValidIdProvided_returnGetTournamentDtoIfExists() {
-        ResponseDto<TournamentDto> response = given()
-                .pathParam("uuid", uuid)
-                .when()
-                .get(apiPath + "/{uuid}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(3)
+  @DisplayName("Get by id")
+  void getTournamentById_whenValidIdProvided_returnGetTournamentDtoIfExists() {
+    ResponseDto<TournamentDto> response =
+        given()
+            .pathParam("uuid", uuid)
+            .when()
+            .get(apiPath + "/{uuid}")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response()
+            .as(new TypeRef<>() {});
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success).isEqualTo(true);
+    assertThat(response).isNotNull().extracting(ResponseDto::success).isEqualTo(true);
 
-        assertThat(response.data().uuid())
-                .isEqualTo(uuid);
-    }
+    assertThat(response.data().uuid()).isEqualTo(uuid);
+  }
 
-    @Test
-    @Order(4)
-    @DisplayName("Get all paged")
-    void testGetAll_whenTournamentsExists_returnsTournamentsDto() {
-        ResponseDto<PageResponseDto<TournamentDto>> response = given()
-                .when()
-                .get(apiPath)
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+  @Test
+  @Order(4)
+  @DisplayName("Get all paged")
+  void testGetAll_whenTournamentsExists_returnsTournamentsDto() {
+    ResponseDto<PageResponseDto<TournamentDto>> response =
+        given()
+            .when()
+            .get(apiPath)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response()
+            .as(new TypeRef<>() {});
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success).isEqualTo(true);
+    assertThat(response).isNotNull().extracting(ResponseDto::success).isEqualTo(true);
 
-        assertThat(response.data().pageSize())
-                .isEqualTo(10);
+    assertThat(response.data().pageSize()).isEqualTo(10);
 
-        assertThat(response)
-                .extracting(ResponseDto::data)
-                .extracting(PageResponseDto::content)
-                .extracting(List::size).isEqualTo(1);
+    assertThat(response)
+        .extracting(ResponseDto::data)
+        .extracting(PageResponseDto::content)
+        .extracting(List::size)
+        .isEqualTo(1);
+  }
 
-    }
+  @Test
+  @Order(5)
+  @DisplayName("Get all paged by Event uuid")
+  void testGetAllByEventUuid_whenTournamentsFoundByEventUuid_returnsTournamentsDto() {
+    ResponseDto<PageResponseDto<TournamentDto>> response =
+        given()
+            .pathParam("eventUuid", event.getUuid())
+            .when()
+            .get(apiPath + "?eventUuid={eventUuid}")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response()
+            .as(new TypeRef<>() {});
 
-    @Test
-    @Order(5)
-    @DisplayName("Get all paged by Event uuid")
-    void testGetAllByEventUuid_whenTournamentsFoundByEventUuid_returnsTournamentsDto() {
-        ResponseDto<PageResponseDto<TournamentDto>> response = given()
-                .pathParam("eventUuid", event.getUuid())
-                .when()
-                .get(apiPath + "?eventUuid={eventUuid}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
+    assertThat(response).isNotNull().extracting(ResponseDto::success).isEqualTo(true);
 
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success).isEqualTo(true);
+    assertThat(response.data().pageSize()).isEqualTo(10);
 
-        assertThat(response.data().pageSize())
-                .isEqualTo(10);
+    assertThat(response)
+        .extracting(ResponseDto::data)
+        .extracting(PageResponseDto::content)
+        .extracting(List::size)
+        .isEqualTo(1);
+  }
 
-        assertThat(response)
-                .extracting(ResponseDto::data)
-                .extracting(PageResponseDto::content)
-                .extracting(List::size).isEqualTo(1);
+  @Test
+  @Order(6)
+  @DisplayName("Delete tournament")
+  void testDeleteTournament_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
+    ResponseDto<UUID> response =
+        authHelper
+            .withBearerToken(userToken)
+            .pathParam("uuid", uuid)
+            .when()
+            .delete(apiPath + "/{uuid}")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response()
+            .as(new TypeRef<>() {});
 
-    }
+    assertThat(response).isNotNull().extracting(ResponseDto::success).isEqualTo(true);
 
-    @Test
-    @Order(6)
-    @DisplayName("Delete tournament")
-    void testDeleteTournament_whenUserAuthenticatedAndGameFound_returnResponseDtoWithSuccessTrue() {
-        ResponseDto<UUID> response = authHelper.withBearerToken(userToken)
-                .pathParam("uuid", uuid)
-                .when()
-                .delete(apiPath + "/{uuid}")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().response().as(new TypeRef<>() {
-                });
-
-        assertThat(response)
-                .isNotNull()
-                .extracting(ResponseDto::success).isEqualTo(true);
-
-        assertThat(response)
-                .extracting(ResponseDto::data)
-                .extracting(UUID::toString).isEqualTo(uuid.toString());
-    }
+    assertThat(response)
+        .extracting(ResponseDto::data)
+        .extracting(UUID::toString)
+        .isEqualTo(uuid.toString());
+  }
 }

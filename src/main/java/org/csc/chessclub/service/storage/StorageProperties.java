@@ -10,7 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("storage")
 public class StorageProperties {
 
-    @Value("${storage.pdf-folder}")
-    private String location;
-
+  @Value("${storage.pdf-folder}")
+  private String location;
 }

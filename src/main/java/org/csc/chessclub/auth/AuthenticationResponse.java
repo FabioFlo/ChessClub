@@ -1,5 +1,3 @@
 package org.csc.chessclub.auth;
 
-public record AuthenticationResponse(String token) {
-
-}
+public record AuthenticationResponse(String token) {}

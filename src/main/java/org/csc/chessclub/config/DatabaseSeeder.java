@@ -20,27 +20,30 @@ import org.springframework.stereotype.Component;
 @Log
 @RequiredArgsConstructor
 public class DatabaseSeeder implements CommandLineRunner {
-    @Value("${init.data}")
-    private Boolean initData;
+  @Value("${init.data}")
+  private Boolean initData;
 
-    private final TournamentRepository tournamentRepository;
-    private final EventRepository eventRepository;
-    private final GameRepository gameRepository;
+  private final TournamentRepository tournamentRepository;
+  private final EventRepository eventRepository;
+  private final GameRepository gameRepository;
 
-    private final EventMockData eventMockData;
-    private final TournamentMockData tournamentMockData;
-    private final GameMockData gameMockData;
+  private final EventMockData eventMockData;
+  private final TournamentMockData tournamentMockData;
+  private final GameMockData gameMockData;
 
-    @Override
-    public void run(String... args) {
-        log.info("Starting Database Seeder: " + initData);
-        if (initData && eventRepository.count() == 0 && tournamentRepository.count() == 0 && gameRepository.count() == 0) {
-            log.info("Initializing database...");
-            eventMockData.listOfEvents();
-            tournamentMockData.listOfTournaments();
-            gameMockData.listOfGames();
-        } else {
-            log.info("Nothing to initialize.");
-        }
+  @Override
+  public void run(String... args) {
+    log.info("Starting Database Seeder: " + initData);
+    if (initData
+        && eventRepository.count() == 0
+        && tournamentRepository.count() == 0
+        && gameRepository.count() == 0) {
+      log.info("Initializing database...");
+      eventMockData.listOfEvents();
+      tournamentMockData.listOfTournaments();
+      gameMockData.listOfGames();
+    } else {
+      log.info("Nothing to initialize.");
     }
+  }
 }

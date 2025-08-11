@@ -1,5 +1,8 @@
 package org.csc.chessclub.config.data;
 
+import static org.csc.chessclub.config.data.TournamentMockData.*;
+
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.csc.chessclub.enums.Result;
@@ -10,27 +13,27 @@ import org.csc.chessclub.repository.TournamentRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static org.csc.chessclub.config.data.TournamentMockData.*;
-
 @Component
 @Profile("local")
 @RequiredArgsConstructor
 @Log
 public final class GameMockData {
-    private final GameRepository gameRepository;
-    private final TournamentRepository tournamentRepository;
+  private final GameRepository gameRepository;
+  private final TournamentRepository tournamentRepository;
 
-    public void listOfGames() {
-        List<TournamentEntity> tournaments = tournamentRepository.findAll();
-        TournamentEntity amazeTournamentFirst = findTournamentByTitle(AMAZING_TOURNAMENT_TITLE_FIRST, tournaments);
-        TournamentEntity amazeTournamentSecond = findTournamentByTitle(AMAZING_TOURNAMENT_TITLE_SECOND, tournaments);
-        TournamentEntity worldCup2023 = findTournamentByTitle(WORLD_CUP_2023, tournaments);
+  public void listOfGames() {
+    List<TournamentEntity> tournaments = tournamentRepository.findAll();
+    TournamentEntity amazeTournamentFirst =
+        findTournamentByTitle(AMAZING_TOURNAMENT_TITLE_FIRST, tournaments);
+    TournamentEntity amazeTournamentSecond =
+        findTournamentByTitle(AMAZING_TOURNAMENT_TITLE_SECOND, tournaments);
+    TournamentEntity worldCup2023 = findTournamentByTitle(WORLD_CUP_2023, tournaments);
 
-        List<GameEntity> gameEntities = List.of(
-                GameEntity.builder()
-                        .pgn("""
+    List<GameEntity> gameEntities =
+        List.of(
+            GameEntity.builder()
+                .pgn(
+                    """
                                 [Event "Casual game"]
                                 [Site "New Orleans, LA USA"]
                                 [Date "1848.??.??"]
@@ -43,19 +46,20 @@ public final class GameMockData {
                                 [WhiteElo "?"]
                                 [BlackElo "?"]
                                 [PlyCount "35"]
-                                
+
                                 1. e4 {Some sources indicate 1847.} e5 2. f4 exf4 3. Bc4 Qh4+
                                 4. Kf1 Bc5 5. d4 Bb6 6. Nf3 Qe7 7. Nc3 Nf6 8. Qd3 c6 9. Bxf4
                                 d5 10. exd5 O-O 11. d6 Qd8 12. Re1 Re8 13. Ng5 Rxe1+ 14. Kxe1
                                 Qe8+ 15. Kd2 Be6 16. Re1 Nbd7 17. Nxe6 fxe6 18. Rxe6 1-0""")
-                        .whitePlayerName("Paul Morphy")
-                        .blackPlayerName("Alonzo Morphy")
-                        .result(Result.WhiteWon)
-                        .available(true)
-                        .tournament(amazeTournamentFirst)
-                        .build(),
-                GameEntity.builder()
-                        .pgn("""
+                .whitePlayerName("Paul Morphy")
+                .blackPlayerName("Alonzo Morphy")
+                .result(Result.WhiteWon)
+                .available(true)
+                .tournament(amazeTournamentFirst)
+                .build(),
+            GameEntity.builder()
+                .pgn(
+                    """
                                 [Event "Rook Odds game"]
                                 [Site "New Orleans, LA USA"]
                                 [Date "1849.??.??"]
@@ -70,18 +74,19 @@ public final class GameMockData {
                                 [PlyCount "25"]
                                 [SetUp "1"]
                                 [FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w Kkq - 0 1"]
-                                
+
                                 1.e4 e5 2.Nf3 Nc6 3.d4 exd4 4.Bc4 Bb4+ 5.c3 dxc3 6.O-O cxb2
                                 7.Bxb2 Bf8 8.e5 d6 9.Re1 dxe5 10.Nxe5 Qxd1 11.Bxf7+ Ke7
                                 12.Ng6+ Kxf7 13.Nxh8# 1-0""")
-                        .whitePlayerName("Paul Morphy")
-                        .blackPlayerName("Charles Le Carpentier")
-                        .result(Result.WhiteWon)
-                        .available(true)
-                        .tournament(amazeTournamentSecond)
-                        .build(),
-                GameEntity.builder()
-                        .pgn("""
+                .whitePlayerName("Paul Morphy")
+                .blackPlayerName("Charles Le Carpentier")
+                .result(Result.WhiteWon)
+                .available(true)
+                .tournament(amazeTournamentSecond)
+                .build(),
+            GameEntity.builder()
+                .pgn(
+                    """
                                 [Event "FIDE World Cup 2023"]
                                 [Site "Chess.com"]
                                 [Date "2023.08.24"]
@@ -93,7 +98,7 @@ public final class GameMockData {
                                 [BlackElo "2835"]
                                 [TimeControl "40/5400+30:1800+30"]
                                 [Link "https://www.chess.com/events/2023-fide-chess-world-cup/08-03/Praggnanandhaa_R-Carlsen_Magnus"]
-                                
+
                                 1. e4 {[%clk 0:25:11]} 1... e5 {[%clk 0:25:07]} 2. Nf3 {[%clk 0:25:17]} 2... Nc6
                                 {[%clk 0:25:11]} 3. Bc4 {[%clk 0:25:24]} 3... Nf6 {[%clk 0:25:16]} 4. d3 {[%clk
                                 0:25:32]} 4... Bc5 {[%clk 0:25:23]} 5. a4 {[%clk 0:25:36]} 5... d6 {[%clk
@@ -126,22 +131,21 @@ public final class GameMockData {
                                 0:02:48]} 45. Rc2 {[%clk 0:00:25]} 45... Ngh3+ {[%clk 0:02:23]} 46. Kf1 {[%clk
                                 0:00:19]} 46... Ra3 {[%clk 0:02:32]} 47. Nxc6+ {[%clk 0:00:15]} 47... Kf6 {[%clk
                                 0:02:39]} 0-1""")
-                        .whitePlayerName("Praggnanandhaa R")
-                        .blackPlayerName("Carlsen, Magnus")
-                        .result(Result.BlackWon)
-                        .available(true)
-                        .tournament(worldCup2023)
-                        .build()
-        );
-        log.info("Saving games...");
-        gameRepository.saveAll(gameEntities);
-        log.info("Games saved!");
-    }
+                .whitePlayerName("Praggnanandhaa R")
+                .blackPlayerName("Carlsen, Magnus")
+                .result(Result.BlackWon)
+                .available(true)
+                .tournament(worldCup2023)
+                .build());
+    log.info("Saving games...");
+    gameRepository.saveAll(gameEntities);
+    log.info("Games saved!");
+  }
 
-    private TournamentEntity findTournamentByTitle(String title, List<TournamentEntity> tournaments) {
-        return tournaments.stream()
-                .filter(e -> e.getTitle().equalsIgnoreCase(title))
-                .findFirst()
-                .orElse(null);
-    }
+  private TournamentEntity findTournamentByTitle(String title, List<TournamentEntity> tournaments) {
+    return tournaments.stream()
+        .filter(e -> e.getTitle().equalsIgnoreCase(title))
+        .findFirst()
+        .orElse(null);
+  }
 }

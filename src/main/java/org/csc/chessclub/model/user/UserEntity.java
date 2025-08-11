@@ -1,6 +1,9 @@
 package org.csc.chessclub.model.user;
 
 import jakarta.persistence.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
 @Entity
 @Data
 @Builder
@@ -22,38 +21,40 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
-    @Column(length = UserConstraints.USERNAME_MAX_LENGTH)
-    private String username;
-    private String password;
-    private String email;
-    private Role role;
-    private boolean available;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID uuid;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
+  @Column(length = UserConstraints.USERNAME_MAX_LENGTH)
+  private String username;
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
+  private String password;
+  private String email;
+  private Role role;
+  private boolean available;
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+  }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
+  @Override
+  public boolean isAccountNonExpired() {
+    return UserDetails.super.isAccountNonExpired();
+  }
 
-    @Override
-    public boolean isEnabled() {
-        return isAvailable();
-    }
+  @Override
+  public boolean isAccountNonLocked() {
+    return UserDetails.super.isAccountNonLocked();
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return UserDetails.super.isCredentialsNonExpired();
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return isAvailable();
+  }
 }

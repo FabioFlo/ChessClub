@@ -11,28 +11,28 @@ import org.springframework.stereotype.Component;
 @Component
 @TestConfiguration
 public class TestDataFactory {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+  @Autowired private UserRepository userRepository;
+  @Autowired private PasswordEncoder passwordEncoder;
 
-    public UserEntity createUser(UserEntity user) {
-        return userRepository.save(UserEntity.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .password(passwordEncoder.encode(user.getPassword()))
-                .role(user.getRole())
-                .available(user.isAvailable())
-                .build());
-    }
-    public UserEntity createUnavailableUser() {
-        return createUser(
-                UserEntity.builder()
-                        .username("unavailable")
-                        .email("unabailable@email.com")
-                        .password("Test123_")
-                        .role(Role.USER)
-                        .available(false)
-                        .build());
-    }
+  public UserEntity createUser(UserEntity user) {
+    return userRepository.save(
+        UserEntity.builder()
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .password(passwordEncoder.encode(user.getPassword()))
+            .role(user.getRole())
+            .available(user.isAvailable())
+            .build());
+  }
+
+  public UserEntity createUnavailableUser() {
+    return createUser(
+        UserEntity.builder()
+            .username("unavailable")
+            .email("unabailable@email.com")
+            .password("Test123_")
+            .role(Role.USER)
+            .available(false)
+            .build());
+  }
 }

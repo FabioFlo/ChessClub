@@ -1,14 +1,13 @@
 package org.csc.chessclub.model.game;
 
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.csc.chessclub.enums.Result;
 import org.csc.chessclub.model.tournament.TournamentEntity;
-
-import java.util.UUID;
 
 @Entity
 @Data
@@ -18,18 +17,22 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GameEntity {
 
-    @Id
-    @GeneratedValue
-    private UUID uuid;
-    @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
-    private String whitePlayerName;
-    @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
-    private String blackPlayerName;
-    private Result result;
-    @Column(columnDefinition = "VARCHAR(10000)")
-    private String pgn;
-    private boolean available;
-    @ManyToOne()
-    @JoinColumn(name = "tournament_uuid")
-    private TournamentEntity tournament;
+  @Id @GeneratedValue private UUID uuid;
+
+  @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
+  private String whitePlayerName;
+
+  @Column(length = GameConstraints.PLAYER_MAX_LENGTH)
+  private String blackPlayerName;
+
+  private Result result;
+
+  @Column(columnDefinition = "VARCHAR(10000)")
+  private String pgn;
+
+  private boolean available;
+
+  @ManyToOne()
+  @JoinColumn(name = "tournament_uuid")
+  private TournamentEntity tournament;
 }
