@@ -103,7 +103,7 @@ while being intuitive for anyone reviewing the code.
 - [API Documentation](#-api-documentation)
 - [Testing & Coverage](#-testing--coverage)
 - [License](#-license)
-- [Contributing](#-contributing)
+- [Code Style & Formatting](#-code-style--formatting)
 - [Author](#-author)
 
 ---
@@ -466,15 +466,25 @@ Run Tests & Generate Coverage Report
 > JaCoCo HTML report: `target/site/jacoco/index.html`
 ---
 
+## 📝 Code Style & Formatting
+
+This project enforces the [Google Java Style Guide](https://checkstyle.sourceforge.io/google_style.html)  
+via **Checkstyle** (verification) and **Spotless** (automatic formatting).  
+This ensures the same style is applied regardless of IDE.
+
+### Format your code before committing
+```bash
+  mvn spotless:apply
+```
+### Verify formatting & style rules
+```bash
+  mvn clean validate
+```
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-Feel free to open an issue or a pull request.
 ---
 
 ## 👤 Author
