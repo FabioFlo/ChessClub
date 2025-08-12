@@ -349,19 +349,16 @@ the build:
 
 ## 🧬 Database Seeding
 
-The application include two classes for the creation of entities into the database.
-One of them allow to create an Admin via the `AdminRunner` class that can be found here
-`org/csc/chessclub/config`.
-This behavior is manage by the boolean flag `fake.admin.create.flag` which can be found into the
-`application-local.properties` file with some other Admin/User properties that allow to change
-`Username, Email and Password`.
-With the admin is then possible to call every method of the application.
+The application includes two classes for creating entities in the database.
+One of them, the `AdminRunner` class that can be found here`org/csc/chessclub/config`, allows you to create an Admin.
+This behavior is managed by the `fake.admin.create.flag` boolean flag, which is located in the
+`application-local.properties` . This file also contains other properties for the Admin, allowing you to change
+username, email, and password.
 
-Other than that, there is another class called `DatabaseSeeder` which have the task to create other
-entities and
-populates the database with some data of `Event, Tournament and Games`.
-As for the Admin, this behavior can be enabled or disabled with the property `init.database` located
-in the same
+With an admin account, it's possible to call every method of the application.
+
+Additionally, a `DatabaseSeeder` class populates the database with data for Events, Tournaments, and Games.
+Like the Admin, this behavior can be enabled or disabled using the `init.database` property, which is also in the same
 application properties file.
 
 🔒 Both of them are enabled by default, so the database will be initialized at the first start or
