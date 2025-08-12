@@ -13,6 +13,5 @@ public class ChessClubApplication {
   public static void main(String[] args) {
     SpringApplication.run(ChessClubApplication.class, args);
   }
-  // TODO: add cache
 
 }

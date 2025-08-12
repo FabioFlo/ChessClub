@@ -14,48 +14,6 @@ Powered by PostgreSQL 17.5, and fully containerized using Docker Compose.
 
 ## 🎯 Project Overview & Personal Notes
 
-When I started this project, I had almost zero experience with unit and integration tests and the
-various testing tools I've used. Because of this, I decided to build it following the Test-Driven
-Development (TDD) practice.
-
-My testing journey began with an Udemy course and continued with a lot of practice and questions
-about best practices to a friend who has far more experience than I do—and I'm not talking about AI!
-
-But let's be honest, I obviously got some help from AI as well, just like every developer nowadays.
-So, how did I use this tool?
-
-I don't like to just copy and paste code from a chatbot without understanding what I'm doing. Here's
-how I proceeded:
-
-- I first thought about the project, how I wanted it to work, and researched real-world examples
-  online.
-
-- Then, I created a roadmap and outlined the logic of the app, including classes, some features, and
-  the database. I only questioned the AI afterward with prompts like, "This is my idea; what is the
-  best practice?" Then I thought about the answers it gave me and asked follow-up questions to
-  refine the result until I was satisfied. Sometimes, I specifically asked the AI not to write code,
-  but simply to give me steps to follow based on best practices.
-
-### What about actual code problems?
-
-I usually try to solve them myself first. Afterward, I ask the AI for improvements, other times it
-was useful to me in
-solving problems that required the use of Java classes and methods that I didn't know at all and
-this gave me the
-opportunity to learn new aspects of the language.
-
-Sometimes the AI helped me discover new tools and topics to study. This led me to question my own
-work and think about
-how to improve it. I used the AI as a more expert developer, guiding me through best practices (
-exactly what I did with
-my friend—thank you, D.!).
-
-### In conclusion
-
-AI can be very useful, but it needs clear direction to be efficient. The more specific my idea or
-problem was, the
-better the answer I received, and the more I learned and understood.
-
 ### 🔍 What This Project Demonstrates
 
 As a portfolio piece for GitHub and LinkedIn, this project highlights my proficiency in:
@@ -83,12 +41,57 @@ This project allowed me to explore several interesting technical challenges:
 
 ### 🎓 Why Chess Club Management?
 
-I chose this domain because i am a chess player too and this topic is more familiar to me and
+I chose this domain because I am a chess player too and this topic is more familiar to me and
 naturally encompasses many
-real-world application requirements: user management, event
-scheduling, tournament brackets, game results tracking. It's complex enough to showcase advanced
+real-world application requirements: user management, tournament brackets, game results tracking. It's complex enough to
+showcase advanced
 development patterns
 while being intuitive for anyone reviewing the code.
+
+When I started this project, I had almost zero experience with unit and integration tests and the
+various testing tools I've used. Because of this, I decided to build it following the Test-Driven
+Development (TDD) practice.
+
+My testing journey began with an Udemy course and continued with a lot of practice and questions
+about best practices to a friend who has far more experience than I do—and I'm not talking about AI!
+
+But let's be honest, I obviously got some help from AI as well, just like every developer nowadays.
+So, how did I use this tool?
+
+I don't like to just copy and paste code from a chatbot without understanding what I'm doing. Here's
+how I proceeded:
+
+- I first thought about the project, how I wanted it to work, and researched real-world examples
+  online.
+
+- Then, I created a roadmap and outlined the logic of the app, including classes, some features, and
+  the database. I only questioned the AI afterward with prompts like, "This is my idea; what is the
+  best practice?" Then I thought about the answers it gave me and asked follow-up questions to
+  refine the result until I was satisfied. Sometimes, I specifically asked the AI not to write code,
+  but simply to give me steps to follow based on best practices.
+
+More features could be added such as `Gallery` with photos of `Tournaments`, `Email service`,
+`Cache management`, but for now I have decided to keep it simple and eventually implement them later.
+
+### What about actual code problems?
+
+I usually try to solve them myself first. Afterward, I ask the AI for improvements, other times it
+was useful to me in
+solving problems that required the use of Java classes and methods that I didn't know at all and
+this gave me the
+opportunity to learn new aspects of the language.
+
+Sometimes the AI helped me discover new tools and topics to study. This led me to question my own
+work and think about
+how to improve it. I used the AI as a more expert developer, guiding me through best practices (
+exactly what I did with
+my friend—thank you, D.!).
+
+### In conclusion
+
+AI can be very useful, but it needs clear direction to be efficient. The more specific my idea or
+problem was, the
+better the answer I received, and the more I learned and understood.
 
 ---
 
@@ -473,13 +476,17 @@ via **Checkstyle** (verification) and **Spotless** (automatic formatting).
 This ensures the same style is applied regardless of IDE.
 
 ### Format your code before committing
+
 ```bash
   mvn spotless:apply
 ```
+
 ### Verify formatting & style rules
+
 ```bash
   mvn clean validate
 ```
+
 ---
 
 ## 📄 License
