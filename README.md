@@ -100,8 +100,8 @@ my idea or problem was, the better the answer I received, and the more I learned
 - [Stopping the Application](#-stopping-the-application)
 - [API Documentation](#-api-documentation)
 - [Testing & Coverage](#-testing--coverage)
-- [License](#-license)
 - [Code Style & Formatting](#-code-style--formatting)
+- [License](#-license)
 - [Author](#-author)
 
 ---
