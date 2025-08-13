@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class StorageServiceUnitTests {
 
   private StorageServiceImpl storageService;
-  private final String rootPath = "src/test/resources/pdf-folder";
+  private final String rootPath = "src/test/resources/pdf";
 
   @BeforeEach
   public void setUp() {
